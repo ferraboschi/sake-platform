@@ -132,6 +132,44 @@
   }
   .field-input::placeholder { color: #ccc; }
 
+  /* Google Places Autocomplete override to match field-input style */
+  .field-group gmp-place-autocomplete {
+    width: 100% !important;
+    border: 1.5px solid var(--border) !important;
+    border-radius: var(--radius-sm) !important;
+    font-size: 16px !important;
+    font-family: inherit !important;
+    background: var(--bg-card) !important;
+    overflow: hidden;
+  }
+  .field-group gmp-place-autocomplete:focus-within {
+    border-color: var(--accent) !important;
+    box-shadow: 0 0 0 3px rgba(196,112,75,0.08) !important;
+  }
+  .address-prefilled {
+    border-color: var(--success) !important;
+    background: #f8fdf8 !important;
+  }
+
+  /* Brand entries */
+  .brand-entry { margin-bottom: 8px; }
+  .brand-entry .remove-brand-btn {
+    width: 36px; height: 36px; border-radius: 50%; border: 1px solid var(--border);
+    background: var(--bg); color: var(--text-tertiary); font-size: 18px;
+    cursor: pointer; display: flex; align-items: center; justify-content: center;
+    transition: var(--transition); flex-shrink: 0;
+  }
+  .brand-entry .remove-brand-btn:hover { background: #f5e6e0; color: #c0392b; border-color: #e0b4b4; }
+  .add-brand-btn {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: none; border: 1.5px dashed var(--border);
+    color: var(--text-secondary); padding: 10px 16px; border-radius: var(--radius-sm);
+    font-size: 13px; font-family: inherit; font-weight: 500;
+    cursor: pointer; transition: var(--transition); width: 100%; justify-content: center;
+    margin-top: 4px;
+  }
+  .add-brand-btn:hover { border-color: var(--accent); color: var(--accent); background: rgba(196,112,75,0.03); }
+
   .field-input-with-icon { position: relative; }
   .field-input-with-icon .field-input { padding-left: 44px; }
   .field-input-with-icon .icon {
@@ -944,8 +982,19 @@
             <div id="regionGroup"></div>
           </div>
           <div class="field-group">
-            <div class="field-label" data-i18n="label_brand">ブランド名</div>
-            <input class="field-input" type="text" id="brandInput" data-i18n-ph="ph_brand" placeholder="例: 匠">
+            <div class="field-label"><span data-i18n="label_brand">ブランド名</span></div>
+            <div id="brandList">
+              <div class="brand-entry" data-index="0">
+                <div style="display:flex; gap:8px; align-items:center;">
+                  <input class="field-input brand-input" type="text" data-i18n-ph="ph_brand" placeholder="例: 匠" style="flex:1;">
+                </div>
+              </div>
+            </div>
+            <button type="button" class="add-brand-btn" onclick="addBrandEntry()">
+              <span>＋</span> <span data-i18n="add_brand">ブランドを追加</span>
+            </button>
+            <!-- Hidden legacy input for backward compat -->
+            <input type="hidden" id="brandInput">
           </div>
         </div>
         <div class="island">
@@ -1468,7 +1517,7 @@
       island_kura: '蔵元情報', label_kura_name: '蔵元名', ph_kura_name: '例: 京姫酒造',
       label_country: '国', label_prefecture: '都道府県', ph_prefecture: '例: 京都府',
       label_region: '州 / 地域', ph_region: '例: カリフォルニア州',
-      label_brand: 'ブランド名', ph_brand: '例: 匠',
+      label_brand: 'ブランド名', ph_brand: '例: 匠', add_brand: 'ブランドを追加',
       island_images: '蔵元の顔', label_logo: '蔵元ロゴ', label_image: 'ラベル画像',
       intro_images: '世界があなたの蔵を初めて見る瞬間。<br>ロゴで、第一印象を届けましょう。',
       upload_logo: 'タップしてロゴを選択',
@@ -1540,7 +1589,7 @@
       island_kura: 'Sakagura Info', label_kura_name: 'Sakagura name', ph_kura_name: 'e.g. Kyohime Shuzo',
       label_country: 'Country', label_prefecture: 'Prefecture', ph_prefecture: 'e.g. Kyoto',
       label_region: 'State / Region', ph_region: 'e.g. California',
-      label_brand: 'Brand name', ph_brand: 'e.g. Takumi',
+      label_brand: 'Brand name', ph_brand: 'e.g. Takumi', add_brand: 'Add brand',
       island_images: 'The face of your sakagura', label_logo: 'Sakagura logo', label_image: 'Label image',
       intro_images: 'The world\'s first glimpse of your craft.<br>Your logo sets the stage.',
       upload_logo: 'Tap to select logo',
@@ -1614,7 +1663,7 @@
       island_kura: 'Sakagura', label_kura_name: 'Nom de la sakagura', ph_kura_name: 'ex: Kyohime Shuzo',
       label_country: 'Pays', label_prefecture: 'Préfecture', ph_prefecture: 'ex: Kyoto',
       label_region: 'État / Région', ph_region: 'ex: Californie',
-      label_brand: 'Marque', ph_brand: 'ex: Takumi',
+      label_brand: 'Marque', ph_brand: 'ex: Takumi', add_brand: 'Ajouter une marque',
       island_images: 'Le visage de votre sakagura', label_logo: 'Logo de la sakagura', label_image: 'Image étiquette',
       intro_images: 'Le premier regard du monde sur votre savoir-faire.<br>Votre logo pose le décor.',
       upload_logo: 'Appuyez pour choisir un logo',
@@ -1688,7 +1737,7 @@
       island_kura: 'Sakagura', label_kura_name: 'Nome sakagura', ph_kura_name: 'es: Kyohime Shuzo',
       label_country: 'Paese', label_prefecture: 'Prefettura', ph_prefecture: 'es: Kyoto',
       label_region: 'Stato / Regione', ph_region: 'es: California',
-      label_brand: 'Marchio', ph_brand: 'es: Takumi',
+      label_brand: 'Marchio', ph_brand: 'es: Takumi', add_brand: 'Aggiungi marchio',
       island_images: 'Il volto della tua sakagura', label_logo: 'Logo della sakagura', label_image: 'Immagine etichetta',
       intro_images: 'Il primo sguardo del mondo sul tuo lavoro.<br>Il tuo logo prepara la scena.',
       upload_logo: 'Tocca per scegliere un logo',
@@ -1838,7 +1887,8 @@
     // Get fields by ID
     const kuraName = document.getElementById('kuraNameInput').value.trim() || '—';
     const address = document.getElementById('addressInput').value.trim();
-    const brandVal = (document.getElementById('brandInput') || {}).value ? document.getElementById('brandInput').value.trim() : '';
+    syncBrandInput();
+    const brandVal = getAllBrands().join(', ');
     const website = document.getElementById('websiteInput') ? document.getElementById('websiteInput').value.trim() : '';
     const email = document.getElementById('contactEmail') ? document.getElementById('contactEmail').value.trim() : '';
     const ig = document.getElementById('instagramInput') ? document.getElementById('instagramInput').value.trim() : '';
@@ -1871,6 +1921,59 @@
     } else {
       confirmLogo.innerHTML = '🏯';
     }
+  }
+
+  // Brand entry management
+  function addBrandEntry() {
+    const brandList = document.getElementById('brandList');
+    const entries = brandList.querySelectorAll('.brand-entry');
+    const idx = entries.length;
+    const t = i18n[currentLang] || i18n.ja;
+    const ph = t.ph_brand || '例: 匠';
+    const div = document.createElement('div');
+    div.className = 'brand-entry';
+    div.dataset.index = idx;
+    div.innerHTML = `<div style="display:flex; gap:8px; align-items:center;">
+      <input class="field-input brand-input" type="text" placeholder="${ph}" style="flex:1;">
+      <button type="button" class="remove-brand-btn" onclick="removeBrandEntry(this)" title="Remove">×</button>
+    </div>`;
+    brandList.appendChild(div);
+    div.querySelector('input').focus();
+    // Also show remove buttons on first entry if there are now 2+
+    updateBrandRemoveButtons();
+  }
+
+  function removeBrandEntry(btn) {
+    const entry = btn.closest('.brand-entry');
+    entry.remove();
+    updateBrandRemoveButtons();
+    syncBrandInput();
+  }
+
+  function updateBrandRemoveButtons() {
+    const entries = document.querySelectorAll('#brandList .brand-entry');
+    entries.forEach((entry, i) => {
+      entry.dataset.index = i;
+      const btn = entry.querySelector('.remove-brand-btn');
+      if (entries.length <= 1) {
+        // Only one brand: hide remove button
+        if (btn) btn.style.display = 'none';
+      } else {
+        if (btn) btn.style.display = 'flex';
+      }
+    });
+  }
+
+  function syncBrandInput() {
+    // Sync all brand inputs to the hidden legacy brandInput for backward compat
+    const inputs = document.querySelectorAll('#brandList .brand-input');
+    const brands = Array.from(inputs).map(i => i.value.trim()).filter(Boolean);
+    document.getElementById('brandInput').value = brands.join(', ');
+  }
+
+  function getAllBrands() {
+    const inputs = document.querySelectorAll('#brandList .brand-input');
+    return Array.from(inputs).map(i => i.value.trim()).filter(Boolean);
   }
 
   // Website URL validation
@@ -2191,30 +2294,21 @@
       types: ['establishment']
     });
 
-    // Style the autocomplete element to match our design
+    // Style the autocomplete element to match our field-input design
     placeAutocomplete.style.width = '100%';
-    placeAutocomplete.style.position = 'absolute';
-    placeAutocomplete.style.top = '0';
-    placeAutocomplete.style.left = '0';
-    placeAutocomplete.style.height = '100%';
-    placeAutocomplete.style.opacity = '1';
+    placeAutocomplete.style.display = 'block';
 
-    // Wrap existing input: make parent relative, overlay the autocomplete
+    // Replace original input with autocomplete element
     const wrapper = kuraInput.parentElement;
-    wrapper.style.position = 'relative';
-
-    // Hide original input but keep it for form data
     kuraInput.style.display = 'none';
-
-    // Insert autocomplete element
     wrapper.appendChild(placeAutocomplete);
 
-    // Style the inner input of PlaceAutocompleteElement
+    // Style the inner input of PlaceAutocompleteElement to match field-input
     requestAnimationFrame(() => {
       const innerInput = placeAutocomplete.querySelector('input') || placeAutocomplete.shadowRoot?.querySelector('input');
       if (innerInput) {
         innerInput.placeholder = kuraInput.placeholder || '例: 京姫酒造';
-        innerInput.style.cssText = 'width:100%;padding:14px 16px;border:1.5px solid #ddd;border-radius:10px;font-size:15px;background:#fff;box-sizing:border-box;font-family:inherit;';
+        innerInput.style.cssText = 'width:100%;padding:14px 16px;border:none;border-radius:10px;font-size:16px;background:transparent;box-sizing:border-box;font-family:inherit;outline:none;';
       }
     });
 
