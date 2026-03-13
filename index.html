@@ -8,35 +8,36 @@
   @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+JP:wght@300;400;500;600;700&display=swap');
 
   :root {
-    --bg: #F7F7F5;
-    --bg-warm: #F2F1EF;
+    --bg: #FFFFFF;
+    --bg-warm: #FAFAFA;
     --bg-card: #FFFFFF;
-    --text-primary: #1a1a1a;
-    --text-secondary: #6b6b6b;
-    --text-tertiary: #999999;
-    --accent: #C4704B;
-    --accent-light: #F0DDD4;
-    --accent-hover: #A85D3B;
-    --border: #E5E5E3;
-    --border-light: #EEEEEC;
-    --success: #5B8A5E;
-    --shadow-sm: 0 1px 3px rgba(0,0,0,0.03);
-    --shadow-md: 0 4px 12px rgba(0,0,0,0.05);
-    --shadow-lg: 0 8px 30px rgba(0,0,0,0.07);
-    --radius: 14px;
-    --radius-sm: 10px;
+    --text-primary: #0D0D0D;
+    --text-secondary: #6B6B6B;
+    --text-tertiary: #9B9B9B;
+    --accent: #E05A33;
+    --accent-light: #FFF0EB;
+    --accent-hover: #C7462A;
+    --border: #E8E8E8;
+    --border-light: #F2F2F2;
+    --success: #2D8A4E;
+    --shadow-sm: 0 1px 2px rgba(0,0,0,0.04);
+    --shadow-md: 0 2px 8px rgba(0,0,0,0.06);
+    --shadow-lg: 0 4px 16px rgba(0,0,0,0.08);
+    --radius: 12px;
+    --radius-sm: 8px;
     --radius-xs: 6px;
-    --transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
   * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 
   body {
-    font-family: 'Noto Sans JP', 'Inter', -apple-system, sans-serif;
-    background: #2a2a2a;
+    font-family: 'Inter', 'Noto Sans JP', -apple-system, sans-serif;
+    background: #1A1A1A;
     color: var(--text-primary);
     line-height: 1.6;
     overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
   }
 
   /* ============ MODE SWITCHER ============ */
@@ -55,25 +56,25 @@
     font-size: 12px; cursor: pointer; transition: var(--transition);
     font-family: inherit; font-weight: 500;
   }
-  .mode-btn.active { background: var(--accent); border-color: var(--accent); }
+  .mode-btn.active { background: var(--accent); border-color: var(--accent); color: white; }
 
   /* ============ PHONE FRAME ============ */
   .phone-frame {
     max-width: 430px; margin: 70px auto 40px;
-    background: var(--bg); min-height: 100vh; position: relative;
+    background: #FAFAFA; min-height: 100vh; position: relative;
   }
 
   /* ============ ISLAND CARDS ============ */
   .island {
     background: var(--bg-card);
     border-radius: var(--radius);
-    padding: 20px;
+    padding: 22px 20px;
     margin-bottom: 10px;
-    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--border);
   }
   .island-title {
-    font-size: 11px; color: var(--text-tertiary);
-    text-transform: uppercase; letter-spacing: 1.2px;
+    font-size: 11px; color: var(--accent);
+    text-transform: uppercase; letter-spacing: 1.5px;
     font-weight: 600; margin-bottom: 16px;
   }
 
@@ -83,14 +84,14 @@
 
   .wizard-header {
     position: sticky; top: 44px; z-index: 100;
-    background: rgba(247,247,245,0.92);
+    background: rgba(250,250,250,0.95);
     backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
     padding: 16px 20px 12px;
     border-bottom: 1px solid var(--border);
   }
-  .wizard-progress { display: flex; gap: 4px; margin-bottom: 12px; }
+  .wizard-progress { display: flex; gap: 3px; margin-bottom: 12px; }
   .wizard-progress-dot {
-    flex: 1; height: 3px; border-radius: 2px;
+    flex: 1; height: 2px; border-radius: 1px;
     background: var(--border); transition: var(--transition);
   }
   .wizard-progress-dot.done { background: var(--success); }
@@ -101,7 +102,7 @@
     text-transform: uppercase; letter-spacing: 1px; font-weight: 500;
   }
   .wizard-step-title {
-    font-size: 22px; font-weight: 600; margin-top: 2px;
+    font-size: 24px; font-weight: 700; margin-top: 2px; letter-spacing: -0.5px;
   }
   .wizard-body { padding: 20px 16px 120px; }
   .wizard-intro {
@@ -117,34 +118,34 @@
   }
   .field-label .optional {
     font-size: 10px; color: var(--text-tertiary);
-    background: var(--bg); padding: 2px 8px; border-radius: 10px; font-weight: 400;
+    background: var(--bg-warm); padding: 2px 8px; border-radius: 10px; font-weight: 400;
   }
   .field-input {
-    width: 100%; padding: 14px 16px;
-    border: 1.5px solid var(--border); border-radius: var(--radius-sm);
-    font-size: 16px; font-family: inherit;
+    width: 100%; padding: 12px 14px;
+    border: 1px solid var(--border); border-radius: var(--radius-sm);
+    font-size: 15px; font-family: inherit;
     background: var(--bg-card); color: var(--text-primary);
     transition: var(--transition); -webkit-appearance: none;
   }
   .field-input:focus {
-    outline: none; border-color: var(--accent);
-    box-shadow: 0 0 0 3px rgba(196,112,75,0.08);
+    outline: none; border-color: var(--text-primary);
+    box-shadow: 0 0 0 1px var(--text-primary);
   }
-  .field-input::placeholder { color: #ccc; }
+  .field-input::placeholder { color: #C4C4C4; }
 
   /* Google Places Autocomplete override to match field-input style */
   .field-group gmp-place-autocomplete {
     width: 100% !important;
-    border: 1.5px solid var(--border) !important;
+    border: 1px solid var(--border) !important;
     border-radius: var(--radius-sm) !important;
-    font-size: 16px !important;
+    font-size: 15px !important;
     font-family: inherit !important;
     background: var(--bg-card) !important;
     overflow: visible;
   }
   .field-group gmp-place-autocomplete:focus-within {
-    border-color: var(--accent) !important;
-    box-shadow: 0 0 0 3px rgba(196,112,75,0.08) !important;
+    border-color: var(--text-primary) !important;
+    box-shadow: 0 0 0 1px var(--text-primary) !important;
   }
   .address-prefilled {
     border-color: var(--success) !important;
@@ -152,7 +153,7 @@
   }
 
   /* Brand entries */
-  .brand-entry { margin-bottom: 14px; padding: 14px; background: var(--bg); border-radius: var(--radius-sm); border: 1px solid var(--border-light); }
+  .brand-entry { margin-bottom: 12px; padding: 14px; background: var(--bg-warm); border-radius: var(--radius-sm); border: 1px solid var(--border); }
   .brand-entry .brand-top-row { display: flex; gap: 8px; align-items: center; }
   .brand-entry .remove-brand-btn {
     width: 36px; height: 36px; border-radius: 50%; border: 1px solid var(--border);
@@ -193,7 +194,7 @@
     cursor: pointer; transition: var(--transition); width: 100%; justify-content: center;
     margin-top: 4px;
   }
-  .add-brand-btn:hover { border-color: var(--accent); color: var(--accent); background: rgba(196,112,75,0.03); }
+  .add-brand-btn:hover { border-color: var(--text-primary); color: var(--text-primary); background: rgba(0,0,0,0.02); }
 
   .field-input-with-icon { position: relative; }
   .field-input-with-icon .field-input { padding-left: 44px; }
@@ -340,11 +341,9 @@
     50% { transform: translateY(-8px); }
   }
   .cinema-tagline {
-    font-size: 28px; font-weight: 700; letter-spacing: -0.8px;
-    line-height: 1.3; margin-bottom: 12px;
-    background: linear-gradient(135deg, var(--text-primary) 0%, var(--accent) 100%);
-    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-    background-clip: text;
+    font-size: 30px; font-weight: 800; letter-spacing: -1px;
+    line-height: 1.2; margin-bottom: 14px;
+    color: var(--text-primary);
   }
   .cinema-sub {
     font-size: 14px; color: var(--text-secondary);
@@ -356,17 +355,16 @@
   }
   .cinema-lang {
     display: flex; align-items: center; gap: 8px;
-    padding: 12px 20px; border-radius: 28px;
-    background: var(--bg-card); border: 2px solid var(--border);
+    padding: 10px 18px; border-radius: 100px;
+    background: var(--bg-card); border: 1px solid var(--border);
     cursor: pointer; transition: var(--transition);
-    font-size: 15px; font-weight: 500; color: var(--text-secondary);
-    user-select: none; box-shadow: var(--shadow-sm);
+    font-size: 14px; font-weight: 500; color: var(--text-secondary);
+    user-select: none;
   }
   .cinema-lang:active { transform: scale(0.95); }
   .cinema-lang.selected {
-    border-color: var(--accent); background: white;
-    color: var(--accent); font-weight: 600;
-    box-shadow: 0 2px 12px rgba(196,112,75,0.15);
+    border-color: var(--text-primary); background: var(--text-primary);
+    color: white; font-weight: 600;
   }
   .cinema-lang .lang-flag { font-size: 20px; }
 
@@ -378,13 +376,13 @@
     padding: 32px 20px 60px; text-align: center;
   }
   .fomo-claim {
-    font-size: 13px; font-weight: 600; letter-spacing: 3px;
+    font-size: 12px; font-weight: 600; letter-spacing: 3px;
     text-transform: uppercase; color: var(--accent);
-    margin-bottom: 20px;
+    margin-bottom: 16px;
   }
   .fomo-headline {
-    font-size: 24px; font-weight: 700; letter-spacing: -0.5px;
-    line-height: 1.35; margin-bottom: 32px;
+    font-size: 26px; font-weight: 800; letter-spacing: -0.8px;
+    line-height: 1.25; margin-bottom: 32px; color: var(--text-primary);
   }
   .fomo-features {
     display: flex; flex-direction: column; gap: 0;
@@ -405,14 +403,14 @@
     to { opacity: 1; transform: translateY(0); }
   }
   .fomo-feat-icon {
-    width: 44px; height: 44px; border-radius: 12px;
+    width: 40px; height: 40px; border-radius: 10px;
     display: flex; align-items: center; justify-content: center;
-    font-size: 22px; flex-shrink: 0;
-    background: var(--bg);
+    font-size: 20px; flex-shrink: 0;
+    background: var(--bg-warm); border: 1px solid var(--border);
   }
   .fomo-feat-text { flex: 1; }
-  .fomo-feat-title { font-size: 15px; font-weight: 600; margin-bottom: 3px; }
-  .fomo-feat-desc { font-size: 12px; color: var(--text-tertiary); line-height: 1.5; }
+  .fomo-feat-title { font-size: 14px; font-weight: 700; margin-bottom: 4px; color: var(--text-primary); }
+  .fomo-feat-desc { font-size: 12px; color: var(--text-tertiary); line-height: 1.55; }
   .fomo-footnote {
     margin-top: 28px; font-size: 11px; color: var(--text-tertiary);
     font-style: italic; letter-spacing: 0.3px;
@@ -421,16 +419,15 @@
   /* Cinema CTA */
   .cinema-cta {
     display: inline-flex; align-items: center; gap: 8px;
-    margin-top: 36px; padding: 16px 40px;
-    background: var(--accent); color: white;
-    border: none; border-radius: 28px;
-    font-size: 16px; font-weight: 600; font-family: inherit;
+    margin-top: 36px; padding: 14px 36px;
+    background: var(--text-primary); color: white;
+    border: none; border-radius: 100px;
+    font-size: 15px; font-weight: 600; font-family: inherit;
     cursor: pointer; transition: var(--transition);
-    box-shadow: 0 4px 20px rgba(196,112,75,0.25);
-    letter-spacing: 0.3px;
+    letter-spacing: 0.2px;
   }
-  .cinema-cta:active { transform: scale(0.96); box-shadow: 0 2px 10px rgba(196,112,75,0.2); }
-  .cinema-cta .cta-arrow { font-size: 18px; transition: transform 0.2s ease; }
+  .cinema-cta:active { transform: scale(0.97); }
+  .cinema-cta .cta-arrow { font-size: 16px; transition: transform 0.2s ease; }
   .cinema-cta:hover .cta-arrow { transform: translateX(3px); }
 
   .wizard-nav {
@@ -443,13 +440,13 @@
     display: flex; flex-direction: column; gap: 0;
   }
   .btn {
-    flex: 1; padding: 16px; border: none; border-radius: var(--radius-sm);
-    font-size: 15px; font-weight: 600; font-family: inherit; cursor: pointer;
+    flex: 1; padding: 14px; border: none; border-radius: 100px;
+    font-size: 14px; font-weight: 600; font-family: inherit; cursor: pointer;
     transition: var(--transition);
   }
   .btn:active { transform: scale(0.97); }
-  .btn-secondary { background: var(--bg-card); color: var(--text-secondary); border: 1.5px solid var(--border); }
-  .btn-primary { background: var(--accent); color: white; }
+  .btn-secondary { background: var(--bg-card); color: var(--text-secondary); border: 1px solid var(--border); }
+  .btn-primary { background: var(--text-primary); color: white; }
   .autosave-badge {
     display: flex; align-items: center; justify-content: center; gap: 6px;
     padding: 6px 0 2px; font-size: 11px; color: var(--text-tertiary);
@@ -494,7 +491,7 @@
   }
   .ts-tag {
     font-size: 11px; color: var(--accent);
-    background: rgba(196,112,75,0.06);
+    background: var(--accent-light);
     padding: 5px 14px; border-radius: 14px; font-weight: 500;
   }
 
@@ -735,8 +732,8 @@
     }
     .btn { padding: 14px 24px; font-size: 15px; border-radius: 10px; }
     .btn:hover { opacity: 0.9; }
-    .btn-secondary:hover { background: var(--bg); }
-    .btn-primary:hover { background: var(--accent-hover); }
+    .btn-secondary:hover { background: var(--bg-warm); }
+    .btn-primary:hover { background: #333; }
 
     /* ---- Cinema pages ---- */
     .cinema-page {
@@ -744,25 +741,25 @@
       padding: 60px 40px 80px;
     }
     .cinema-page .cinema-emoji { font-size: 72px; margin-bottom: 32px; }
-    .cinema-tagline { font-size: 42px; letter-spacing: -1.2px; max-width: 500px; }
+    .cinema-tagline { font-size: 46px; letter-spacing: -1.5px; max-width: 500px; }
     .cinema-sub { font-size: 16px; max-width: 380px; }
-    .cinema-lang-row { gap: 12px; margin-top: 40px; }
-    .cinema-lang { padding: 14px 28px; font-size: 16px; border-radius: 30px; }
-    .cinema-lang:hover { border-color: #ccc; box-shadow: var(--shadow-md); }
-    .cinema-cta { padding: 18px 52px; font-size: 17px; border-radius: 32px; margin-top: 44px; }
-    .cinema-cta:hover { background: var(--accent-hover); box-shadow: 0 6px 28px rgba(196,112,75,0.3); }
+    .cinema-lang-row { gap: 10px; margin-top: 40px; }
+    .cinema-lang { padding: 12px 24px; font-size: 15px; }
+    .cinema-lang:hover { border-color: var(--text-primary); }
+    .cinema-cta { padding: 16px 44px; font-size: 16px; margin-top: 44px; }
+    .cinema-cta:hover { background: #333; }
 
     /* ---- FOMO page ---- */
     .fomo-page {
       min-height: calc(100vh - 120px);
       padding: 60px 40px 80px;
     }
-    .fomo-claim { font-size: 14px; letter-spacing: 4px; }
-    .fomo-headline { font-size: 34px; }
+    .fomo-claim { font-size: 13px; letter-spacing: 4px; }
+    .fomo-headline { font-size: 36px; letter-spacing: -1px; }
     .fomo-features { max-width: 480px; }
-    .fomo-feat { padding: 22px 0; }
-    .fomo-feat-icon { width: 52px; height: 52px; border-radius: 14px; font-size: 24px; }
-    .fomo-feat-title { font-size: 16px; }
+    .fomo-feat { padding: 20px 0; }
+    .fomo-feat-icon { width: 48px; height: 48px; border-radius: 12px; font-size: 22px; }
+    .fomo-feat-title { font-size: 15px; }
     .fomo-feat-desc { font-size: 13px; }
 
     /* ---- Add sake page ---- */
