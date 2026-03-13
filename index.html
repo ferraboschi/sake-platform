@@ -152,14 +152,39 @@
   }
 
   /* Brand entries */
-  .brand-entry { margin-bottom: 8px; }
+  .brand-entry { margin-bottom: 14px; padding: 14px; background: var(--bg); border-radius: var(--radius-sm); border: 1px solid var(--border-light); }
+  .brand-entry .brand-top-row { display: flex; gap: 8px; align-items: center; }
   .brand-entry .remove-brand-btn {
     width: 36px; height: 36px; border-radius: 50%; border: 1px solid var(--border);
-    background: var(--bg); color: var(--text-tertiary); font-size: 18px;
+    background: var(--bg-card); color: var(--text-tertiary); font-size: 18px;
     cursor: pointer; display: flex; align-items: center; justify-content: center;
     transition: var(--transition); flex-shrink: 0;
   }
   .brand-entry .remove-brand-btn:hover { background: #f5e6e0; color: #c0392b; border-color: #e0b4b4; }
+  /* Brand logo upload - compact inline */
+  .brand-logo-area { margin-top: 10px; }
+  .brand-logo-upload {
+    display: flex; align-items: center; gap: 10px;
+    padding: 10px 14px; border: 1.5px dashed var(--border); border-radius: var(--radius-xs);
+    cursor: pointer; transition: var(--transition); background: var(--bg-card);
+  }
+  .brand-logo-upload:hover { border-color: var(--accent); }
+  .brand-logo-upload.has-file { border-style: solid; border-color: var(--success); background: rgba(91,138,94,0.03); }
+  .brand-logo-upload .brand-logo-icon { font-size: 20px; color: var(--text-tertiary); flex-shrink: 0; }
+  .brand-logo-upload .brand-logo-text { font-size: 12px; color: var(--text-tertiary); flex: 1; }
+  .brand-logo-upload .brand-logo-hint { font-size: 10px; color: #ccc; }
+  .brand-logo-upload.has-file .brand-logo-icon { display: none; }
+  .brand-logo-upload.has-file .brand-logo-hint { display: none; }
+  .brand-logo-upload.has-file .brand-logo-text { color: var(--success); font-weight: 500; }
+  .brand-logo-thumb { width: 40px; height: 40px; border-radius: 8px; object-fit: contain; border: 1px solid #e0d5c7; flex-shrink: 0; display: none; }
+  .brand-logo-upload.has-file .brand-logo-thumb { display: block; }
+  .brand-logo-warning {
+    display: none; align-items: center; gap: 5px; margin-top: 6px;
+    font-size: 11px; padding: 6px 10px; border-radius: var(--radius-xs);
+    background: #FFF8E7; color: #B8860B; border: 1px solid #F0DCC0;
+  }
+  .brand-logo-warning.show { display: flex; }
+  .brand-logo-warning .warning-icon { flex-shrink: 0; }
   .add-brand-btn {
     display: inline-flex; align-items: center; gap: 6px;
     background: none; border: 1.5px dashed var(--border);
@@ -981,39 +1006,37 @@
             <input type="text" id="regionInput">
             <div id="regionGroup"></div>
           </div>
+          </div>
+        </div>
+        <div class="island">
+          <div class="island-title" data-i18n="island_images">蔵元の顔</div>
+          <div class="wizard-intro" style="margin-bottom:14px; font-size:13px;" data-i18n="intro_images">世界があなたの蔵を初めて見る瞬間。<br>ブランドとロゴで、第一印象を届けましょう。</div>
           <div class="field-group">
             <div class="field-label"><span data-i18n="label_brand">ブランド名</span></div>
             <div id="brandList">
               <div class="brand-entry" data-index="0">
-                <div style="display:flex; gap:8px; align-items:center;">
+                <div class="brand-top-row">
                   <input class="field-input brand-input" type="text" data-i18n-ph="ph_brand" placeholder="例: 匠" style="flex:1;">
                   <button type="button" class="remove-brand-btn" onclick="removeBrandEntry(this)" title="Remove" style="display:none;">×</button>
+                </div>
+                <div class="brand-logo-area">
+                  <label class="brand-logo-upload" onclick="this.querySelector('input[type=file]').click()">
+                    <img class="brand-logo-thumb" src="" alt="">
+                    <span class="brand-logo-icon">🏷️</span>
+                    <div>
+                      <div class="brand-logo-text" data-i18n="upload_brand_logo">ロゴを追加（任意）</div>
+                      <div class="brand-logo-hint" data-i18n="upload_hint_logo">PNG・SVG推奨 — 透過背景が最適</div>
+                    </div>
+                    <input type="file" accept="image/png,image/svg+xml,image/jpeg,image/webp" style="display:none;" onchange="handleBrandLogo(this)">
+                  </label>
+                  <div class="brand-logo-warning"></div>
                 </div>
               </div>
             </div>
             <button type="button" class="add-brand-btn" onclick="addBrandEntry()">
               <span>＋</span> <span data-i18n="add_brand">ブランドを追加</span>
             </button>
-            <!-- Hidden legacy input for backward compat -->
             <input type="hidden" id="brandInput">
-          </div>
-        </div>
-        <div class="island">
-          <div class="island-title" data-i18n="island_images">蔵元の顔</div>
-          <div class="wizard-intro" style="margin-bottom:14px; font-size:13px;" data-i18n="intro_images">世界があなたの蔵を初めて見る瞬間。<br>ロゴで、第一印象を届けましょう。</div>
-          <div class="field-group">
-            <div class="field-label"><span data-i18n="label_logo">蔵元ロゴ</span> <span class="optional" data-i18n="optional">任意</span></div>
-            <label class="image-upload" for="logoFile">
-              <img class="logo-thumb" id="logoThumb" src="" alt="">
-              <div class="upload-icon">🏷️</div>
-              <div class="upload-text" data-i18n="upload_logo">タップしてロゴを選択</div>
-              <div class="upload-hint" data-i18n="upload_hint_logo">PNG・SVG推奨 — 透過背景が最適</div>
-            </label>
-            <input type="file" id="logoFile" accept="image/*" style="display:none;" onchange="handleImageUpload(this, 'logo')">
-            <div class="ai-quality-badge" id="logoAiBadge" style="display:none;">
-              <span class="ai-badge-icon">✨</span>
-              <span class="ai-badge-text" data-i18n="ai_checking">AI が画質を確認中...</span>
-            </div>
           </div>
         </div>
         <div class="island">
@@ -1036,15 +1059,15 @@
               <input class="field-input" type="email" inputmode="email" id="contactEmail" data-i18n-ph="ph_email" placeholder="例: info@kyohime.co.jp">
             </div>
             <div class="field-group">
+              <div class="field-label"><span data-i18n="label_contact_name">担当者名</span> <span class="optional" data-i18n="optional">任意</span></div>
+              <input class="field-input" type="text" id="contactNameInput" data-i18n-ph="ph_contact_name" placeholder="例: 山田太郎">
+            </div>
+            <div class="field-group">
               <div class="field-label"><span data-i18n="label_instagram">Instagram</span> <span class="optional" data-i18n="optional">任意</span></div>
               <div class="ig-prefix">
                 <span class="ig-at">@</span>
                 <input class="field-input" type="text" id="instagramInput" data-i18n-ph="ph_instagram" placeholder="例: kyohime_shuzo">
               </div>
-            </div>
-            <div class="field-group">
-              <div class="field-label"><span data-i18n="label_contact_name">担当者名</span> <span class="optional" data-i18n="optional">任意</span></div>
-              <input class="field-input" type="text" id="contactNameInput" data-i18n-ph="ph_contact_name" placeholder="例: 山田太郎">
             </div>
           </div>
         </div>
@@ -1520,9 +1543,11 @@
       label_region: '州 / 地域', ph_region: '例: カリフォルニア州',
       label_brand: 'ブランド名', ph_brand: '例: 匠', add_brand: 'ブランドを追加',
       island_images: '蔵元の顔', label_logo: '蔵元ロゴ', label_image: 'ラベル画像',
-      intro_images: '世界があなたの蔵を初めて見る瞬間。<br>ロゴで、第一印象を届けましょう。',
+      intro_images: '世界があなたの蔵を初めて見る瞬間。<br>ブランドとロゴで、第一印象を届けましょう。',
       upload_logo: 'タップしてロゴを選択',
+      upload_brand_logo: 'ロゴを追加（任意）',
       upload_hint_logo: 'PNG・SVG推奨 — 透過背景が最適',
+      logo_bg_warning: '背景が透過またはベクターでないようです。透過PNG・SVG・白背景を推奨します。',
       ai_checking: 'AI が画質を確認中...', ai_good: '画質: 良好', ai_warning: '低解像度 — より高画質な画像をご検討ください',
       ai_low_res: '解像度が低めです（{w}×{h}px）— 200×200px以上を推奨',
       ai_bg_warning: '背景が単色です — 透過PNG推奨',
@@ -1592,9 +1617,11 @@
       label_region: 'State / Region', ph_region: 'e.g. California',
       label_brand: 'Brand name', ph_brand: 'e.g. Takumi', add_brand: 'Add brand',
       island_images: 'The face of your sakagura', label_logo: 'Sakagura logo', label_image: 'Label image',
-      intro_images: 'The world\'s first glimpse of your craft.<br>Your logo sets the stage.',
+      intro_images: 'The world\'s first glimpse of your craft.<br>Your brands and logos set the stage.',
       upload_logo: 'Tap to select logo',
+      upload_brand_logo: 'Add logo (optional)',
       upload_hint_logo: 'PNG or SVG recommended — transparent bg is best',
+      logo_bg_warning: 'Background doesn\'t appear transparent or white. We recommend transparent PNG, SVG, or white background.',
       ai_checking: 'AI verifying image quality...',
       ai_good: 'Image quality: Good',
       ai_warning: 'Low resolution — consider a higher quality image',
@@ -1666,9 +1693,11 @@
       label_region: 'État / Région', ph_region: 'ex: Californie',
       label_brand: 'Marque', ph_brand: 'ex: Takumi', add_brand: 'Ajouter une marque',
       island_images: 'Le visage de votre sakagura', label_logo: 'Logo de la sakagura', label_image: 'Image étiquette',
-      intro_images: 'Le premier regard du monde sur votre savoir-faire.<br>Votre logo pose le décor.',
+      intro_images: 'Le premier regard du monde sur votre savoir-faire.<br>Vos marques et logos posent le décor.',
       upload_logo: 'Appuyez pour choisir un logo',
+      upload_brand_logo: 'Ajouter un logo (facultatif)',
       upload_hint_logo: 'PNG ou SVG recommandé — fond transparent idéal',
+      logo_bg_warning: 'Le fond ne semble pas transparent ou blanc. Nous recommandons un PNG transparent, SVG ou fond blanc.',
       ai_checking: 'IA vérifie la qualité de l\'image...',
       ai_good: 'Qualité image : Bonne',
       ai_warning: 'Basse résolution — envisagez une image de meilleure qualité',
@@ -1740,9 +1769,11 @@
       label_region: 'Stato / Regione', ph_region: 'es: California',
       label_brand: 'Marchio', ph_brand: 'es: Takumi', add_brand: 'Aggiungi marchio',
       island_images: 'Il volto della tua sakagura', label_logo: 'Logo della sakagura', label_image: 'Immagine etichetta',
-      intro_images: 'Il primo sguardo del mondo sul tuo lavoro.<br>Il tuo logo prepara la scena.',
+      intro_images: 'Il primo sguardo del mondo sul tuo lavoro.<br>I tuoi brand e loghi preparano la scena.',
       upload_logo: 'Tocca per scegliere un logo',
+      upload_brand_logo: 'Aggiungi logo (facoltativo)',
       upload_hint_logo: 'PNG o SVG consigliato — sfondo trasparente ideale',
+      logo_bg_warning: 'Lo sfondo non sembra trasparente o bianco. Consigliamo PNG trasparente, SVG o sfondo bianco.',
       ai_checking: 'IA verifica la qualità dell\'immagine...',
       ai_good: 'Qualità immagine: Buona',
       ai_warning: 'Bassa risoluzione — considera un\'immagine di qualità superiore',
@@ -1910,15 +1941,11 @@
     setRow('confirmInstagram', ig ? '@' + ig : '');
     setRow('confirmContact', contactName);
 
-    // Logo preview
-    const logoInput = document.getElementById('logoFile');
+    // Logo preview — use first brand logo if available
     const confirmLogo = document.getElementById('confirmLogo');
-    if (logoInput && logoInput.files && logoInput.files[0]) {
-      const reader = new FileReader();
-      reader.onload = e => {
-        confirmLogo.innerHTML = '<img src="'+e.target.result+'" style="width:100%;height:100%;object-fit:cover;border-radius:16px;">';
-      };
-      reader.readAsDataURL(logoInput.files[0]);
+    const firstBrandLogo = document.querySelector('#brandList .brand-entry .brand-logo-upload.has-file .brand-logo-thumb');
+    if (firstBrandLogo && firstBrandLogo.src) {
+      confirmLogo.innerHTML = '<img src="'+firstBrandLogo.src+'" style="width:100%;height:100%;object-fit:contain;border-radius:16px;">';
     } else {
       confirmLogo.innerHTML = '🏯';
     }
@@ -1931,16 +1958,29 @@
     const idx = entries.length;
     const t = i18n[currentLang] || i18n.ja;
     const ph = t.ph_brand || '例: 匠';
+    const logoText = t.upload_brand_logo || 'ロゴを追加（任意）';
+    const logoHint = t.upload_hint_logo || 'PNG・SVG推奨 — 透過背景が最適';
     const div = document.createElement('div');
     div.className = 'brand-entry';
     div.dataset.index = idx;
-    div.innerHTML = `<div style="display:flex; gap:8px; align-items:center;">
+    div.innerHTML = `<div class="brand-top-row">
       <input class="field-input brand-input" type="text" placeholder="${ph}" style="flex:1;">
       <button type="button" class="remove-brand-btn" onclick="removeBrandEntry(this)" title="Remove">×</button>
+    </div>
+    <div class="brand-logo-area">
+      <label class="brand-logo-upload" onclick="this.querySelector('input[type=file]').click()">
+        <img class="brand-logo-thumb" src="" alt="">
+        <span class="brand-logo-icon">🏷️</span>
+        <div>
+          <div class="brand-logo-text">${logoText}</div>
+          <div class="brand-logo-hint">${logoHint}</div>
+        </div>
+        <input type="file" accept="image/png,image/svg+xml,image/jpeg,image/webp" style="display:none;" onchange="handleBrandLogo(this)">
+      </label>
+      <div class="brand-logo-warning"></div>
     </div>`;
     brandList.appendChild(div);
     div.querySelector('input').focus();
-    // Also show remove buttons on first entry if there are now 2+
     updateBrandRemoveButtons();
   }
 
@@ -1957,7 +1997,6 @@
       entry.dataset.index = i;
       const btn = entry.querySelector('.remove-brand-btn');
       if (entries.length <= 1) {
-        // Only one brand: hide remove button
         if (btn) btn.style.display = 'none';
       } else {
         if (btn) btn.style.display = 'flex';
@@ -1966,7 +2005,6 @@
   }
 
   function syncBrandInput() {
-    // Sync all brand inputs to the hidden legacy brandInput for backward compat
     const inputs = document.querySelectorAll('#brandList .brand-input');
     const brands = Array.from(inputs).map(i => i.value.trim()).filter(Boolean);
     document.getElementById('brandInput').value = brands.join(', ');
@@ -1975,6 +2013,44 @@
   function getAllBrands() {
     const inputs = document.querySelectorAll('#brandList .brand-input');
     return Array.from(inputs).map(i => i.value.trim()).filter(Boolean);
+  }
+
+  // Handle brand logo upload with background check
+  function handleBrandLogo(input) {
+    if (!input.files || !input.files[0]) return;
+    const file = input.files[0];
+    const label = input.closest('.brand-logo-upload');
+    const warningDiv = label.parentElement.querySelector('.brand-logo-warning');
+    const thumb = label.querySelector('.brand-logo-thumb');
+    const t = i18n[currentLang] || i18n.ja;
+
+    // Show thumbnail
+    label.classList.add('has-file');
+    const textEl = label.querySelector('.brand-logo-text');
+    textEl.textContent = file.name.length > 20 ? file.name.substring(0, 17) + '...' : file.name;
+
+    const reader = new FileReader();
+    reader.onload = e => { thumb.src = e.target.result; };
+    reader.readAsDataURL(file);
+
+    // Analyze background
+    analyzeImage(file).then(result => {
+      if (result.width === 0 && result.height === 0) return;
+
+      // Check if background is NOT transparent AND NOT white
+      const isWhiteBg = result.hasSolidBg && result.avgEdgeColor &&
+        result.avgEdgeColor[0] > 240 && result.avgEdgeColor[1] > 240 && result.avgEdgeColor[2] > 240;
+      const isOk = result.hasTransparency || isWhiteBg;
+
+      if (!isOk && result.hasSolidBg) {
+        warningDiv.innerHTML = '<span class="warning-icon">⚠</span> <span>' +
+          (t.logo_bg_warning || '背景が透過またはベクターでないようです。透過PNG・SVG・白背景を推奨します。') + '</span>';
+        warningDiv.classList.add('show');
+      } else {
+        warningDiv.classList.remove('show');
+        warningDiv.innerHTML = '';
+      }
+    });
   }
 
   // Website URL validation
@@ -2272,7 +2348,7 @@
         const hasSolidBg = variance < 300;
 
         URL.revokeObjectURL(url);
-        resolve({ width: w, height: h, hasTransparency, hasSolidBg });
+        resolve({ width: w, height: h, hasTransparency, hasSolidBg, avgEdgeColor: [avgR, avgG, avgB] });
       };
       img.onerror = () => {
         URL.revokeObjectURL(url);
