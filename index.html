@@ -1,0 +1,2325 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sake Platform — Prototype</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+JP:wght@300;400;500;600;700&display=swap');
+
+  :root {
+    --bg: #F7F7F5;
+    --bg-warm: #F2F1EF;
+    --bg-card: #FFFFFF;
+    --text-primary: #1a1a1a;
+    --text-secondary: #6b6b6b;
+    --text-tertiary: #999999;
+    --accent: #C4704B;
+    --accent-light: #F0DDD4;
+    --accent-hover: #A85D3B;
+    --border: #E5E5E3;
+    --border-light: #EEEEEC;
+    --success: #5B8A5E;
+    --shadow-sm: 0 1px 3px rgba(0,0,0,0.03);
+    --shadow-md: 0 4px 12px rgba(0,0,0,0.05);
+    --shadow-lg: 0 8px 30px rgba(0,0,0,0.07);
+    --radius: 14px;
+    --radius-sm: 10px;
+    --radius-xs: 6px;
+    --transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+  body {
+    font-family: 'Noto Sans JP', 'Inter', -apple-system, sans-serif;
+    background: #2a2a2a;
+    color: var(--text-primary);
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
+
+  /* ============ MODE SWITCHER ============ */
+  .prototype-bar {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+    background: #111; color: white;
+    display: flex; align-items: center; justify-content: center;
+    padding: 10px 16px; gap: 8px;
+    font-size: 12px; letter-spacing: 0.5px;
+  }
+  .prototype-bar span { opacity: 0.4; text-transform: uppercase; font-weight: 500; }
+  .mode-btn {
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.15);
+    color: white; padding: 6px 16px; border-radius: 20px;
+    font-size: 12px; cursor: pointer; transition: var(--transition);
+    font-family: inherit; font-weight: 500;
+  }
+  .mode-btn.active { background: var(--accent); border-color: var(--accent); }
+
+  /* ============ PHONE FRAME ============ */
+  .phone-frame {
+    max-width: 430px; margin: 70px auto 40px;
+    background: var(--bg); min-height: 100vh; position: relative;
+  }
+
+  /* ============ ISLAND CARDS ============ */
+  .island {
+    background: var(--bg-card);
+    border-radius: var(--radius);
+    padding: 20px;
+    margin-bottom: 10px;
+    box-shadow: var(--shadow-sm);
+  }
+  .island-title {
+    font-size: 11px; color: var(--text-tertiary);
+    text-transform: uppercase; letter-spacing: 1.2px;
+    font-weight: 600; margin-bottom: 16px;
+  }
+
+  /* ============ WIZARD ============ */
+  .wizard { display: none; }
+  .wizard.active { display: block; }
+
+  .wizard-header {
+    position: sticky; top: 44px; z-index: 100;
+    background: rgba(247,247,245,0.92);
+    backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+    padding: 16px 20px 12px;
+    border-bottom: 1px solid var(--border);
+  }
+  .wizard-progress { display: flex; gap: 4px; margin-bottom: 12px; }
+  .wizard-progress-dot {
+    flex: 1; height: 3px; border-radius: 2px;
+    background: var(--border); transition: var(--transition);
+  }
+  .wizard-progress-dot.done { background: var(--success); }
+  .wizard-progress-dot.current { background: var(--accent); }
+
+  .wizard-step-label {
+    font-size: 11px; color: var(--text-tertiary);
+    text-transform: uppercase; letter-spacing: 1px; font-weight: 500;
+  }
+  .wizard-step-title {
+    font-size: 22px; font-weight: 600; margin-top: 2px;
+  }
+  .wizard-body { padding: 20px 16px 120px; }
+  .wizard-intro {
+    font-size: 14px; color: var(--text-secondary);
+    margin-bottom: 16px; line-height: 1.7;
+  }
+
+  .field-group { margin-bottom: 18px; }
+  .field-group:last-child { margin-bottom: 0; }
+  .field-label {
+    font-size: 13px; font-weight: 500; color: var(--text-secondary);
+    margin-bottom: 8px; display: flex; align-items: center; gap: 6px;
+  }
+  .field-label .optional {
+    font-size: 10px; color: var(--text-tertiary);
+    background: var(--bg); padding: 2px 8px; border-radius: 10px; font-weight: 400;
+  }
+  .field-input {
+    width: 100%; padding: 14px 16px;
+    border: 1.5px solid var(--border); border-radius: var(--radius-sm);
+    font-size: 16px; font-family: inherit;
+    background: var(--bg-card); color: var(--text-primary);
+    transition: var(--transition); -webkit-appearance: none;
+  }
+  .field-input:focus {
+    outline: none; border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(196,112,75,0.08);
+  }
+  .field-input::placeholder { color: #ccc; }
+
+  .field-input-with-icon { position: relative; }
+  .field-input-with-icon .field-input { padding-left: 44px; }
+  .field-input-with-icon .icon {
+    position: absolute; left: 14px; top: 50%; transform: translateY(-50%);
+    color: var(--text-tertiary); font-size: 18px;
+  }
+
+  .autocomplete-list {
+    background: var(--bg-card);
+    border: 1.5px solid var(--border); border-top: none;
+    border-radius: 0 0 var(--radius-sm) var(--radius-sm);
+    max-height: 200px; overflow-y: auto; display: none;
+  }
+  .autocomplete-list.show { display: block; }
+  .autocomplete-item {
+    padding: 12px 16px; font-size: 15px; cursor: pointer;
+    border-bottom: 1px solid var(--border-light);
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .autocomplete-item:hover, .autocomplete-item:active, .autocomplete-item.highlighted { background: var(--bg); }
+  .autocomplete-item .jp { font-weight: 500; }
+  .autocomplete-item .romaji { color: var(--text-tertiary); font-size: 12px; }
+
+  .chip-group { display: flex; flex-wrap: wrap; gap: 8px; }
+  .chip {
+    padding: 10px 18px; border: 1.5px solid var(--border);
+    border-radius: 24px; font-size: 14px; cursor: pointer;
+    transition: var(--transition); background: var(--bg-card);
+    color: var(--text-secondary); font-family: inherit; user-select: none;
+  }
+  .chip:active { transform: scale(0.96); }
+  .chip.selected { background: var(--accent); color: white; border-color: var(--accent); }
+
+  .numeric-row { display: flex; gap: 10px; align-items: center; }
+  .numeric-row .field-input { flex: 1; text-align: center; font-size: 20px; font-weight: 600; }
+  .numeric-unit { font-size: 14px; color: var(--text-tertiary); font-weight: 500; min-width: 30px; }
+
+  .slider-field { margin-bottom: 24px; }
+  .slider-field:last-child { margin-bottom: 0; }
+  .slider-label-row {
+    display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;
+  }
+  .slider-label-row .label { font-size: 13px; font-weight: 500; color: var(--text-secondary); }
+  .slider-label-row .value { font-size: 14px; font-weight: 600; color: var(--accent); }
+  .slider-visual { display: flex; gap: 6px; }
+  .slider-dot {
+    flex: 1; height: 40px; border-radius: var(--radius-xs);
+    background: var(--bg); cursor: pointer; transition: var(--transition);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px; color: var(--text-tertiary); font-weight: 500;
+  }
+  .slider-dot:active { transform: scale(0.95); }
+  .slider-dot.active { background: var(--accent); color: white; }
+  .slider-extremes {
+    display: flex; justify-content: space-between;
+    font-size: 11px; color: var(--text-tertiary); margin-top: 6px;
+  }
+
+  .image-upload {
+    width: 100%; height: 140px;
+    border: 2px dashed var(--border); border-radius: var(--radius-sm);
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: 8px; cursor: pointer; transition: var(--transition); background: var(--bg);
+  }
+  .image-upload:active { border-color: var(--accent); }
+  .image-upload .upload-icon { font-size: 28px; color: var(--text-tertiary); }
+  .image-upload .upload-text { font-size: 13px; color: var(--text-tertiary); }
+  .image-upload .upload-hint { font-size: 11px; color: #ccc; margin-top: 2px; }
+  .image-upload.has-file { border-style: solid; border-color: var(--success); background: rgba(91,138,94,0.03); flex-direction: row; padding: 12px 16px; height: auto; min-height: 70px; gap: 12px; justify-content: flex-start; }
+  .image-upload.has-file .upload-icon { display: none; }
+  .image-upload.has-file .upload-text { color: var(--success); font-weight: 500; font-size: 12px; }
+  .image-upload.has-file .upload-hint { display: none; }
+  .image-upload.has-file .logo-thumb { display: block; }
+  .logo-thumb { display: none; width: 52px; height: 52px; border-radius: 10px; object-fit: cover; border: 1px solid #e0d5c7; flex-shrink: 0; }
+
+  /* Country / region select */
+  select.field-input { appearance: none; -webkit-appearance: none; background-image: url("data:image/svg+xml,%3Csvg width='10' height='6' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23999'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 16px center; padding-right: 36px; cursor: pointer; }
+
+  /* Phone country code */
+  .phone-row { display: flex; gap: 0; }
+  .country-select { width: 90px; border: 1px solid var(--border); border-right: none; border-radius: var(--radius-sm) 0 0 var(--radius-sm); background: var(--bg); padding: 10px 6px; font-size: 14px; color: var(--text); appearance: none; -webkit-appearance: none; background-image: url("data:image/svg+xml,%3Csvg width='10' height='6' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23999'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 6px center; }
+  .phone-row .field-input { border-radius: 0 var(--radius-sm) var(--radius-sm) 0; flex: 1; }
+
+  /* URL check badge */
+  .url-check { display: inline-flex; align-items: center; gap: 4px; font-size: 11px; margin-top: 4px; padding: 3px 8px; border-radius: 20px; }
+  .url-check.valid { color: var(--success); background: rgba(91,138,94,0.08); }
+  .url-check.invalid { color: #B8860B; background: rgba(184,134,11,0.08); }
+  .url-check.checking { color: var(--text-tertiary); background: var(--bg); }
+
+  /* Selected tags */
+  .selected-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 6px; }
+  .selected-tags:empty { margin-bottom: 0; }
+  .selected-tag { display: inline-flex; align-items: center; gap: 4px; padding: 4px 10px; border-radius: 16px; background: rgba(91,138,94,0.08); color: var(--success); font-size: 13px; font-weight: 500; }
+  .selected-tag .tag-remove { cursor: pointer; font-size: 14px; opacity: 0.6; margin-left: 2px; }
+  .selected-tag .tag-remove:hover { opacity: 1; }
+
+  /* Add contact button */
+  .add-contact-btn { display: flex; align-items: center; gap: 8px; width: 100%; padding: 12px 16px; margin-top: 8px; border: 1px dashed var(--border); border-radius: var(--radius-sm); background: transparent; font-size: 13px; color: var(--text-tertiary); cursor: pointer; transition: var(--transition); }
+  .add-contact-btn:active { border-color: var(--accent); color: var(--accent); }
+  .add-contact-btn.open { border-style: solid; color: var(--text-secondary); }
+  .add-contact-icon { font-size: 16px; font-weight: 600; }
+
+  /* Confirm edit btn */
+  .confirm-edit-btn { display: inline-flex; align-items: center; gap: 5px; padding: 8px 18px; border: 1px solid #d5cdc2; border-radius: 20px; background: #fff; font-size: 13px; color: #8a7968; cursor: pointer; margin-top: 4px; }
+  .confirm-edit-btn:active { background: #f5f0ea; }
+
+  /* Add sake page */
+  .add-sake-page { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 65vh; text-align: center; padding: 40px 24px; }
+  .add-sake-icon { font-size: 64px; margin-bottom: 20px; animation: cinemaFloat 3s ease-in-out infinite; }
+  .add-sake-title { font-size: 22px; font-weight: 700; color: var(--text); letter-spacing: 0.5px; margin-bottom: 8px; }
+  .add-sake-sub { font-size: 14px; color: var(--text-tertiary); line-height: 1.6; margin-bottom: 32px; }
+
+  .ai-quality-badge {
+    display: flex; align-items: center; gap: 8px;
+    margin-top: 8px; padding: 8px 12px;
+    background: rgba(91,138,94,0.06); border: 1px solid rgba(91,138,94,0.15);
+    border-radius: var(--radius-xs); font-size: 12px; color: var(--success);
+  }
+  .ai-quality-badge.checking { color: var(--text-tertiary); background: var(--bg); border-color: var(--border); }
+  .ai-quality-badge.good { color: var(--success); background: rgba(91,138,94,0.06); border-color: rgba(91,138,94,0.15); }
+  .ai-quality-badge.warning { color: #B8860B; background: rgba(184,134,11,0.06); border-color: rgba(184,134,11,0.15); }
+  .ai-badge-icon { font-size: 14px; }
+  .ai-badge-text { flex: 1; }
+
+  /* ============ CONFIRM CARD ============ */
+  .confirm-row { display: flex; align-items: center; gap: 10px; font-size: 14px; color: #4a3f35; }
+  .confirm-icon { font-size: 16px; width: 24px; text-align: center; flex-shrink: 0; }
+  .confirm-value { flex: 1; word-break: break-word; }
+
+  /* ============ CINEMATIC PAGES ============ */
+  .cinema-page {
+    min-height: calc(100vh - 160px);
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    padding: 40px 24px 60px; text-align: center;
+  }
+  .cinema-page .cinema-emoji {
+    font-size: 56px; margin-bottom: 24px;
+    animation: cinemaFloat 3s ease-in-out infinite;
+  }
+  @keyframes cinemaFloat {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-8px); }
+  }
+  .cinema-tagline {
+    font-size: 28px; font-weight: 700; letter-spacing: -0.8px;
+    line-height: 1.3; margin-bottom: 12px;
+    background: linear-gradient(135deg, var(--text-primary) 0%, var(--accent) 100%);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .cinema-sub {
+    font-size: 14px; color: var(--text-secondary);
+    line-height: 1.7; max-width: 280px; margin: 0 auto;
+  }
+  .cinema-lang-row {
+    display: flex; gap: 8px; margin-top: 32px;
+    flex-wrap: wrap; justify-content: center;
+  }
+  .cinema-lang {
+    display: flex; align-items: center; gap: 8px;
+    padding: 12px 20px; border-radius: 28px;
+    background: var(--bg-card); border: 2px solid var(--border);
+    cursor: pointer; transition: var(--transition);
+    font-size: 15px; font-weight: 500; color: var(--text-secondary);
+    user-select: none; box-shadow: var(--shadow-sm);
+  }
+  .cinema-lang:active { transform: scale(0.95); }
+  .cinema-lang.selected {
+    border-color: var(--accent); background: white;
+    color: var(--accent); font-weight: 600;
+    box-shadow: 0 2px 12px rgba(196,112,75,0.15);
+  }
+  .cinema-lang .lang-flag { font-size: 20px; }
+
+  /* FOMO reveal page */
+  .fomo-page {
+    min-height: calc(100vh - 160px);
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    padding: 32px 20px 60px; text-align: center;
+  }
+  .fomo-claim {
+    font-size: 13px; font-weight: 600; letter-spacing: 3px;
+    text-transform: uppercase; color: var(--accent);
+    margin-bottom: 20px;
+  }
+  .fomo-headline {
+    font-size: 24px; font-weight: 700; letter-spacing: -0.5px;
+    line-height: 1.35; margin-bottom: 32px;
+  }
+  .fomo-features {
+    display: flex; flex-direction: column; gap: 0;
+    width: 100%; max-width: 340px; text-align: left;
+  }
+  .fomo-feat {
+    display: flex; align-items: flex-start; gap: 16px;
+    padding: 18px 0;
+    border-bottom: 1px solid var(--border-light);
+    opacity: 0; animation: fomoPop 0.5s ease forwards;
+  }
+  .fomo-feat:last-child { border-bottom: none; }
+  .fomo-feat:nth-child(1) { animation-delay: 0.15s; }
+  .fomo-feat:nth-child(2) { animation-delay: 0.35s; }
+  .fomo-feat:nth-child(3) { animation-delay: 0.55s; }
+  @keyframes fomoPop {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .fomo-feat-icon {
+    width: 44px; height: 44px; border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px; flex-shrink: 0;
+    background: var(--bg);
+  }
+  .fomo-feat-text { flex: 1; }
+  .fomo-feat-title { font-size: 15px; font-weight: 600; margin-bottom: 3px; }
+  .fomo-feat-desc { font-size: 12px; color: var(--text-tertiary); line-height: 1.5; }
+  .fomo-footnote {
+    margin-top: 28px; font-size: 11px; color: var(--text-tertiary);
+    font-style: italic; letter-spacing: 0.3px;
+  }
+
+  /* Cinema CTA */
+  .cinema-cta {
+    display: inline-flex; align-items: center; gap: 8px;
+    margin-top: 36px; padding: 16px 40px;
+    background: var(--accent); color: white;
+    border: none; border-radius: 28px;
+    font-size: 16px; font-weight: 600; font-family: inherit;
+    cursor: pointer; transition: var(--transition);
+    box-shadow: 0 4px 20px rgba(196,112,75,0.25);
+    letter-spacing: 0.3px;
+  }
+  .cinema-cta:active { transform: scale(0.96); box-shadow: 0 2px 10px rgba(196,112,75,0.2); }
+  .cinema-cta .cta-arrow { font-size: 18px; transition: transform 0.2s ease; }
+  .cinema-cta:hover .cta-arrow { transform: translateX(3px); }
+
+  .wizard-nav {
+    position: fixed; bottom: 0; left: 50%; transform: translateX(-50%);
+    width: 100%; max-width: 430px;
+    background: rgba(247,247,245,0.95);
+    backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+    padding: 10px 20px; padding-bottom: max(12px, env(safe-area-inset-bottom));
+    border-top: 1px solid var(--border);
+    display: flex; flex-direction: column; gap: 0;
+  }
+  .btn {
+    flex: 1; padding: 16px; border: none; border-radius: var(--radius-sm);
+    font-size: 15px; font-weight: 600; font-family: inherit; cursor: pointer;
+    transition: var(--transition);
+  }
+  .btn:active { transform: scale(0.97); }
+  .btn-secondary { background: var(--bg-card); color: var(--text-secondary); border: 1.5px solid var(--border); }
+  .btn-primary { background: var(--accent); color: white; }
+  .autosave-badge {
+    display: flex; align-items: center; justify-content: center; gap: 6px;
+    padding: 6px 0 2px; font-size: 11px; color: var(--text-tertiary);
+    letter-spacing: 0.2px;
+  }
+  .autosave-badge .dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--success); flex-shrink: 0;
+  }
+
+  /* ============ OUTPUT ============ */
+  .techsheet { display: none; }
+  .techsheet.active { display: block; }
+
+  .ts-hero {
+    background: var(--bg-card); padding: 24px 20px 28px;
+    text-align: center; margin: 12px 16px;
+    border-radius: var(--radius); box-shadow: var(--shadow-sm);
+  }
+  .ts-hero-img {
+    width: 110px; height: 260px;
+    background: linear-gradient(180deg, #f0f0ee 0%, #e5e5e2 100%);
+    border-radius: 8px; margin: 0 auto 20px;
+    display: flex; align-items: center; justify-content: center;
+    position: relative; overflow: hidden;
+  }
+  .ts-hero-img::after {
+    content: '匠'; font-size: 44px; color: rgba(0,0,0,0.04); font-weight: 700; position: absolute;
+  }
+  .ts-hero-img span { font-size: 11px; opacity: 0.5; position: relative; z-index: 1; color: var(--text-tertiary); }
+
+  .ts-sakagura-badge {
+    font-size: 11px; color: var(--text-tertiary);
+    background: var(--bg); padding: 4px 12px; border-radius: 12px; font-weight: 500;
+    display: inline-block; margin-bottom: 8px;
+  }
+  .ts-sake-name { font-size: 26px; font-weight: 700; letter-spacing: -0.5px; }
+  .ts-sake-name-sub { font-size: 17px; font-weight: 600; margin-top: 2px; color: var(--text-primary); }
+  .ts-sake-name-jp { font-size: 14px; color: var(--text-secondary); margin-top: 4px; font-weight: 400; }
+  .ts-tags {
+    display: flex; justify-content: center; gap: 6px; margin-top: 16px; flex-wrap: wrap;
+  }
+  .ts-tag {
+    font-size: 11px; color: var(--accent);
+    background: rgba(196,112,75,0.06);
+    padding: 5px 14px; border-radius: 14px; font-weight: 500;
+  }
+
+  .ts-island { margin: 0 16px 10px; }
+
+  .ts-award-row {
+    display: flex; align-items: center; gap: 12px; padding: 10px 0;
+  }
+  .ts-award-row:not(:last-child) { border-bottom: 1px solid var(--border-light); }
+  .ts-award-medal { font-size: 18px; }
+  .ts-award-name { font-size: 13px; color: var(--text-secondary); flex: 1; }
+  .ts-award-result { font-size: 13px; font-weight: 600; color: var(--accent); }
+
+  .ts-fundamentals { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .ts-fund-item { text-align: center; }
+  .ts-fund-label {
+    font-size: 10px; color: var(--text-tertiary);
+    text-transform: uppercase; letter-spacing: 0.8px; font-weight: 500; margin-bottom: 4px;
+  }
+  .ts-fund-value { font-size: 24px; font-weight: 700; }
+  .ts-fund-value .unit { font-size: 14px; font-weight: 400; }
+  .ts-fund-sub { font-size: 11px; color: var(--text-tertiary); margin-top: 2px; }
+  .ts-fund-divider { grid-column: 1 / -1; height: 1px; background: var(--border-light); }
+
+  .ts-sensory-bar { margin-bottom: 18px; }
+  .ts-sensory-bar:last-of-type { margin-bottom: 0; }
+  .ts-sensory-bar-label {
+    display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;
+  }
+  .ts-sensory-bar-label .name { font-size: 13px; color: var(--text-secondary); font-weight: 500; }
+  .ts-sensory-bar-label .extremes { font-size: 10px; color: var(--text-tertiary); }
+  .ts-bar-track { height: 5px; background: var(--bg); border-radius: 3px; position: relative; }
+  .ts-bar-fill {
+    position: absolute; left: 0; top: 0; height: 100%;
+    background: var(--accent); border-radius: 3px;
+  }
+  .ts-bar-marker {
+    position: absolute; top: -6px;
+    width: 17px; height: 17px; background: var(--accent);
+    border: 3px solid white; border-radius: 50%;
+    box-shadow: var(--shadow-sm); transform: translateX(-50%);
+  }
+
+  .ts-smv-wrap { margin-top: 20px; padding-top: 16px; border-top: 1px solid var(--border-light); }
+  .ts-smv-labels { display: flex; justify-content: space-between; font-size: 11px; color: var(--text-tertiary); margin-bottom: 6px; }
+  .ts-smv-scale { position: relative; height: 32px; }
+  .ts-smv-track {
+    position: absolute; top: 50%; left: 0; right: 0; height: 4px; transform: translateY(-50%);
+    background: linear-gradient(to right, var(--accent-light), var(--bg), var(--accent-light));
+    border-radius: 2px;
+  }
+  .ts-smv-marker {
+    position: absolute; top: 50%; transform: translate(-50%, -50%);
+    width: 26px; height: 26px; background: var(--accent);
+    border: 3px solid white; border-radius: 50%;
+    box-shadow: var(--shadow-md);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .ts-smv-marker span { font-size: 8px; font-weight: 700; color: white; }
+
+  .ts-temp-row { display: flex; gap: 8px; flex-wrap: wrap; }
+  .ts-temp-badge {
+    display: flex; align-items: center; gap: 6px;
+    padding: 10px 14px; background: var(--bg);
+    border: 1px solid transparent; border-radius: var(--radius-xs);
+    font-size: 13px; color: var(--text-tertiary);
+  }
+  .ts-temp-badge.recommended {
+    border-color: var(--accent); background: rgba(196,112,75,0.03);
+    color: var(--accent); font-weight: 500;
+  }
+
+  .ts-pairing-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .ts-pairing-item {
+    background: var(--bg); border-radius: var(--radius-xs);
+    padding: 12px; display: flex; align-items: center; gap: 10px;
+  }
+  .ts-pairing-icon { font-size: 22px; }
+  .ts-pairing-text { font-size: 13px; color: var(--text-secondary); }
+
+  .ts-notes-quote {
+    font-size: 14px; line-height: 1.8;
+    color: var(--text-secondary); font-style: italic;
+    padding: 4px 0 4px 16px;
+    border-left: 3px solid var(--accent-light);
+  }
+
+  .ts-expandable { margin-bottom: 4px; }
+  .ts-expandable:last-child { margin-bottom: 0; }
+  .ts-expandable-header {
+    padding: 14px 0; display: flex; justify-content: space-between; align-items: center;
+    cursor: pointer; user-select: none;
+    border-bottom: 1px solid var(--border-light);
+  }
+  .ts-expandable:last-child .ts-expandable-header { border-bottom: none; }
+  .ts-expandable-header:active { opacity: 0.7; }
+  .ts-expandable-title { font-size: 14px; font-weight: 500; }
+  .ts-expandable-arrow { color: var(--text-tertiary); transition: transform 0.3s ease; font-size: 18px; }
+  .ts-expandable.open .ts-expandable-arrow { transform: rotate(180deg); }
+  .ts-expandable.open .ts-expandable-header { border-bottom: 1px solid var(--border-light); }
+  .ts-expandable-content { max-height: 0; overflow: hidden; transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
+  .ts-expandable.open .ts-expandable-content { max-height: 600px; }
+  .ts-expandable-inner { padding: 12px 0 4px; }
+  .ts-detail-row {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 8px 0; border-bottom: 1px solid var(--border-light);
+  }
+  .ts-detail-row:last-child { border-bottom: none; }
+  .ts-detail-key { font-size: 13px; color: var(--text-tertiary); }
+  .ts-detail-val { font-size: 13px; font-weight: 500; text-align: right; }
+
+  .ts-actions {
+    position: fixed; bottom: 0; left: 50%; transform: translateX(-50%);
+    width: 100%; max-width: 430px;
+    background: rgba(247,247,245,0.95);
+    backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+    padding: 12px 20px; padding-bottom: max(12px, env(safe-area-inset-bottom));
+    border-top: 1px solid var(--border); display: flex; gap: 10px;
+  }
+  .ts-action-btn {
+    flex: 1; padding: 14px 8px;
+    border: 1.5px solid var(--border); border-radius: var(--radius-sm);
+    background: var(--bg-card); font-size: 12px; font-weight: 500;
+    color: var(--text-secondary); cursor: pointer; transition: var(--transition);
+    font-family: inherit; display: flex; flex-direction: column; align-items: center; gap: 4px;
+  }
+  .ts-action-btn:active { transform: scale(0.95); }
+  .ts-action-btn .action-icon { font-size: 20px; }
+  .ts-action-btn.primary-action { background: var(--accent); color: white; border-color: var(--accent); }
+
+  .ts-lang-toggle {
+    position: sticky; top: 44px; z-index: 100;
+    background: rgba(247,247,245,0.92);
+    backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+    padding: 10px 16px; display: flex; justify-content: center;
+  }
+  .ts-lang-pill {
+    background: var(--bg-card); border-radius: 20px; padding: 3px;
+    display: flex; gap: 2px; box-shadow: var(--shadow-sm); border: 1px solid var(--border);
+  }
+  .ts-lang-btn {
+    padding: 6px 14px; border: none; border-radius: 16px;
+    font-size: 11px; font-weight: 600; background: transparent;
+    color: var(--text-tertiary); cursor: pointer; transition: var(--transition); font-family: inherit;
+  }
+  .ts-lang-btn.active { background: var(--accent); color: white; }
+
+  .ts-footer {
+    text-align: center; padding: 32px 20px 100px;
+    font-size: 11px; color: var(--text-tertiary);
+  }
+  .ts-footer-logo {
+    width: 32px; height: 32px; background: var(--text-primary);
+    border-radius: 50%; margin: 0 auto 8px;
+    display: flex; align-items: center; justify-content: center;
+    color: white; font-size: 14px; font-weight: 700;
+  }
+
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .wizard-step { display: none; }
+  .wizard-step.active { display: block; }
+  .wizard-step.active .island,
+  .wizard-step.active .wizard-intro {
+    animation: fadeInUp 0.35s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+    opacity: 0;
+  }
+
+  /* ============ DESKTOP LAYOUT (>768px) ============ */
+  @media (min-width: 768px) {
+    body { background: var(--bg); }
+
+    .prototype-bar {
+      padding: 12px 32px; gap: 12px;
+    }
+    .prototype-bar span { font-size: 13px; }
+    .mode-btn { padding: 8px 24px; font-size: 13px; }
+
+    .phone-frame {
+      max-width: 100%; margin: 70px auto 0;
+      background: var(--bg); min-height: 100vh;
+    }
+
+    /* ---- Wizard layout ---- */
+    .wizard-header {
+      top: 50px;
+      padding: 20px 0 16px;
+      max-width: 680px; margin: 0 auto;
+      border-bottom: 1px solid var(--border);
+      background: rgba(247,247,245,0.96);
+    }
+    .wizard-step-title { font-size: 26px; }
+
+    .wizard-body {
+      max-width: 680px; margin: 0 auto;
+      padding: 32px 24px 120px;
+    }
+
+    .wizard-intro { font-size: 15px; margin-bottom: 20px; }
+
+    /* ---- Islands ---- */
+    .island { padding: 28px 32px; margin-bottom: 14px; border-radius: 16px; box-shadow: var(--shadow-md); }
+    .island-title { font-size: 12px; letter-spacing: 1.5px; margin-bottom: 20px; }
+
+    /* ---- Form fields ---- */
+    .field-input { padding: 14px 18px; font-size: 15px; border-radius: 10px; }
+    .field-input:hover { border-color: #ccc; }
+    .field-label { font-size: 13px; }
+
+    .chip { padding: 10px 22px; font-size: 14px; }
+    .chip:hover { border-color: #ccc; background: var(--bg); }
+
+    /* ---- 2-column grid for short fields ---- */
+    .island .field-group-row {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 16px;
+    }
+
+    /* ---- Numeric row wider ---- */
+    .numeric-row .field-input { font-size: 22px; }
+
+    /* ---- Slider dots wider ---- */
+    .slider-dot { height: 44px; font-size: 12px; border-radius: 8px; }
+    .slider-dot:hover { background: var(--border); }
+
+    /* ---- Image upload ---- */
+    .image-upload { height: 160px; border-radius: 12px; }
+    .image-upload:hover { border-color: #bbb; background: rgba(247,247,245,0.5); }
+
+    /* ---- Wizard nav (bottom bar) ---- */
+    .wizard-nav, .ts-actions {
+      position: sticky; bottom: 0; left: 0; transform: none;
+      max-width: 680px; margin: 0 auto;
+      padding: 14px 24px;
+      border-radius: 16px 16px 0 0;
+      box-shadow: 0 -4px 20px rgba(0,0,0,0.04);
+    }
+    .btn { padding: 14px 24px; font-size: 15px; border-radius: 10px; }
+    .btn:hover { opacity: 0.9; }
+    .btn-secondary:hover { background: var(--bg); }
+    .btn-primary:hover { background: var(--accent-hover); }
+
+    /* ---- Cinema pages ---- */
+    .cinema-page {
+      min-height: calc(100vh - 120px);
+      padding: 60px 40px 80px;
+    }
+    .cinema-page .cinema-emoji { font-size: 72px; margin-bottom: 32px; }
+    .cinema-tagline { font-size: 42px; letter-spacing: -1.2px; max-width: 500px; }
+    .cinema-sub { font-size: 16px; max-width: 380px; }
+    .cinema-lang-row { gap: 12px; margin-top: 40px; }
+    .cinema-lang { padding: 14px 28px; font-size: 16px; border-radius: 30px; }
+    .cinema-lang:hover { border-color: #ccc; box-shadow: var(--shadow-md); }
+    .cinema-cta { padding: 18px 52px; font-size: 17px; border-radius: 32px; margin-top: 44px; }
+    .cinema-cta:hover { background: var(--accent-hover); box-shadow: 0 6px 28px rgba(196,112,75,0.3); }
+
+    /* ---- FOMO page ---- */
+    .fomo-page {
+      min-height: calc(100vh - 120px);
+      padding: 60px 40px 80px;
+    }
+    .fomo-claim { font-size: 14px; letter-spacing: 4px; }
+    .fomo-headline { font-size: 34px; }
+    .fomo-features { max-width: 480px; }
+    .fomo-feat { padding: 22px 0; }
+    .fomo-feat-icon { width: 52px; height: 52px; border-radius: 14px; font-size: 24px; }
+    .fomo-feat-title { font-size: 16px; }
+    .fomo-feat-desc { font-size: 13px; }
+
+    /* ---- Add sake page ---- */
+    .add-sake-page { min-height: calc(100vh - 120px); }
+    .add-sake-icon { font-size: 80px; }
+    .add-sake-title { font-size: 28px; }
+    .add-sake-sub { font-size: 16px; }
+
+    /* ---- Confirm card ---- */
+    .confirm-row { font-size: 15px; padding: 2px 0; }
+    .confirm-edit-btn:hover { background: #f5f0ea; border-color: #c0b5a8; }
+
+    /* ---- Autocomplete ---- */
+    .autocomplete-item { padding: 14px 18px; }
+    .autocomplete-item:hover { background: var(--bg); }
+
+    /* ---- Phone row ---- */
+    .country-select { width: 100px; padding: 12px 8px; font-size: 14px; }
+
+    /* ---- Output tech sheet ---- */
+    .techsheet {
+      max-width: 680px; margin: 0 auto;
+    }
+
+    .ts-hero { margin: 16px 0; padding: 32px 28px 36px; }
+    .ts-hero-img { width: 130px; height: 300px; }
+    .ts-sake-name { font-size: 30px; }
+
+    .ts-island { margin: 0 0 14px; }
+
+    .ts-fundamentals { gap: 20px; }
+    .ts-fund-value { font-size: 28px; }
+
+    .ts-pairing-grid { grid-template-columns: 1fr 1fr 1fr; }
+
+    .ts-lang-toggle { top: 50px; padding: 12px 0; }
+
+    .ts-actions {
+      max-width: 680px; border-radius: 16px 16px 0 0;
+      box-shadow: 0 -4px 20px rgba(0,0,0,0.04);
+    }
+    .ts-action-btn { padding: 16px 12px; font-size: 13px; border-radius: 10px; }
+    .ts-action-btn:hover { background: var(--bg); }
+
+    .ts-footer { padding: 40px 20px 120px; }
+
+    .ts-notes-quote { font-size: 15px; padding-left: 20px; }
+
+    /* ---- Selected tags ---- */
+    .selected-tag { padding: 5px 12px; font-size: 13px; }
+
+    /* ---- Add contact btn ---- */
+    .add-contact-btn:hover { border-color: #bbb; color: var(--text-secondary); }
+  }
+
+  /* ============ WIDE DESKTOP (>1100px) ============ */
+  @media (min-width: 1100px) {
+    .wizard-header {
+      max-width: 760px;
+    }
+    .wizard-body {
+      max-width: 760px;
+      padding: 36px 0 140px;
+    }
+
+    /* Side-by-side islands on kura step */
+    .island { padding: 32px 36px; }
+
+    .wizard-nav, .ts-actions { max-width: 760px; }
+
+    .cinema-tagline { font-size: 50px; max-width: 580px; }
+    .cinema-sub { font-size: 17px; }
+
+    .fomo-headline { font-size: 40px; }
+    .fomo-features { max-width: 540px; }
+
+    /* Tech sheet wider */
+    .techsheet { max-width: 760px; }
+
+    .ts-pairing-grid { grid-template-columns: 1fr 1fr 1fr 1fr; }
+    .ts-temp-row { gap: 10px; }
+  }
+  .wizard-step.active .wizard-intro { animation-delay: 0.02s; }
+  .wizard-step.active .island:nth-child(2) { animation-delay: 0.06s; }
+  .wizard-step.active .island:nth-child(3) { animation-delay: 0.12s; }
+
+  /* Old phone simulator — replaced by responsive desktop layout above */
+  /* Address autocomplete from Places */
+  .address-prefilled { background: #f5f9f5; border-color: #5b8a5e !important; }
+  .address-prefilled-badge { display: inline-flex; align-items: center; gap: 4px; font-size: 11px; color: #5b8a5e; margin-top: 4px; }
+  .address-confirm-row { display: flex; align-items: center; gap: 8px; margin-top: 6px; }
+  .address-confirm-row button { padding: 5px 14px; border-radius: 16px; border: 1px solid var(--border); background: #fff; font-size: 12px; cursor: pointer; transition: var(--transition); }
+  .address-confirm-row button.confirm-yes { color: #5b8a5e; border-color: #5b8a5e; }
+  .address-confirm-row button.confirm-yes:active { background: #5b8a5e; color: #fff; }
+  .address-confirm-row button.confirm-no { color: var(--text-tertiary); }
+
+  /* Instagram field */
+  .ig-prefix { display: flex; align-items: center; gap: 0; }
+  .ig-prefix .ig-at { width: 36px; text-align: center; border: 1px solid var(--border); border-right: none; border-radius: var(--radius-sm) 0 0 var(--radius-sm); background: var(--bg); padding: 14px 0; font-size: 14px; color: var(--text-secondary); transition: var(--transition); }
+  .ig-prefix .field-input { border-radius: 0 var(--radius-sm) var(--radius-sm) 0; flex: 1; }
+  .ig-prefix:focus-within .ig-at { border-color: var(--accent); }
+</style>
+<!-- Google Places API: add your real API key below to enable address autocomplete -->
+<!-- <script async defer src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&libraries=places&callback=initPlacesAutocomplete"></script> -->
+</head>
+<body>
+
+<div class="prototype-bar">
+  <span>Prototype</span>
+  <button class="mode-btn active" onclick="showMode('input')">蔵元入力 Input</button>
+  <button class="mode-btn" onclick="showMode('output')">技術シート Output</button>
+</div>
+
+<div class="phone-frame">
+
+  <!-- ==================== INPUT WIZARD ==================== -->
+  <div class="wizard active" id="wizard">
+    <div class="wizard-header">
+      <div class="wizard-progress">
+        <div class="wizard-progress-dot current" data-step="0"></div>
+        <div class="wizard-progress-dot" data-step="1"></div>
+        <div class="wizard-progress-dot" data-step="2"></div>
+        <div class="wizard-progress-dot" data-step="3"></div>
+        <div class="wizard-progress-dot" data-step="4"></div>
+        <div class="wizard-progress-dot" data-step="5"></div>
+        <div class="wizard-progress-dot" data-step="6"></div>
+        <div class="wizard-progress-dot" data-step="7"></div>
+        <div class="wizard-progress-dot" data-step="8"></div>
+        <div class="wizard-progress-dot" data-step="9"></div>
+      </div>
+      <div class="wizard-step-label" id="stepLabel">ステップ 1 / 10</div>
+      <div class="wizard-step-title" id="stepTitle">はじめに</div>
+    </div>
+
+    <div class="wizard-body">
+
+      <!-- STEP 0: Language only — cinematic -->
+      <div class="wizard-step active" data-step="0">
+        <div class="cinema-page">
+          <div class="cinema-emoji">🍶</div>
+          <div class="cinema-tagline" data-i18n="cinema_tagline">あなたのお酒を、<br>世界の言葉で届ける。</div>
+          <div class="cinema-sub" data-i18n="cinema_sub">言語を選んではじめましょう。</div>
+          <div class="cinema-lang-row">
+            <div class="cinema-lang selected" onclick="selectLang(this, 'ja')">
+              <span class="lang-flag">🇯🇵</span> 日本語
+            </div>
+            <div class="cinema-lang" onclick="selectLang(this, 'en')">
+              <span class="lang-flag">🇬🇧</span> English
+            </div>
+            <div class="cinema-lang" onclick="selectLang(this, 'fr')">
+              <span class="lang-flag">🇫🇷</span> Français
+            </div>
+            <div class="cinema-lang" onclick="selectLang(this, 'it')">
+              <span class="lang-flag">🇮🇹</span> Italiano
+            </div>
+          </div>
+          <button class="cinema-cta" onclick="nextStep()" data-i18n="cta_start">はじめる <span class="cta-arrow">→</span></button>
+        </div>
+      </div>
+
+      <!-- STEP 1: FOMO reveal — the unboxing -->
+      <div class="wizard-step" data-step="1">
+        <div class="fomo-page">
+          <div class="fomo-claim" data-i18n="fomo_claim">世界初</div>
+          <div class="fomo-headline" data-i18n="fomo_headline">ひとつのプラットフォーム。<br>すべてが、ここに。</div>
+          <div class="fomo-features">
+            <div class="fomo-feat">
+              <div class="fomo-feat-icon">📋</div>
+              <div class="fomo-feat-text">
+                <div class="fomo-feat-title" data-i18n="feat1_title">多言語シート自動生成</div>
+                <div class="fomo-feat-desc" data-i18n="feat1_desc">一度の入力で、日本語・英語・フランス語・イタリア語の技術シートを自動生成。PDF・リンク・転送で共有。</div>
+              </div>
+            </div>
+            <div class="fomo-feat">
+              <div class="fomo-feat-icon">🏷️</div>
+              <div class="fomo-feat-text">
+                <div class="fomo-feat-title" data-i18n="feat2_title">裏ラベル — 各国法規対応</div>
+                <div class="fomo-feat-desc" data-i18n="feat2_desc">輸入者名と輸出国を選ぶだけで、各国の法規制に準拠した裏ラベルを自動作成。</div>
+              </div>
+            </div>
+            <div class="fomo-feat">
+              <div class="fomo-feat-icon">🏆</div>
+              <div class="fomo-feat-text">
+                <div class="fomo-feat-title" data-i18n="feat3_title">国際コンペ — ワンクリック出品</div>
+                <div class="fomo-feat-desc" data-i18n="feat3_desc">登録済みのデータで、IWC・Kuramaster等の国際コンペティションにワンクリックで出品。受賞歴は自動でシートに反映。</div>
+              </div>
+            </div>
+          </div>
+          <div class="fomo-footnote" data-i18n="fomo_footnote">蔵元のために。蔵元と共に。</div>
+          <button class="cinema-cta" onclick="nextStep()" data-i18n="cta_begin">登録をはじめる <span class="cta-arrow">→</span></button>
+        </div>
+      </div>
+
+      <!-- STEP 2: Your Kura -->
+      <div class="wizard-step" data-step="2">
+        <div class="wizard-intro" data-i18n="intro_kura">すべてのお酒には、物語があります。<br>まず、その物語が生まれる場所から。</div>
+        <div class="island">
+          <div class="island-title" data-i18n="island_kura">蔵元情報</div>
+          <div class="field-group">
+            <div class="field-label" data-i18n="label_kura_name">蔵元名</div>
+            <input class="field-input" type="text" id="kuraNameInput" data-i18n-ph="ph_kura_name" placeholder="例: 京姫酒造" autocomplete="off">
+          </div>
+          <!-- Address (auto-filled from Places, editable) -->
+          <div class="field-group" id="addressGroup">
+            <div class="field-label"><span data-i18n="label_address">住所</span></div>
+            <input class="field-input" type="text" id="addressInput" data-i18n-ph="ph_address" placeholder="例: 京都市伏見区...">
+            <div class="address-prefilled-badge" id="addressBadge" style="display:none;">
+              <span>📍</span> <span data-i18n="address_autofilled">自動入力されました — 確認してください</span>
+            </div>
+          </div>
+          <div class="field-group">
+            <div class="field-label" data-i18n="label_country">国</div>
+            <select class="field-input" id="countrySelect" onchange="onCountryChange()">
+              <option value="JP">🇯🇵 Japan</option>
+              <option value="US">🇺🇸 United States</option>
+              <option value="AU">🇦🇺 Australia</option>
+              <option value="NZ">🇳🇿 New Zealand</option>
+              <option value="FR">🇫🇷 France</option>
+              <option value="IT">🇮🇹 Italy</option>
+              <option value="ES">🇪🇸 Spain</option>
+              <option value="GB">🇬🇧 United Kingdom</option>
+              <option value="DE">🇩🇪 Germany</option>
+              <option value="CA">🇨🇦 Canada</option>
+              <option value="MX">🇲🇽 Mexico</option>
+              <option value="BR">🇧🇷 Brazil</option>
+              <option value="AR">🇦🇷 Argentina</option>
+              <option value="CN">🇨🇳 China</option>
+              <option value="TW">🇹🇼 Taiwan</option>
+              <option value="KR">🇰🇷 South Korea</option>
+              <option value="TH">🇹🇭 Thailand</option>
+              <option value="VN">🇻🇳 Vietnam</option>
+              <option value="SG">🇸🇬 Singapore</option>
+              <option value="NO">🇳🇴 Norway</option>
+              <option value="SE">🇸🇪 Sweden</option>
+              <option value="DK">🇩🇰 Denmark</option>
+              <option value="OTHER">🌍 Other</option>
+            </select>
+          </div>
+          <div class="field-group" id="prefectureGroup">
+            <div class="field-label" data-i18n="label_prefecture">都道府県</div>
+            <div class="field-input-with-icon">
+              <span class="icon">🔍</span>
+              <input class="field-input" type="text" id="prefectureInput" data-i18n-ph="ph_prefecture" placeholder="例: 京都府" autocomplete="off" onfocus="showPrefectures()" oninput="filterPrefectures()" onkeydown="prefectureKeydown(event)">
+            </div>
+            <div class="autocomplete-list" id="prefectureList"></div>
+          </div>
+          <div class="field-group" id="regionGroup" style="display:none;">
+            <div class="field-label" data-i18n="label_region">州 / 地域</div>
+            <input class="field-input" type="text" id="regionInput" data-i18n-ph="ph_region" placeholder="e.g. California, New South Wales...">
+          </div>
+          <div class="field-group">
+            <div class="field-label" data-i18n="label_brand">ブランド名</div>
+            <input class="field-input" type="text" id="brandInput" data-i18n-ph="ph_brand" placeholder="例: 匠">
+          </div>
+        </div>
+        <div class="island">
+          <div class="island-title" data-i18n="island_images">蔵元の顔</div>
+          <div class="wizard-intro" style="margin-bottom:14px; font-size:13px;" data-i18n="intro_images">世界があなたの蔵を初めて見る瞬間。<br>ロゴで、第一印象を届けましょう。</div>
+          <div class="field-group">
+            <div class="field-label"><span data-i18n="label_logo">蔵元ロゴ</span> <span class="optional" data-i18n="optional">任意</span></div>
+            <label class="image-upload" for="logoFile">
+              <img class="logo-thumb" id="logoThumb" src="" alt="">
+              <div class="upload-icon">🏷️</div>
+              <div class="upload-text" data-i18n="upload_logo">タップしてロゴを選択</div>
+              <div class="upload-hint" data-i18n="upload_hint_logo">PNG・SVG推奨 — 透過背景が最適</div>
+            </label>
+            <input type="file" id="logoFile" accept="image/*" style="display:none;" onchange="handleImageUpload(this, 'logo')">
+            <div class="ai-quality-badge" id="logoAiBadge" style="display:none;">
+              <span class="ai-badge-icon">✨</span>
+              <span class="ai-badge-text" data-i18n="ai_checking">AI が画質を確認中...</span>
+            </div>
+          </div>
+        </div>
+        <div class="island">
+          <div class="island-title" data-i18n="island_contact">お客様向け情報</div>
+          <div id="extraContactFields" style="display:none;">
+            <div class="field-group">
+              <div class="field-label"><span data-i18n="label_website">ウェブサイト</span> <span class="optional" data-i18n="optional">任意</span></div>
+              <input class="field-input" type="url" inputmode="url" id="websiteInput" data-i18n-ph="ph_website" placeholder="例: https://kyohime.co.jp" oninput="checkWebsite(this)">
+              <div class="url-check" id="urlCheckBadge" style="display:none;">
+                <span id="urlCheckIcon">⏳</span>
+                <span id="urlCheckText"></span>
+              </div>
+            </div>
+            <div class="field-group">
+              <div class="field-label"><span data-i18n="label_email">メールアドレス</span> <span class="optional" data-i18n="optional">任意</span></div>
+              <input class="field-input" type="email" inputmode="email" id="contactEmail" data-i18n-ph="ph_email" placeholder="例: info@kyohime.co.jp">
+            </div>
+            <div class="field-group">
+              <div class="field-label"><span data-i18n="label_instagram">Instagram</span> <span class="optional" data-i18n="optional">任意</span></div>
+              <div class="ig-prefix">
+                <span class="ig-at">@</span>
+                <input class="field-input" type="text" id="instagramInput" data-i18n-ph="ph_instagram" placeholder="例: kyohime_shuzo">
+              </div>
+            </div>
+            <div class="field-group">
+              <div class="field-label"><span data-i18n="label_contact_name">担当者名</span> <span class="optional" data-i18n="optional">任意</span></div>
+              <input class="field-input" type="text" id="contactNameInput" data-i18n-ph="ph_contact_name" placeholder="例: 山田太郎">
+            </div>
+          </div>
+          <button class="add-contact-btn" id="addContactBtn" onclick="toggleExtraContacts()">
+            <span class="add-contact-icon">＋</span>
+            <span data-i18n="add_contact">お客様向け情報を追加</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- STEP 3: Sakagura Confirmation Card -->
+      <div class="wizard-step" data-step="3">
+        <div class="wizard-intro" data-i18n="intro_confirm">あなたの蔵元の名刺が完成しました。<br>確認して、次へ進みましょう。</div>
+        <div class="island" style="background: linear-gradient(135deg, #faf8f5 0%, #f0ebe4 100%); border: 1px solid #e0d5c7;">
+          <div style="text-align:center; margin-bottom:16px;">
+            <div id="confirmLogo" style="width:64px; height:64px; border-radius:16px; background:#e8e0d5; margin:0 auto 10px; display:flex; align-items:center; justify-content:center; font-size:28px; overflow:hidden;">🏯</div>
+            <div id="confirmKuraName" style="font-size:20px; font-weight:700; color:#1a1a1a; letter-spacing:0.5px;">—</div>
+            <div id="confirmPrefecture" style="font-size:13px; color:#8a7968; margin-top:2px;">—</div>
+          </div>
+          <div style="border-top:1px solid #e0d5c7; padding-top:14px; display:flex; flex-direction:column; gap:10px;">
+            <div class="confirm-row" id="confirmBrand" style="display:none;">
+              <span class="confirm-icon">🏷️</span>
+              <span class="confirm-value">—</span>
+            </div>
+            <div class="confirm-row" id="confirmAddress" style="display:none;">
+              <span class="confirm-icon">📍</span>
+              <span class="confirm-value">—</span>
+            </div>
+            <div class="confirm-row" id="confirmWebsite" style="display:none;">
+              <span class="confirm-icon">🌐</span>
+              <span class="confirm-value">—</span>
+            </div>
+            <div class="confirm-row" id="confirmEmail" style="display:none;">
+              <span class="confirm-icon">✉️</span>
+              <span class="confirm-value">—</span>
+            </div>
+            <div class="confirm-row" id="confirmInstagram" style="display:none;">
+              <span class="confirm-icon">📸</span>
+              <span class="confirm-value">—</span>
+            </div>
+            <div class="confirm-row" id="confirmContact" style="display:none;">
+              <span class="confirm-icon">👤</span>
+              <span class="confirm-value">—</span>
+            </div>
+          </div>
+        </div>
+        <div style="text-align:center; margin-top:12px;">
+          <div style="font-size:13px; color:#8a7968; margin-bottom:10px;" data-i18n="confirm_hint">蔵元情報はいつでも修正できます。</div>
+          <button class="confirm-edit-btn" onclick="currentStep=2; updateWizard();">
+            <span>✏️</span> <span data-i18n="confirm_edit">修正する</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- STEP 4: Add a Sake -->
+      <div class="wizard-step" data-step="4">
+        <div class="add-sake-page">
+          <div class="add-sake-icon">🍶</div>
+          <div class="add-sake-title" data-i18n="add_sake_title">最初のお酒を登録しましょう</div>
+          <div class="add-sake-sub" data-i18n="add_sake_sub">蔵元の登録が完了しました。<br>ここからは、あなたのお酒の物語です。</div>
+          <button class="cinema-cta" onclick="nextStep()" data-i18n="add_sake_cta">最初のお酒を登録する <span class="cta-arrow">→</span></button>
+        </div>
+      </div>
+
+      <!-- STEP 5: Your Sake -->
+      <div class="wizard-step" data-step="5">
+        <div class="wizard-intro" data-i18n="intro_sake">あなたのお酒に名前をつけた日のこと、覚えていますか。<br>その想いを、ここに。</div>
+        <div class="island">
+          <div class="island-title" data-i18n="island_product">商品情報</div>
+          <div class="field-group">
+            <div class="field-label" data-i18n="label_product_name">商品名</div>
+            <input class="field-input" type="text" data-i18n-ph="ph_product_name" placeholder="例: 匠 純米吟醸">
+          </div>
+          <div class="field-group">
+            <div class="field-label" data-i18n="label_type">特定名称</div>
+            <div class="chip-group" id="typeChips">
+              <div class="chip" data-chip-ja="普通酒" data-chip-en="Futsushu" data-chip-fr="Futsushu" data-chip-it="Futsushu">普通酒</div>
+              <div class="chip" data-chip-ja="本醸造" data-chip-en="Honjozo" data-chip-fr="Honjozo" data-chip-it="Honjozo">本醸造</div>
+              <div class="chip" data-chip-ja="特別本醸造" data-chip-en="Tokubetsu Honjozo" data-chip-fr="Tokubetsu Honjozo" data-chip-it="Tokubetsu Honjozo">特別本醸造</div>
+              <div class="chip" data-chip-ja="吟醸" data-chip-en="Ginjo" data-chip-fr="Ginjo" data-chip-it="Ginjo">吟醸</div>
+              <div class="chip" data-chip-ja="大吟醸" data-chip-en="Daiginjo" data-chip-fr="Daiginjo" data-chip-it="Daiginjo">大吟醸</div>
+              <div class="chip" data-chip-ja="純米" data-chip-en="Junmai" data-chip-fr="Junmai" data-chip-it="Junmai">純米</div>
+              <div class="chip" data-chip-ja="特別純米" data-chip-en="Tokubetsu Junmai" data-chip-fr="Tokubetsu Junmai" data-chip-it="Tokubetsu Junmai">特別純米</div>
+              <div class="chip selected" data-chip-ja="純米吟醸" data-chip-en="Junmai Ginjo" data-chip-fr="Junmai Ginjo" data-chip-it="Junmai Ginjo">純米吟醸</div>
+              <div class="chip" data-chip-ja="純米大吟醸" data-chip-en="Junmai Daiginjo" data-chip-fr="Junmai Daiginjo" data-chip-it="Junmai Daiginjo">純米大吟醸</div>
+            </div>
+          </div>
+        </div>
+        <div class="island">
+          <div class="island-title" data-i18n="island_code">識別コード</div>
+          <div class="field-group">
+            <div class="field-label">JAN / EAN <span class="optional" data-i18n="optional">任意</span></div>
+            <input class="field-input" type="tel" placeholder="4902051032046" inputmode="numeric">
+          </div>
+        </div>
+      </div>
+
+      <!-- STEP 6: Ingredients -->
+      <div class="wizard-step" data-step="6">
+        <div class="wizard-intro" data-i18n="intro_ingredients">米、水、酵母。<br>シンプルな素材から生まれる、無限の表情。</div>
+        <div class="island">
+          <div class="island-title" data-i18n="island_ingredients">原材料</div>
+          <div class="field-group">
+            <div class="field-label" data-i18n="label_rice">使用米</div>
+            <div class="selected-tags" id="riceSelectedTags"></div>
+            <div class="field-input-with-icon">
+              <span class="icon">🔍</span>
+              <input class="field-input" type="text" id="riceInput" data-i18n-ph="ph_rice" placeholder="米の名前を入力..." autocomplete="off" onfocus="showRiceList()" oninput="filterRiceList()">
+            </div>
+            <div class="autocomplete-list" id="riceList"></div>
+          </div>
+          <div class="field-group">
+            <div class="field-label"><span data-i18n="label_kobo">酵母（コウボ）</span><span class="optional" data-i18n="optional">任意</span></div>
+            <div class="field-input-with-icon">
+              <span class="icon">🔍</span>
+              <input class="field-input" type="text" data-i18n-ph="ph_kobo" placeholder="酵母の名前を入力...">
+            </div>
+          </div>
+        </div>
+        <div class="island">
+          <div class="island-title" data-i18n="island_water">仕込み水</div>
+          <div class="field-group">
+            <div class="field-label" data-i18n="label_water">水の硬度</div>
+            <div class="chip-group" id="waterChips">
+              <div class="chip" data-chip-ja="超軟水" data-chip-en="Very soft" data-chip-fr="Très douce" data-chip-it="Molto dolce">超軟水</div>
+              <div class="chip" data-chip-ja="軟水" data-chip-en="Soft" data-chip-fr="Douce" data-chip-it="Dolce">軟水</div>
+              <div class="chip selected" data-chip-ja="中軟水" data-chip-en="Medium soft" data-chip-fr="Moyennement douce" data-chip-it="Media dolce">中軟水</div>
+              <div class="chip" data-chip-ja="中硬水" data-chip-en="Medium hard" data-chip-fr="Moyennement dure" data-chip-it="Media dura">中硬水</div>
+              <div class="chip" data-chip-ja="硬水" data-chip-en="Hard" data-chip-fr="Dure" data-chip-it="Dura">硬水</div>
+              <div class="chip" data-chip-ja="超硬水" data-chip-en="Very hard" data-chip-fr="Très dure" data-chip-it="Molto dura">超硬水</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- STEP 7: Numbers -->
+      <div class="wizard-step" data-step="7">
+        <div class="wizard-intro" data-i18n="intro_numbers">数字の向こうに、技術と哲学がある。<br>あなたの酒造りの精度を伝えましょう。</div>
+        <div class="island">
+          <div class="island-title" data-i18n="island_basic_num">基本数値</div>
+          <div class="field-group">
+            <div class="field-label" data-i18n="label_seimai">精米歩合</div>
+            <div class="numeric-row">
+              <input class="field-input" type="tel" inputmode="numeric" placeholder="60">
+              <span class="numeric-unit">%</span>
+            </div>
+          </div>
+          <div class="field-group">
+            <div class="field-label" data-i18n="label_alcohol">アルコール度数</div>
+            <div class="numeric-row">
+              <input class="field-input" type="tel" inputmode="decimal" placeholder="15">
+              <span class="numeric-unit">%</span>
+            </div>
+          </div>
+        </div>
+        <div class="island">
+          <div class="island-title" data-i18n="island_analysis">分析値</div>
+          <div class="field-group">
+            <div class="field-label">SMV <span style="font-weight:400;color:var(--text-tertiary);" data-i18n="label_smv_sub">（日本酒度）</span></div>
+            <div class="numeric-row">
+              <input class="field-input" type="tel" inputmode="numeric" placeholder="+1">
+            </div>
+          </div>
+          <div class="field-group">
+            <div class="field-label"><span data-i18n="label_acidity">酸度</span> <span class="optional" data-i18n="optional">任意</span></div>
+            <div class="numeric-row">
+              <input class="field-input" type="tel" inputmode="decimal" placeholder="1.2">
+            </div>
+          </div>
+          <div class="field-group">
+            <div class="field-label"><span data-i18n="label_amino">アミノ酸度</span> <span class="optional" data-i18n="optional">任意</span></div>
+            <div class="numeric-row">
+              <input class="field-input" type="tel" inputmode="decimal" placeholder="1.0">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- STEP 8: Character -->
+      <div class="wizard-step" data-step="8">
+        <div class="wizard-intro" data-i18n="intro_character">もし、このお酒が人だったら？<br>その性格を、感覚で描いてください。</div>
+        <div class="island">
+          <div class="island-title" data-i18n="island_taste">味わいプロフィール</div>
+          <div class="slider-field">
+            <div class="slider-label-row">
+              <span class="label" data-i18n="slider_body">ボディ</span><span class="value">4 / 5</span>
+            </div>
+            <div class="slider-visual">
+              <div class="slider-dot active" onclick="selectSlider(this)">1</div>
+              <div class="slider-dot active" onclick="selectSlider(this)">2</div>
+              <div class="slider-dot active" onclick="selectSlider(this)">3</div>
+              <div class="slider-dot active" onclick="selectSlider(this)">4</div>
+              <div class="slider-dot" onclick="selectSlider(this)">5</div>
+            </div>
+            <div class="slider-extremes"><span data-i18n="slider_body_low">軽い</span><span data-i18n="slider_body_high">重い</span></div>
+          </div>
+          <div class="slider-field">
+            <div class="slider-label-row">
+              <span class="label" data-i18n="slider_aroma">香り</span><span class="value">3 / 5</span>
+            </div>
+            <div class="slider-visual">
+              <div class="slider-dot active" onclick="selectSlider(this)">1</div>
+              <div class="slider-dot active" onclick="selectSlider(this)">2</div>
+              <div class="slider-dot active" onclick="selectSlider(this)">3</div>
+              <div class="slider-dot" onclick="selectSlider(this)">4</div>
+              <div class="slider-dot" onclick="selectSlider(this)">5</div>
+            </div>
+            <div class="slider-extremes"><span data-i18n="slider_aroma_low">穏やか</span><span data-i18n="slider_aroma_high">華やか</span></div>
+          </div>
+          <div class="slider-field">
+            <div class="slider-label-row">
+              <span class="label" data-i18n="slider_sweet">甘辛</span><span class="value">3 / 5</span>
+            </div>
+            <div class="slider-visual">
+              <div class="slider-dot active" onclick="selectSlider(this)">1</div>
+              <div class="slider-dot active" onclick="selectSlider(this)">2</div>
+              <div class="slider-dot active" onclick="selectSlider(this)">3</div>
+              <div class="slider-dot" onclick="selectSlider(this)">4</div>
+              <div class="slider-dot" onclick="selectSlider(this)">5</div>
+            </div>
+            <div class="slider-extremes"><span data-i18n="slider_sweet_low">甘口</span><span data-i18n="slider_sweet_high">辛口</span></div>
+          </div>
+        </div>
+        <div class="island">
+          <div class="island-title" data-i18n="island_recommend">おすすめ</div>
+          <div class="field-group">
+            <div class="field-label" data-i18n="label_temp">おすすめ温度</div>
+            <div class="chip-group" id="tempChips">
+              <div class="chip selected" data-chip-ja="冷酒 5-10°C" data-chip-en="Reishu 5-10°C" data-chip-fr="Reishu 5-10°C" data-chip-it="Reishu 5-10°C">冷酒 5-10°C</div>
+              <div class="chip selected" data-chip-ja="涼冷え 10-15°C" data-chip-en="Suzuhie 10-15°C" data-chip-fr="Suzuhie 10-15°C" data-chip-it="Suzuhie 10-15°C">涼冷え 10-15°C</div>
+              <div class="chip" data-chip-ja="常温 20°C" data-chip-en="Room temp 20°C" data-chip-fr="Ambiante 20°C" data-chip-it="Ambiente 20°C">常温 20°C</div>
+              <div class="chip" data-chip-ja="ぬる燗 40°C" data-chip-en="Nurukan 40°C" data-chip-fr="Nurukan 40°C" data-chip-it="Nurukan 40°C">ぬる燗 40°C</div>
+              <div class="chip" data-chip-ja="上燗 50°C" data-chip-en="Jokan 50°C" data-chip-fr="Jokan 50°C" data-chip-it="Jokan 50°C">上燗 50°C</div>
+            </div>
+          </div>
+          <div class="field-group">
+            <div class="field-label" data-i18n="label_pairing">おすすめ料理</div>
+            <div class="chip-group" id="pairingChips">
+              <div class="chip selected" data-chip-ja="寿司" data-chip-en="Sushi" data-chip-fr="Sushi" data-chip-it="Sushi">寿司</div>
+              <div class="chip selected" data-chip-ja="刺身" data-chip-en="Sashimi" data-chip-fr="Sashimi" data-chip-it="Sashimi">刺身</div>
+              <div class="chip" data-chip-ja="天ぷら" data-chip-en="Tempura" data-chip-fr="Tempura" data-chip-it="Tempura">天ぷら</div>
+              <div class="chip" data-chip-ja="焼き鳥" data-chip-en="Yakitori" data-chip-fr="Yakitori" data-chip-it="Yakitori">焼き鳥</div>
+              <div class="chip selected" data-chip-ja="煮物" data-chip-en="Nimono (stew)" data-chip-fr="Nimono (mijoté)" data-chip-it="Nimono (stufato)">煮物</div>
+              <div class="chip" data-chip-ja="チーズ" data-chip-en="Cheese" data-chip-fr="Fromage" data-chip-it="Formaggio">チーズ</div>
+              <div class="chip" data-chip-ja="カルパッチョ" data-chip-en="Carpaccio" data-chip-fr="Carpaccio" data-chip-it="Carpaccio">カルパッチョ</div>
+              <div class="chip" data-chip-ja="白身魚" data-chip-en="White fish" data-chip-fr="Poisson blanc" data-chip-it="Pesce bianco">白身魚</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- STEP 9: Bottle -->
+      <div class="wizard-step" data-step="9">
+        <div class="wizard-intro" data-i18n="intro_bottle">最後の一歩。あなたのお酒が旅立つ姿を。</div>
+        <div class="island">
+          <div class="island-title" data-i18n="island_bottle">ボトル情報</div>
+          <div class="field-group">
+            <div class="field-label" data-i18n="label_volume">容量</div>
+            <div class="chip-group">
+              <div class="chip">180ml</div><div class="chip">300ml</div>
+              <div class="chip">500ml</div><div class="chip selected">720ml</div>
+              <div class="chip">1800ml</div>
+            </div>
+          </div>
+          <div class="field-group">
+            <div class="field-label" data-i18n="label_case">ケース入数</div>
+            <div class="numeric-row">
+              <input class="field-input" type="tel" inputmode="numeric" placeholder="12">
+              <span class="numeric-unit" data-i18n="unit_bottles">本</span>
+            </div>
+          </div>
+        </div>
+        <div class="island">
+          <div class="island-title"><span data-i18n="island_logistics">物流データ</span> <span class="optional" style="text-transform:none;letter-spacing:0;" data-i18n="optional">任意</span></div>
+          <div class="field-group">
+            <div class="field-label" data-i18n="label_bottle_weight">ボトル重量</div>
+            <div class="numeric-row">
+              <input class="field-input" type="tel" inputmode="numeric" placeholder="1150">
+              <span class="numeric-unit">g</span>
+            </div>
+          </div>
+          <div class="field-group">
+            <div class="field-label" data-i18n="label_case_weight">ケース重量</div>
+            <div class="numeric-row">
+              <input class="field-input" type="tel" inputmode="decimal" placeholder="7.1">
+              <span class="numeric-unit">kg</span>
+            </div>
+          </div>
+          <div class="field-group">
+            <div class="field-label" data-i18n="label_bottle_size">ボトルサイズ</div>
+            <div style="display:flex; gap:8px;">
+              <input class="field-input" type="text" data-i18n-ph="ph_diameter" placeholder="⌀ mm" style="font-size:14px; flex:1;">
+              <input class="field-input" type="text" data-i18n-ph="ph_height" placeholder="H mm" style="font-size:14px; flex:1;">
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="wizard-nav">
+      <div class="autosave-badge"><span class="dot"></span><span data-i18n="autosave">自動保存済み</span></div>
+      <div style="display:flex; gap:12px; width:100%;">
+        <button class="btn btn-secondary" onclick="prevStep()" data-i18n="btn_back">← 戻る</button>
+        <button class="btn btn-primary" onclick="nextStep()" data-i18n="btn_next">次へ →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== OUTPUT TECH SHEET ==================== -->
+  <div class="techsheet" id="techsheet">
+    <div class="ts-lang-toggle">
+      <div class="ts-lang-pill">
+        <button class="ts-lang-btn active" onclick="switchLang(this)">JP</button>
+        <button class="ts-lang-btn" onclick="switchLang(this)">EN</button>
+        <button class="ts-lang-btn" onclick="switchLang(this)">IT</button>
+        <button class="ts-lang-btn" onclick="switchLang(this)">FR</button>
+      </div>
+    </div>
+
+    <div class="ts-hero">
+      <div class="ts-hero-img"><span>720ml</span></div>
+      <div class="ts-sakagura-badge">京姫酒造 — 京都</div>
+      <div class="ts-sake-name">TAKUMI</div>
+      <div class="ts-sake-name-sub">JUNMAI GINJO</div>
+      <div class="ts-sake-name-jp">匠 純米吟醸</div>
+      <div class="ts-tags">
+        <span class="ts-tag">#Elegant</span>
+        <span class="ts-tag">#Balanced</span>
+        <span class="ts-tag">#Delicate</span>
+      </div>
+    </div>
+
+    <div class="island ts-island" style="margin:0 16px 10px;">
+      <div class="island-title">🏆 Awards</div>
+      <div class="ts-award-row"><span class="ts-award-medal">🥇</span><span class="ts-award-name">IWC 2024</span><span class="ts-award-result">Gold</span></div>
+      <div class="ts-award-row"><span class="ts-award-medal">🥈</span><span class="ts-award-name">Milano Sake Challenge 2023</span><span class="ts-award-result" style="color:var(--text-secondary);">Silver</span></div>
+      <div class="ts-award-row"><span class="ts-award-medal">🏅</span><span class="ts-award-name">Kuramaster 2023</span><span class="ts-award-result">Platinum</span></div>
+    </div>
+
+    <div class="island ts-island" style="margin:0 16px 10px;">
+      <div class="island-title">Specifications</div>
+      <div class="ts-fundamentals">
+        <div class="ts-fund-item"><div class="ts-fund-label">Seimai Buai</div><div class="ts-fund-value">60<span class="unit">%</span></div></div>
+        <div class="ts-fund-item"><div class="ts-fund-label">Alcohol</div><div class="ts-fund-value">15<span class="unit">%</span></div></div>
+        <div class="ts-fund-divider"></div>
+        <div class="ts-fund-item"><div class="ts-fund-label">Rice</div><div class="ts-fund-value" style="font-size:17px;">Yamada Nishiki</div><div class="ts-fund-sub">山田錦</div></div>
+        <div class="ts-fund-item"><div class="ts-fund-label">SMV</div><div class="ts-fund-value">+1</div><div class="ts-fund-sub">Slightly dry</div></div>
+      </div>
+    </div>
+
+    <div class="island ts-island" style="margin:0 16px 10px;">
+      <div class="island-title">Sensory Profile</div>
+      <div class="ts-sensory-bar">
+        <div class="ts-sensory-bar-label"><span class="name">Body</span><span class="extremes">Light → Full</span></div>
+        <div class="ts-bar-track"><div class="ts-bar-fill" style="width:75%;"></div><div class="ts-bar-marker" style="left:75%;"></div></div>
+      </div>
+      <div class="ts-sensory-bar">
+        <div class="ts-sensory-bar-label"><span class="name">Aroma</span><span class="extremes">Subtle → Fragrant</span></div>
+        <div class="ts-bar-track"><div class="ts-bar-fill" style="width:55%;"></div><div class="ts-bar-marker" style="left:55%;"></div></div>
+      </div>
+      <div class="ts-sensory-bar">
+        <div class="ts-sensory-bar-label"><span class="name">Sweet / Dry</span><span class="extremes">Sweet → Dry</span></div>
+        <div class="ts-bar-track"><div class="ts-bar-fill" style="width:55%;"></div><div class="ts-bar-marker" style="left:55%;"></div></div>
+      </div>
+      <div class="ts-smv-wrap">
+        <div class="ts-smv-labels"><span>甘口 Sweet</span><span>辛口 Dry</span></div>
+        <div class="ts-smv-scale"><div class="ts-smv-track"><div class="ts-smv-marker" style="left:58%;"><span>+1</span></div></div></div>
+      </div>
+    </div>
+
+    <div class="island ts-island" style="margin:0 16px 10px;">
+      <div class="island-title">Serving Temperature</div>
+      <div class="ts-temp-row">
+        <div class="ts-temp-badge recommended">❄️ 5-10°C</div>
+        <div class="ts-temp-badge recommended">🌿 10-15°C</div>
+        <div class="ts-temp-badge">🌡️ 20°C</div>
+        <div class="ts-temp-badge">♨️ 40°C</div>
+      </div>
+    </div>
+
+    <div class="island ts-island" style="margin:0 16px 10px;">
+      <div class="island-title">Food Pairing</div>
+      <div class="ts-pairing-grid">
+        <div class="ts-pairing-item"><span class="ts-pairing-icon">🍣</span><span class="ts-pairing-text">Sushi</span></div>
+        <div class="ts-pairing-item"><span class="ts-pairing-icon">🐟</span><span class="ts-pairing-text">Sashimi</span></div>
+        <div class="ts-pairing-item"><span class="ts-pairing-icon">🍲</span><span class="ts-pairing-text">Nimono</span></div>
+        <div class="ts-pairing-item"><span class="ts-pairing-icon">🥩</span><span class="ts-pairing-text">Carpaccio</span></div>
+      </div>
+    </div>
+
+    <div class="island ts-island" style="margin:0 16px 10px;">
+      <div class="island-title">Tasting Notes</div>
+      <div class="ts-notes-quote">
+        "Delicate aroma of ripe fruits and floral notes, combined with the full, round flavor of Yamada Nishiki rice. Soft mouthfeel and balanced finish."
+      </div>
+    </div>
+
+    <div class="island ts-island" style="margin:0 16px 10px;">
+      <div class="island-title">Details</div>
+      <div class="ts-expandable" onclick="this.classList.toggle('open')">
+        <div class="ts-expandable-header"><span class="ts-expandable-title">🔬 Production</span><span class="ts-expandable-arrow">▾</span></div>
+        <div class="ts-expandable-content"><div class="ts-expandable-inner">
+          <div class="ts-detail-row"><span class="ts-detail-key">Style</span><span class="ts-detail-val">速醸 Sokujo</span></div>
+          <div class="ts-detail-row"><span class="ts-detail-key">Fermentation</span><span class="ts-detail-val">3 stage</span></div>
+          <div class="ts-detail-row"><span class="ts-detail-key">Press</span><span class="ts-detail-val">薮田式 Yabuta</span></div>
+          <div class="ts-detail-row"><span class="ts-detail-key">Water</span><span class="ts-detail-val">Medium soft</span></div>
+          <div class="ts-detail-row"><span class="ts-detail-key">Acidity</span><span class="ts-detail-val">1.2</span></div>
+        </div></div>
+      </div>
+      <div class="ts-expandable" onclick="this.classList.toggle('open')">
+        <div class="ts-expandable-header"><span class="ts-expandable-title">📦 Logistics</span><span class="ts-expandable-arrow">▾</span></div>
+        <div class="ts-expandable-content"><div class="ts-expandable-inner">
+          <div class="ts-detail-row"><span class="ts-detail-key">Volume</span><span class="ts-detail-val">720ml</span></div>
+          <div class="ts-detail-row"><span class="ts-detail-key">JAN Code</span><span class="ts-detail-val">4902051032046</span></div>
+          <div class="ts-detail-row"><span class="ts-detail-key">Units / Case</span><span class="ts-detail-val">12</span></div>
+          <div class="ts-detail-row"><span class="ts-detail-key">Bottle weight</span><span class="ts-detail-val">1,150g</span></div>
+          <div class="ts-detail-row"><span class="ts-detail-key">Case weight</span><span class="ts-detail-val">7.10kg</span></div>
+          <div class="ts-detail-row"><span class="ts-detail-key">Bottle</span><span class="ts-detail-val">⌀76 × H300mm</span></div>
+          <div class="ts-detail-row"><span class="ts-detail-key">Case</span><span class="ts-detail-val">164 × 244 × 310mm</span></div>
+        </div></div>
+      </div>
+      <div class="ts-expandable" onclick="this.classList.toggle('open')">
+        <div class="ts-expandable-header"><span class="ts-expandable-title">🌿 Certifications</span><span class="ts-expandable-arrow">▾</span></div>
+        <div class="ts-expandable-content"><div class="ts-expandable-inner">
+          <div class="ts-detail-row"><span class="ts-detail-key">Vegan</span><span class="ts-detail-val">✓</span></div>
+          <div class="ts-detail-row"><span class="ts-detail-key">Gluten free</span><span class="ts-detail-val">✓</span></div>
+          <div class="ts-detail-row"><span class="ts-detail-key">Organic</span><span class="ts-detail-val">—</span></div>
+          <div class="ts-detail-row"><span class="ts-detail-key">G.I.</span><span class="ts-detail-val">—</span></div>
+        </div></div>
+      </div>
+    </div>
+
+    <div class="ts-footer">
+      <div class="ts-footer-logo">酒</div>
+      <div>Generated by Sake Platform</div>
+      <div style="margin-top:4px;">Last updated: 2026-03-12</div>
+    </div>
+
+    <div class="ts-actions">
+      <button class="ts-action-btn"><span class="action-icon">📄</span>PDF</button>
+      <button class="ts-action-btn"><span class="action-icon">🔗</span>Link</button>
+      <button class="ts-action-btn primary-action"><span class="action-icon">📤</span>Share</button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  // ========== i18n system ==========
+  const i18n = {
+    ja: {
+      // Step names
+      steps: ['言語','はじめに','あなたの蔵元','蔵元確認','お酒を追加','お酒について','原材料','数値データ','お酒の個性','ボトル・物流'],
+      stepPrefix: 'ステップ',
+      // Cinema page
+      cinema_tagline: 'あなたのお酒を、<br>世界の言葉で届ける。',
+      cinema_sub: '言語を選んではじめましょう。',
+      // FOMO page
+      fomo_claim: '世界初',
+      fomo_headline: 'ひとつのプラットフォーム。<br>すべてが、ここに。',
+      fomo_footnote: '蔵元のために。蔵元と共に。',
+      cta_start: 'はじめる <span class="cta-arrow">→</span>',
+      cta_begin: '登録をはじめる <span class="cta-arrow">→</span>',
+      island_ecosystem: 'ひとつのプラットフォームで',
+      feat1_title: '多言語シート自動生成',
+      feat1_desc: '一度の入力で、日本語・英語・フランス語・イタリア語の技術シートを自動生成。PDF・リンク・転送で共有。',
+      feat2_title: '裏ラベル — 各国法規対応',
+      feat2_desc: '輸入者名と輸出国を選ぶだけで、各国の法規制に準拠した裏ラベルを自動作成。',
+      feat3_title: '国際コンペ — ワンクリック出品',
+      feat3_desc: '登録済みのデータで、IWC・Kuramaster等の国際コンペティションにワンクリックで出品。受賞歴は自動でシートに反映。',
+      island_complang: '入力言語を選択',
+      lang_note: '技術シートは全言語で自動生成されます。ここでは入力時の表示言語を選んでください。',
+      // Labels
+      intro_kura: 'すべてのお酒には、物語があります。<br>まず、その物語が生まれる場所から。',
+      island_kura: '蔵元情報', label_kura_name: '蔵元名', ph_kura_name: '例: 京姫酒造',
+      label_country: '国', label_prefecture: '都道府県', ph_prefecture: '例: 京都府',
+      label_region: '州 / 地域', ph_region: '例: カリフォルニア州',
+      label_brand: 'ブランド名', ph_brand: '例: 匠',
+      island_images: '蔵元の顔', label_logo: '蔵元ロゴ', label_image: 'ラベル画像',
+      intro_images: '世界があなたの蔵を初めて見る瞬間。<br>ロゴで、第一印象を届けましょう。',
+      upload_logo: 'タップしてロゴを選択',
+      upload_hint_logo: 'PNG・SVG推奨 — 透過背景が最適',
+      ai_checking: 'AI が画質を確認中...', ai_good: '画質: 良好', ai_warning: '低解像度 — より高画質な画像をご検討ください',
+      ai_low_res: '解像度が低めです（{w}×{h}px）— 200×200px以上を推奨',
+      ai_bg_warning: '背景が単色です — 透過PNG推奨',
+      ai_size_warning: 'ファイルが非常に小さいです — より高画質な画像をご検討ください',
+      ai_good_detail: '画質良好（{w}×{h}px）',
+      optional: '任意',
+      label_address: '住所', ph_address: '例: 京都市伏見区...', address_autofilled: '自動入力されました — 確認してください',
+      island_contact: 'お客様向け情報',
+      label_website: 'ウェブサイト', ph_website: '例: https://kyohime.co.jp',
+      label_email: 'メールアドレス', ph_email: '例: info@kyohime.co.jp',
+      label_instagram: 'Instagram', ph_instagram: '例: kyohime_shuzo',
+      label_contact_name: '担当者名', ph_contact_name: '例: 山田太郎',
+      intro_confirm: 'あなたの蔵元の名刺が完成しました。<br>確認して、次へ進みましょう。',
+      confirm_hint: '蔵元情報はいつでも修正できます。',
+      confirm_edit: '修正する',
+      add_contact: 'お客様向け情報を追加',
+      add_sake_title: '最初のお酒を登録しましょう',
+      add_sake_sub: '蔵元の登録が完了しました。<br>ここからは、あなたのお酒の物語です。',
+      add_sake_cta: '最初のお酒を登録する <span class="cta-arrow">→</span>',
+      url_checking: '確認中...', url_valid: 'URL確認済み', url_invalid: '形式を確認 — 例: https://example.com',
+      intro_sake: 'あなたのお酒に名前をつけた日のこと、覚えていますか。<br>その想いを、ここに。',
+      island_product: '商品情報', label_product_name: '商品名', ph_product_name: '例: 匠 純米吟醸',
+      label_type: '特定名称', island_code: '識別コード',
+      intro_ingredients: '米、水、酵母。<br>シンプルな素材から生まれる、無限の表情。',
+      island_ingredients: '原材料', label_rice: '使用米', ph_rice: '米の名前を入力...',
+      label_kobo: '酵母（コウボ）', ph_kobo: '酵母の名前を入力...',
+      island_water: '仕込み水', label_water: '水の硬度',
+      intro_numbers: '数字の向こうに、技術と哲学がある。<br>あなたの酒造りの精度を伝えましょう。',
+      island_basic_num: '基本数値', label_seimai: '精米歩合', label_alcohol: 'アルコール度数',
+      island_analysis: '分析値', label_smv_sub: '（日本酒度）',
+      label_acidity: '酸度', label_amino: 'アミノ酸度',
+      intro_character: 'もし、このお酒が人だったら？<br>その性格を、感覚で描いてください。',
+      island_taste: '味わいプロフィール',
+      slider_body: 'ボディ', slider_body_low: '軽い', slider_body_high: '重い',
+      slider_aroma: '香り', slider_aroma_low: '穏やか', slider_aroma_high: '華やか',
+      slider_sweet: '甘辛', slider_sweet_low: '甘口', slider_sweet_high: '辛口',
+      island_recommend: 'おすすめ', label_temp: 'おすすめ温度', label_pairing: 'おすすめ料理',
+      intro_bottle: '最後の一歩。あなたのお酒が旅立つ姿を。',
+      island_bottle: 'ボトル情報', label_volume: '容量', label_case: 'ケース入数', unit_bottles: '本',
+      island_logistics: '物流データ', label_bottle_weight: 'ボトル重量',
+      label_case_weight: 'ケース重量', label_bottle_size: 'ボトルサイズ',
+      ph_diameter: '⌀ mm', ph_height: 'H mm',
+      autosave: '自動保存済み', btn_back: '← 戻る', btn_next: '次へ →',
+    },
+    en: {
+      steps: ['Language','Discover','Your Sakagura','Confirm','Add a Sake','Your Sake','Ingredients','Numbers','Character','Bottle & Logistics'],
+      stepPrefix: 'Step',
+      cinema_tagline: 'Your sake.<br>Every language.',
+      cinema_sub: 'Choose your language to begin.',
+      fomo_claim: 'A world first',
+      fomo_headline: 'One platform.<br>Everything you need.',
+      fomo_footnote: 'Built for sakagura. Built with sakagura.',
+      cta_start: 'Get started <span class="cta-arrow">→</span>',
+      cta_begin: 'Register your sake <span class="cta-arrow">→</span>',
+      island_ecosystem: 'One platform, everything you need',
+      feat1_title: 'Multilingual tech sheets',
+      feat1_desc: 'Enter once — get tech sheets in Japanese, English, French, Italian. Share via PDF, link or forward.',
+      feat2_title: 'Back labels — country compliant',
+      feat2_desc: 'Select importer and country. Legally compliant back labels generated automatically.',
+      feat3_title: 'Competitions — one-click entry',
+      feat3_desc: 'Enter IWC, Kuramaster and more with one click using your registered data. Awards sync back to your sheets.',
+      island_complang: 'Select input language',
+      lang_note: 'Tech sheets are auto-generated in all languages. Choose your preferred language for filling in the form.',
+      intro_kura: 'Every sake has a story.<br>Let\'s begin where that story is born.',
+      island_kura: 'Sakagura Info', label_kura_name: 'Sakagura name', ph_kura_name: 'e.g. Kyohime Shuzo',
+      label_country: 'Country', label_prefecture: 'Prefecture', ph_prefecture: 'e.g. Kyoto',
+      label_region: 'State / Region', ph_region: 'e.g. California',
+      label_brand: 'Brand name', ph_brand: 'e.g. Takumi',
+      island_images: 'The face of your sakagura', label_logo: 'Sakagura logo', label_image: 'Label image',
+      intro_images: 'The world\'s first glimpse of your craft.<br>Your logo sets the stage.',
+      upload_logo: 'Tap to select logo',
+      upload_hint_logo: 'PNG or SVG recommended — transparent bg is best',
+      ai_checking: 'AI verifying image quality...',
+      ai_good: 'Image quality: Good',
+      ai_warning: 'Low resolution — consider a higher quality image',
+      ai_low_res: 'Low resolution ({w}×{h}px) — 200×200px minimum recommended',
+      ai_bg_warning: 'Solid background detected — transparent PNG recommended',
+      ai_size_warning: 'File is very small — consider a higher quality image',
+      ai_good_detail: 'Good quality ({w}×{h}px)',
+      optional: 'Optional',
+      label_address: 'Address', ph_address: 'e.g. Fushimi-ku, Kyoto...', address_autofilled: 'Auto-filled — please confirm',
+      island_contact: 'Client-facing Info',
+      label_website: 'Website', ph_website: 'e.g. https://kyohime.co.jp',
+      label_email: 'Email', ph_email: 'e.g. info@kyohime.co.jp',
+      label_instagram: 'Instagram', ph_instagram: 'e.g. kyohime_shuzo',
+      label_contact_name: 'Contact person', ph_contact_name: 'e.g. Taro Yamada',
+      intro_confirm: 'Your sakagura\'s identity card is ready.<br>Review and move on to your sake.',
+      confirm_hint: 'You can edit sakagura info at any time.',
+      confirm_edit: 'Edit',
+      add_contact: 'Add client-facing info',
+      add_sake_title: 'Let\'s register your first sake',
+      add_sake_sub: 'Your sakagura is set.<br>Now it\'s time for your sake\'s story.',
+      add_sake_cta: 'Register your first sake <span class="cta-arrow">→</span>',
+      url_checking: 'Checking...', url_valid: 'Valid URL', url_invalid: 'Check format — e.g. https://example.com',
+      intro_sake: 'The day you named this sake — do you remember?<br>Carry that intention here.',
+      island_product: 'Product Info', label_product_name: 'Product name', ph_product_name: 'e.g. Takumi Junmai Ginjo',
+      label_type: 'Classification', island_code: 'Product Code',
+      intro_ingredients: 'Rice, water, yeast.<br>Simple elements, infinite expression.',
+      island_ingredients: 'Ingredients', label_rice: 'Rice variety', ph_rice: 'Type rice name...',
+      label_kobo: 'Yeast (Kobo)', ph_kobo: 'Type yeast name...',
+      island_water: 'Brewing Water', label_water: 'Water hardness',
+      intro_numbers: 'Behind every number, a philosophy.<br>Share the precision of your craft.',
+      island_basic_num: 'Key Numbers', label_seimai: 'Seimai Buai (polishing ratio)', label_alcohol: 'Alcohol',
+      island_analysis: 'Analysis', label_smv_sub: '(Sake Meter Value)',
+      label_acidity: 'Acidity', label_amino: 'Amino acid level',
+      intro_character: 'If this sake were a person, who would it be?<br>Paint its personality through your senses.',
+      island_taste: 'Taste Profile',
+      slider_body: 'Body', slider_body_low: 'Light', slider_body_high: 'Full',
+      slider_aroma: 'Aroma', slider_aroma_low: 'Subtle', slider_aroma_high: 'Fragrant',
+      slider_sweet: 'Sweet / Dry', slider_sweet_low: 'Sweet', slider_sweet_high: 'Dry',
+      island_recommend: 'Recommendations', label_temp: 'Serving temperature', label_pairing: 'Food pairing',
+      intro_bottle: 'The final step. The shape of its journey into the world.',
+      island_bottle: 'Bottle Info', label_volume: 'Volume', label_case: 'Units per case', unit_bottles: 'btl',
+      island_logistics: 'Logistics', label_bottle_weight: 'Bottle weight',
+      label_case_weight: 'Case weight', label_bottle_size: 'Bottle size',
+      ph_diameter: '⌀ mm', ph_height: 'H mm',
+      autosave: 'Auto-saved', btn_back: '← Back', btn_next: 'Next →',
+    },
+    fr: {
+      steps: ['Langue','Découvrir','Votre Sakagura','Confirmation','Ajouter un Saké','Votre Saké','Ingrédients','Données','Caractère','Bouteille & Logistique'],
+      stepPrefix: 'Étape',
+      cinema_tagline: 'Votre saké.<br>Dans toutes les langues.',
+      cinema_sub: 'Choisissez votre langue pour commencer.',
+      fomo_claim: 'Une première mondiale',
+      fomo_headline: 'Une plateforme.<br>Tout ce qu\'il faut.',
+      fomo_footnote: 'Conçu pour les sakagura. Conçu avec les sakagura.',
+      cta_start: 'Commencer <span class="cta-arrow">→</span>',
+      cta_begin: 'Enregistrer votre saké <span class="cta-arrow">→</span>',
+      island_ecosystem: 'Une plateforme, tout ce qu\'il faut',
+      feat1_title: 'Fiches multilingues',
+      feat1_desc: 'Saisissez une fois — obtenez des fiches en japonais, anglais, français, italien. Partagez en PDF, lien ou transfert.',
+      feat2_title: 'Contre-étiquettes conformes',
+      feat2_desc: 'Sélectionnez l\'importateur et le pays. Contre-étiquettes conformes à la législation générées automatiquement.',
+      feat3_title: 'Concours — inscription en un clic',
+      feat3_desc: 'Inscrivez-vous à l\'IWC, Kuramaster et plus avec vos données déjà enregistrées. Les prix se synchronisent avec vos fiches.',
+      island_complang: 'Langue de saisie',
+      lang_note: 'Les fiches techniques sont générées dans toutes les langues. Choisissez votre langue préférée pour remplir le formulaire.',
+      intro_kura: 'Chaque saké raconte une histoire.<br>Commençons par le lieu où elle naît.',
+      island_kura: 'Sakagura', label_kura_name: 'Nom de la sakagura', ph_kura_name: 'ex: Kyohime Shuzo',
+      label_country: 'Pays', label_prefecture: 'Préfecture', ph_prefecture: 'ex: Kyoto',
+      label_region: 'État / Région', ph_region: 'ex: Californie',
+      label_brand: 'Marque', ph_brand: 'ex: Takumi',
+      island_images: 'Le visage de votre sakagura', label_logo: 'Logo de la sakagura', label_image: 'Image étiquette',
+      intro_images: 'Le premier regard du monde sur votre savoir-faire.<br>Votre logo pose le décor.',
+      upload_logo: 'Appuyez pour choisir un logo',
+      upload_hint_logo: 'PNG ou SVG recommandé — fond transparent idéal',
+      ai_checking: 'IA vérifie la qualité de l\'image...',
+      ai_good: 'Qualité image : Bonne',
+      ai_warning: 'Basse résolution — envisagez une image de meilleure qualité',
+      ai_low_res: 'Résolution faible ({w}×{h}px) — minimum 200×200px recommandé',
+      ai_bg_warning: 'Fond uni détecté — PNG transparent recommandé',
+      ai_size_warning: 'Fichier très petit — envisagez une image de meilleure qualité',
+      ai_good_detail: 'Bonne qualité ({w}×{h}px)',
+      optional: 'Facultatif',
+      label_address: 'Adresse', ph_address: 'ex: Fushimi-ku, Kyoto...', address_autofilled: 'Remplie automatiquement — veuillez confirmer',
+      island_contact: 'Infos pour les clients',
+      label_website: 'Site web', ph_website: 'ex: https://kyohime.co.jp',
+      label_email: 'E-mail', ph_email: 'ex: info@kyohime.co.jp',
+      label_instagram: 'Instagram', ph_instagram: 'ex: kyohime_shuzo',
+      label_contact_name: 'Personne de contact', ph_contact_name: 'ex: Taro Yamada',
+      intro_confirm: 'La carte d\'identité de votre sakagura est prête.<br>Vérifiez et passons à votre saké.',
+      confirm_hint: 'Vous pouvez modifier les infos de la sakagura à tout moment.',
+      confirm_edit: 'Modifier',
+      add_contact: 'Ajouter les infos clients',
+      add_sake_title: 'Enregistrons votre premier saké',
+      add_sake_sub: 'Votre sakagura est prête.<br>Place maintenant à l\'histoire de votre saké.',
+      add_sake_cta: 'Enregistrer votre premier saké <span class="cta-arrow">→</span>',
+      url_checking: 'Vérification...', url_valid: 'URL valide', url_invalid: 'Vérifiez le format — ex: https://example.com',
+      intro_sake: 'Le jour où vous avez nommé ce saké — vous en souvenez-vous ?<br>Portez cette intention ici.',
+      island_product: 'Produit', label_product_name: 'Nom du produit', ph_product_name: 'ex: Takumi Junmai Ginjo',
+      label_type: 'Classification', island_code: 'Code produit',
+      intro_ingredients: 'Riz, eau, levure.<br>Des éléments simples, une expression infinie.',
+      island_ingredients: 'Ingrédients', label_rice: 'Variété de riz', ph_rice: 'Tapez le nom du riz...',
+      label_kobo: 'Levure (Kobo)', ph_kobo: 'Tapez le nom de la levure...',
+      island_water: 'Eau de brassage', label_water: 'Dureté de l\'eau',
+      intro_numbers: 'Derrière chaque chiffre, une philosophie.<br>Partagez la précision de votre art.',
+      island_basic_num: 'Valeurs clés', label_seimai: 'Seimai Buai (taux de polissage)', label_alcohol: 'Alcool',
+      island_analysis: 'Analyse', label_smv_sub: '(Sake Meter Value)',
+      label_acidity: 'Acidité', label_amino: 'Acides aminés',
+      intro_character: 'Si ce saké était une personne, qui serait-il ?<br>Dessinez son caractère avec vos sens.',
+      island_taste: 'Profil gustatif',
+      slider_body: 'Corps', slider_body_low: 'Léger', slider_body_high: 'Plein',
+      slider_aroma: 'Arôme', slider_aroma_low: 'Discret', slider_aroma_high: 'Intense',
+      slider_sweet: 'Sucré / Sec', slider_sweet_low: 'Sucré', slider_sweet_high: 'Sec',
+      island_recommend: 'Recommandations', label_temp: 'Température de service', label_pairing: 'Accords mets',
+      intro_bottle: 'La dernière étape. La forme de son voyage dans le monde.',
+      island_bottle: 'Bouteille', label_volume: 'Contenance', label_case: 'Unités par caisse', unit_bottles: 'bt',
+      island_logistics: 'Logistique', label_bottle_weight: 'Poids bouteille',
+      label_case_weight: 'Poids caisse', label_bottle_size: 'Dimensions bouteille',
+      ph_diameter: '⌀ mm', ph_height: 'H mm',
+      autosave: 'Enregistré', btn_back: '← Retour', btn_next: 'Suivant →',
+    },
+    it: {
+      steps: ['Lingua','Scopri','La tua Sakagura','Conferma','Aggiungi Sake','Il tuo Sake','Ingredienti','Dati','Carattere','Bottiglia & Logistica'],
+      stepPrefix: 'Passo',
+      cinema_tagline: 'Il tuo sake.<br>In ogni lingua.',
+      cinema_sub: 'Scegli la lingua per iniziare.',
+      fomo_claim: 'Per la prima volta al mondo',
+      fomo_headline: 'Una piattaforma.<br>Tutto ciò che serve.',
+      fomo_footnote: 'Creato per le sakagura. Creato con le sakagura.',
+      cta_start: 'Inizia <span class="cta-arrow">→</span>',
+      cta_begin: 'Registra il tuo sake <span class="cta-arrow">→</span>',
+      island_ecosystem: 'Una piattaforma, tutto ciò che serve',
+      feat1_title: 'Schede tecniche multilingua',
+      feat1_desc: 'Compila una volta — ottieni schede in giapponese, inglese, francese, italiano. Condividi via PDF, link o inoltro.',
+      feat2_title: 'Retro etichette — conformi per paese',
+      feat2_desc: 'Seleziona importatore e paese. Retro etichette conformi alla normativa locale generate automaticamente.',
+      feat3_title: 'Competizioni — iscrizione in un click',
+      feat3_desc: 'Iscriviti a IWC, Kuramaster e altri con un click usando i dati già registrati. I premi si sincronizzano con le schede.',
+      island_complang: 'Lingua di compilazione',
+      lang_note: 'Le schede tecniche vengono generate automaticamente in tutte le lingue. Qui scegli la lingua per compilare il modulo.',
+      intro_kura: 'Ogni sake ha una storia.<br>Iniziamo dal luogo in cui nasce.',
+      island_kura: 'Sakagura', label_kura_name: 'Nome sakagura', ph_kura_name: 'es: Kyohime Shuzo',
+      label_country: 'Paese', label_prefecture: 'Prefettura', ph_prefecture: 'es: Kyoto',
+      label_region: 'Stato / Regione', ph_region: 'es: California',
+      label_brand: 'Marchio', ph_brand: 'es: Takumi',
+      island_images: 'Il volto della tua sakagura', label_logo: 'Logo della sakagura', label_image: 'Immagine etichetta',
+      intro_images: 'Il primo sguardo del mondo sul tuo lavoro.<br>Il tuo logo prepara la scena.',
+      upload_logo: 'Tocca per scegliere un logo',
+      upload_hint_logo: 'PNG o SVG consigliato — sfondo trasparente ideale',
+      ai_checking: 'IA verifica la qualità dell\'immagine...',
+      ai_good: 'Qualità immagine: Buona',
+      ai_warning: 'Bassa risoluzione — considera un\'immagine di qualità superiore',
+      ai_low_res: 'Risoluzione bassa ({w}×{h}px) — minimo 200×200px consigliato',
+      ai_bg_warning: 'Sfondo uniforme rilevato — PNG trasparente consigliato',
+      ai_size_warning: 'File molto piccolo — considera un\'immagine di qualità superiore',
+      ai_good_detail: 'Buona qualità ({w}×{h}px)',
+      optional: 'Facoltativo',
+      label_address: 'Indirizzo', ph_address: 'es: Fushimi-ku, Kyoto...', address_autofilled: 'Compilato automaticamente — verifica per favore',
+      island_contact: 'Info per i clienti',
+      label_website: 'Sito web', ph_website: 'es: https://kyohime.co.jp',
+      label_email: 'Email', ph_email: 'es: info@kyohime.co.jp',
+      label_instagram: 'Instagram', ph_instagram: 'es: kyohime_shuzo',
+      label_contact_name: 'Referente', ph_contact_name: 'es: Taro Yamada',
+      intro_confirm: 'La carta d\'identità della tua sakagura è pronta.<br>Verifica e passiamo al tuo sake.',
+      confirm_hint: 'Puoi modificare le info della sakagura in qualsiasi momento.',
+      confirm_edit: 'Modifica',
+      add_contact: 'Aggiungi info per i clienti',
+      add_sake_title: 'Registriamo il tuo primo sake',
+      add_sake_sub: 'La tua sakagura è pronta.<br>Ora è il momento della storia del tuo sake.',
+      add_sake_cta: 'Registra il tuo primo sake <span class="cta-arrow">→</span>',
+      url_checking: 'Verifica...', url_valid: 'URL valido', url_invalid: 'Controlla il formato — es: https://example.com',
+      intro_sake: 'Il giorno in cui hai dato un nome a questo sake — lo ricordi?<br>Porta qui quell\'intenzione.',
+      island_product: 'Prodotto', label_product_name: 'Nome prodotto', ph_product_name: 'es: Takumi Junmai Ginjo',
+      label_type: 'Classificazione', island_code: 'Codice prodotto',
+      intro_ingredients: 'Riso, acqua, lievito.<br>Elementi semplici, espressione infinita.',
+      island_ingredients: 'Ingredienti', label_rice: 'Varietà di riso', ph_rice: 'Digita il nome del riso...',
+      label_kobo: 'Lievito (Kobo)', ph_kobo: 'Digita il nome del lievito...',
+      island_water: 'Acqua di lavorazione', label_water: 'Durezza dell\'acqua',
+      intro_numbers: 'Dietro ogni numero, una filosofia.<br>Condividi la precisione del tuo mestiere.',
+      island_basic_num: 'Valori principali', label_seimai: 'Seimai Buai (raffinazione del riso)', label_alcohol: 'Alcol',
+      island_analysis: 'Analisi', label_smv_sub: '(Sake Meter Value)',
+      label_acidity: 'Acidità', label_amino: 'Aminoacidi',
+      intro_character: 'Se questo sake fosse una persona, chi sarebbe?<br>Disegna il suo carattere con i tuoi sensi.',
+      island_taste: 'Profilo gustativo',
+      slider_body: 'Corpo', slider_body_low: 'Leggero', slider_body_high: 'Pieno',
+      slider_aroma: 'Aroma', slider_aroma_low: 'Delicato', slider_aroma_high: 'Intenso',
+      slider_sweet: 'Dolce / Secco', slider_sweet_low: 'Dolce', slider_sweet_high: 'Secco',
+      island_recommend: 'Raccomandazioni', label_temp: 'Temperatura di servizio', label_pairing: 'Abbinamenti',
+      intro_bottle: 'L\'ultimo passo. La forma del suo viaggio nel mondo.',
+      island_bottle: 'Bottiglia', label_volume: 'Formato', label_case: 'Unità per cassa', unit_bottles: 'bt',
+      island_logistics: 'Logistica', label_bottle_weight: 'Peso bottiglia',
+      label_case_weight: 'Peso cassa', label_bottle_size: 'Dimensioni bottiglia',
+      ph_diameter: '⌀ mm', ph_height: 'H mm',
+      autosave: 'Salvato', btn_back: '← Indietro', btn_next: 'Avanti →',
+    }
+  };
+
+  let currentLang = 'ja';
+  let currentStep = 0;
+  const totalSteps = 10;
+
+  function applyLanguage(lang) {
+    currentLang = lang;
+    const t = i18n[lang];
+    // Update all data-i18n elements
+    document.querySelectorAll('[data-i18n]').forEach(el => {
+      const key = el.getAttribute('data-i18n');
+      if (t[key]) el.innerHTML = t[key];
+    });
+    // Update placeholders
+    document.querySelectorAll('[data-i18n-ph]').forEach(el => {
+      const key = el.getAttribute('data-i18n-ph');
+      if (t[key]) el.placeholder = t[key];
+    });
+    // Cinema tagline
+    const ct = document.querySelector('.cinema-tagline');
+    const cs = document.querySelector('.cinema-sub');
+    if (ct) ct.innerHTML = t.cinema_tagline;
+    if (cs) cs.innerHTML = t.cinema_sub;
+    // Update multilingual chips
+    document.querySelectorAll('.chip[data-chip-' + lang + ']').forEach(chip => {
+      chip.textContent = chip.getAttribute('data-chip-' + lang);
+    });
+    // Update step display
+    updateWizard();
+  }
+
+  function updateWizard() {
+    const t = i18n[currentLang];
+    document.querySelectorAll('.wizard-progress-dot').forEach((dot, i) => {
+      dot.classList.remove('done', 'current');
+      if (i < currentStep) dot.classList.add('done');
+      if (i === currentStep) dot.classList.add('current');
+    });
+    document.getElementById('stepLabel').textContent = `${t.stepPrefix} ${currentStep + 1} / ${totalSteps}`;
+    document.getElementById('stepTitle').textContent = t.steps[currentStep];
+    document.querySelectorAll('.wizard-step').forEach((step, i) => {
+      step.classList.toggle('active', i === currentStep);
+    });
+    // Hide header + nav on cinematic pages (0 & 1), show on data pages
+    const header = document.querySelector('.wizard-header');
+    const nav = document.querySelector('.wizard-nav');
+    const isCinematic = currentStep <= 1 || currentStep === 4;
+    if (header) header.style.display = isCinematic ? 'none' : '';
+    if (nav) nav.style.display = isCinematic ? 'none' : '';
+    // Populate confirm card when entering step 3
+    if (currentStep === 3) { populateConfirmCard(); }
+    // Re-trigger FOMO animations when entering step 1
+    if (currentStep === 1) {
+      document.querySelectorAll('.fomo-feat').forEach(f => {
+        f.style.animation = 'none';
+        f.offsetHeight; // force reflow
+        f.style.animation = '';
+      });
+    }
+  }
+
+  function nextStep() {
+    if (currentStep < totalSteps - 1) { currentStep++; updateWizard(); }
+  }
+  function prevStep() {
+    if (currentStep > 0) { currentStep--; updateWizard(); }
+  }
+
+  function showMode(mode) {
+    document.querySelectorAll('.mode-btn').forEach(btn => btn.classList.remove('active'));
+    event.target.classList.add('active');
+    document.getElementById('wizard').classList.toggle('active', mode === 'input');
+    document.getElementById('techsheet').classList.toggle('active', mode === 'output');
+  }
+
+  function selectLang(el, lang) {
+    document.querySelectorAll('.cinema-lang').forEach(o => o.classList.remove('selected'));
+    el.classList.add('selected');
+    applyLanguage(lang);
+  }
+
+  function populateConfirmCard() {
+    // Get country
+    const countryEl = document.getElementById('countrySelect');
+    const countryText = countryEl.options[countryEl.selectedIndex].text;
+    const countryVal = countryEl.value;
+    // Get location (prefecture for JP, region for others)
+    let location = '';
+    if (countryVal === 'JP') {
+      location = document.getElementById('prefectureInput').value.trim();
+    } else {
+      location = document.getElementById('regionInput').value.trim();
+    }
+    const locationLine = location ? location + ', ' + countryText : countryText;
+
+    // Get fields by ID
+    const kuraName = document.getElementById('kuraNameInput').value.trim() || '—';
+    const address = document.getElementById('addressInput').value.trim();
+    const brandVal = (document.getElementById('brandInput') || {}).value ? document.getElementById('brandInput').value.trim() : '';
+    const website = document.getElementById('websiteInput') ? document.getElementById('websiteInput').value.trim() : '';
+    const email = document.getElementById('contactEmail') ? document.getElementById('contactEmail').value.trim() : '';
+    const ig = document.getElementById('instagramInput') ? document.getElementById('instagramInput').value.trim() : '';
+    const contactName = document.getElementById('contactNameInput') ? document.getElementById('contactNameInput').value.trim() : '';
+
+    document.getElementById('confirmKuraName').textContent = kuraName;
+    document.getElementById('confirmPrefecture').textContent = locationLine;
+
+    function setRow(id, val) {
+      const row = document.getElementById(id);
+      if (val) { row.style.display = 'flex'; row.querySelector('.confirm-value').textContent = val; }
+      else { row.style.display = 'none'; }
+    }
+    setRow('confirmBrand', brandVal);
+    setRow('confirmAddress', address);
+    setRow('confirmWebsite', website);
+    setRow('confirmEmail', email);
+    setRow('confirmInstagram', ig ? '@' + ig : '');
+    setRow('confirmContact', contactName);
+
+    // Logo preview
+    const logoInput = document.getElementById('logoFile');
+    const confirmLogo = document.getElementById('confirmLogo');
+    if (logoInput && logoInput.files && logoInput.files[0]) {
+      const reader = new FileReader();
+      reader.onload = e => {
+        confirmLogo.innerHTML = '<img src="'+e.target.result+'" style="width:100%;height:100%;object-fit:cover;border-radius:16px;">';
+      };
+      reader.readAsDataURL(logoInput.files[0]);
+    } else {
+      confirmLogo.innerHTML = '🏯';
+    }
+  }
+
+  // Website URL validation
+  let urlCheckTimeout;
+  function checkWebsite(input) {
+    const badge = document.getElementById('urlCheckBadge');
+    const icon = document.getElementById('urlCheckIcon');
+    const text = document.getElementById('urlCheckText');
+    const t = i18n[currentLang];
+    const val = input.value.trim();
+    if (!val) { badge.style.display = 'none'; return; }
+    clearTimeout(urlCheckTimeout);
+    badge.style.display = 'inline-flex';
+    badge.className = 'url-check checking';
+    icon.textContent = '⏳';
+    text.textContent = t.url_checking || 'Checking...';
+    urlCheckTimeout = setTimeout(() => {
+      const urlPattern = /^https?:\/\/.+\..+/i;
+      if (urlPattern.test(val)) {
+        badge.className = 'url-check valid';
+        icon.textContent = '✓';
+        text.textContent = t.url_valid || 'Valid URL';
+      } else {
+        badge.className = 'url-check invalid';
+        icon.textContent = '⚠';
+        text.textContent = t.url_invalid || 'Check format — e.g. https://example.com';
+      }
+    }, 600);
+  }
+
+  function toggleExtraContacts() {
+    const extra = document.getElementById('extraContactFields');
+    const btn = document.getElementById('addContactBtn');
+    const isOpen = btn.classList.contains('open');
+    if (isOpen) {
+      extra.style.display = 'none';
+      btn.classList.remove('open');
+      btn.querySelector('.add-contact-icon').textContent = '＋';
+    } else {
+      extra.style.display = 'block';
+      btn.classList.add('open');
+      btn.querySelector('.add-contact-icon').textContent = '−';
+    }
+  }
+
+  function onCountryChange() {
+    const country = document.getElementById('countrySelect').value;
+    const prefGroup = document.getElementById('prefectureGroup');
+    const regionGroup = document.getElementById('regionGroup');
+    if (country === 'JP') {
+      prefGroup.style.display = '';
+      regionGroup.style.display = 'none';
+    } else {
+      prefGroup.style.display = 'none';
+      regionGroup.style.display = '';
+    }
+  }
+
+  function switchLang(btn) {
+    btn.parentElement.querySelectorAll('.ts-lang-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+  }
+
+  document.querySelectorAll('.chip').forEach(chip => {
+    chip.addEventListener('click', function() {
+      const group = this.parentElement;
+      const label = group.closest('.field-group')?.querySelector('.field-label')?.textContent || '';
+      const isMulti = label.includes('温度') || label.includes('料理') || label.includes('容量')
+        || label.includes('temperature') || label.includes('pairing') || label.includes('Volume')
+        || label.includes('Temperatura') || label.includes('Abbinamenti') || label.includes('Formato');
+      if (isMulti) { this.classList.toggle('selected'); }
+      else { group.querySelectorAll('.chip').forEach(c => c.classList.remove('selected')); this.classList.add('selected'); }
+    });
+  });
+
+  function selectSlider(dot) {
+    const siblings = dot.parentElement.children;
+    const index = Array.from(siblings).indexOf(dot);
+    Array.from(siblings).forEach((d, i) => d.classList.toggle('active', i <= index));
+    const valueEl = dot.closest('.slider-field').querySelector('.value');
+    if (valueEl) valueEl.textContent = `${index + 1} / 5`;
+  }
+
+  // ========== Prefecture autocomplete ==========
+  const prefectures = [
+    {jp:'北海道',en:'Hokkaido'},{jp:'青森県',en:'Aomori'},{jp:'岩手県',en:'Iwate'},{jp:'宮城県',en:'Miyagi'},
+    {jp:'秋田県',en:'Akita'},{jp:'山形県',en:'Yamagata'},{jp:'福島県',en:'Fukushima'},{jp:'茨城県',en:'Ibaraki'},
+    {jp:'栃木県',en:'Tochigi'},{jp:'群馬県',en:'Gunma'},{jp:'埼玉県',en:'Saitama'},{jp:'千葉県',en:'Chiba'},
+    {jp:'東京都',en:'Tokyo'},{jp:'神奈川県',en:'Kanagawa'},{jp:'新潟県',en:'Niigata'},{jp:'富山県',en:'Toyama'},
+    {jp:'石川県',en:'Ishikawa'},{jp:'福井県',en:'Fukui'},{jp:'山梨県',en:'Yamanashi'},{jp:'長野県',en:'Nagano'},
+    {jp:'岐阜県',en:'Gifu'},{jp:'静岡県',en:'Shizuoka'},{jp:'愛知県',en:'Aichi'},{jp:'三重県',en:'Mie'},
+    {jp:'滋賀県',en:'Shiga'},{jp:'京都府',en:'Kyoto'},{jp:'大阪府',en:'Osaka'},{jp:'兵庫県',en:'Hyogo'},
+    {jp:'奈良県',en:'Nara'},{jp:'和歌山県',en:'Wakayama'},{jp:'鳥取県',en:'Tottori'},{jp:'島根県',en:'Shimane'},
+    {jp:'岡山県',en:'Okayama'},{jp:'広島県',en:'Hiroshima'},{jp:'山口県',en:'Yamaguchi'},{jp:'徳島県',en:'Tokushima'},
+    {jp:'香川県',en:'Kagawa'},{jp:'愛媛県',en:'Ehime'},{jp:'高知県',en:'Kochi'},{jp:'福岡県',en:'Fukuoka'},
+    {jp:'佐賀県',en:'Saga'},{jp:'長崎県',en:'Nagasaki'},{jp:'熊本県',en:'Kumamoto'},{jp:'大分県',en:'Oita'},
+    {jp:'宮崎県',en:'Miyazaki'},{jp:'鹿児島県',en:'Kagoshima'},{jp:'沖縄県',en:'Okinawa'}
+  ];
+
+  function renderPrefectures(list) {
+    const el = document.getElementById('prefectureList');
+    el.innerHTML = list.map(p =>
+      `<div class="autocomplete-item" onclick="pickPrefecture('${p.jp}','${p.en}')"><span class="jp">${p.jp}</span><span class="romaji">${p.en}</span></div>`
+    ).join('');
+  }
+
+  function showPrefectures() {
+    const el = document.getElementById('prefectureList');
+    renderPrefectures(prefectures);
+    el.classList.add('show');
+  }
+
+  function filterPrefectures() {
+    prefHighlight = -1;
+    const val = document.getElementById('prefectureInput').value.toLowerCase();
+    const filtered = prefectures.filter(p =>
+      p.jp.includes(val) || p.en.toLowerCase().includes(val)
+    );
+    renderPrefectures(filtered);
+    document.getElementById('prefectureList').classList.toggle('show', filtered.length > 0 && val.length > 0);
+  }
+
+  let prefHighlight = -1;
+
+  function prefectureKeydown(e) {
+    const list = document.getElementById('prefectureList');
+    const items = list.querySelectorAll('.autocomplete-item');
+    if (!items.length || !list.classList.contains('show')) return;
+
+    if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      prefHighlight = Math.min(prefHighlight + 1, items.length - 1);
+      updatePrefHighlight(items);
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      prefHighlight = Math.max(prefHighlight - 1, 0);
+      updatePrefHighlight(items);
+    } else if (e.key === 'Enter') {
+      e.preventDefault();
+      if (prefHighlight >= 0 && prefHighlight < items.length) {
+        items[prefHighlight].click();
+      } else if (items.length === 1) {
+        items[0].click();
+      } else if (items.length > 0) {
+        items[0].click();
+      }
+      prefHighlight = -1;
+    }
+  }
+
+  function updatePrefHighlight(items) {
+    items.forEach((it, i) => it.classList.toggle('highlighted', i === prefHighlight));
+    if (prefHighlight >= 0) items[prefHighlight].scrollIntoView({ block: 'nearest' });
+  }
+
+  function pickPrefecture(jp, en) {
+    document.getElementById('prefectureInput').value = currentLang === 'ja' ? jp : `${en} (${jp})`;
+    document.getElementById('prefectureList').classList.remove('show');
+    prefHighlight = -1;
+  }
+
+  // Close prefecture list on outside click
+  document.addEventListener('click', (e) => {
+    if (!e.target.closest('#prefectureInput') && !e.target.closest('#prefectureList')) {
+      document.getElementById('prefectureList').classList.remove('show');
+    }
+  });
+
+  // ========== Image upload with AI quality check ==========
+  function handleImageUpload(input, type) {
+    if (!input.files || !input.files[0]) return;
+    const file = input.files[0];
+    const label = input.previousElementSibling;
+    const badge = input.nextElementSibling;
+    const t = i18n[currentLang];
+
+    // Update the upload area to show file selected
+    label.classList.add('has-file');
+    label.querySelector('.upload-text').textContent = file.name.length > 24
+      ? file.name.substring(0, 21) + '...' : file.name;
+
+    // Show thumbnail for logo
+    const thumb = label.querySelector('.logo-thumb');
+    if (thumb) {
+      const reader = new FileReader();
+      reader.onload = e => { thumb.src = e.target.result; };
+      reader.readAsDataURL(file);
+    }
+
+    // Show AI checking badge
+    if (badge) {
+      badge.style.display = 'flex';
+      badge.className = 'ai-quality-badge checking';
+      badge.querySelector('.ai-badge-text').textContent = t.ai_checking || 'AI verifying...';
+      badge.querySelector('.ai-badge-icon').textContent = '⏳';
+
+      // Real image analysis via Canvas API
+      analyzeImage(file).then(result => {
+        const issues = [];
+        // Image failed to load
+        if (result.width === 0 && result.height === 0) {
+          badge.className = 'ai-quality-badge warning';
+          badge.querySelector('.ai-badge-text').textContent = t.ai_warning || 'Could not analyze image';
+          badge.querySelector('.ai-badge-icon').textContent = '⚠';
+          return;
+        }
+        // Check resolution
+        if (result.width < 200 || result.height < 200) {
+          const msg = (t.ai_low_res || 'Low resolution ({w}×{h}px)')
+            .replace('{w}', result.width).replace('{h}', result.height);
+          issues.push(msg);
+        }
+        // Check for solid/uniform background (not transparent)
+        if (result.hasSolidBg && !result.hasTransparency) {
+          issues.push(t.ai_bg_warning || 'Solid background detected');
+        }
+        // Check file size as secondary signal
+        if (file.size < 5000) {
+          issues.push(t.ai_size_warning || 'File is very small');
+        }
+
+        if (issues.length > 0) {
+          badge.className = 'ai-quality-badge warning';
+          badge.querySelector('.ai-badge-text').textContent = issues[0];
+          badge.querySelector('.ai-badge-icon').textContent = '⚠';
+          // Show additional issues as tooltip
+          if (issues.length > 1) {
+            badge.title = issues.join('\n');
+          }
+        } else {
+          badge.className = 'ai-quality-badge good';
+          const msg = (t.ai_good_detail || 'Good quality ({w}×{h}px)')
+            .replace('{w}', result.width).replace('{h}', result.height);
+          badge.querySelector('.ai-badge-text').textContent = msg;
+          badge.querySelector('.ai-badge-icon').textContent = '✓';
+          badge.title = '';
+        }
+      });
+    }
+  }
+
+  // Analyze image: resolution, transparency, background uniformity
+  function analyzeImage(file) {
+    return new Promise(resolve => {
+      const img = new Image();
+      const url = URL.createObjectURL(file);
+      img.onload = () => {
+        const w = img.naturalWidth;
+        const h = img.naturalHeight;
+        // Draw to canvas for pixel analysis
+        const canvas = document.createElement('canvas');
+        const size = Math.min(w, h, 200); // sample at most 200px for performance
+        canvas.width = size;
+        canvas.height = size;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0, size, size);
+        const data = ctx.getImageData(0, 0, size, size).data;
+
+        // Check transparency (alpha channel)
+        let transparentPixels = 0;
+        let totalPixels = size * size;
+        for (let i = 3; i < data.length; i += 4) {
+          if (data[i] < 250) transparentPixels++;
+        }
+        const hasTransparency = transparentPixels > totalPixels * 0.05;
+
+        // Check background uniformity — sample edges (top, bottom, left, right rows)
+        let edgePixels = [];
+        for (let x = 0; x < size; x++) {
+          // Top row
+          let idx = x * 4;
+          edgePixels.push([data[idx], data[idx+1], data[idx+2]]);
+          // Bottom row
+          idx = ((size - 1) * size + x) * 4;
+          edgePixels.push([data[idx], data[idx+1], data[idx+2]]);
+        }
+        for (let y = 0; y < size; y++) {
+          // Left col
+          let idx = (y * size) * 4;
+          edgePixels.push([data[idx], data[idx+1], data[idx+2]]);
+          // Right col
+          idx = (y * size + size - 1) * 4;
+          edgePixels.push([data[idx], data[idx+1], data[idx+2]]);
+        }
+        // Calculate color variance of edge pixels
+        const avgR = edgePixels.reduce((s, p) => s + p[0], 0) / edgePixels.length;
+        const avgG = edgePixels.reduce((s, p) => s + p[1], 0) / edgePixels.length;
+        const avgB = edgePixels.reduce((s, p) => s + p[2], 0) / edgePixels.length;
+        let variance = 0;
+        edgePixels.forEach(p => {
+          variance += (p[0] - avgR) ** 2 + (p[1] - avgG) ** 2 + (p[2] - avgB) ** 2;
+        });
+        variance /= edgePixels.length;
+        // Low variance = uniform background (threshold ~300)
+        const hasSolidBg = variance < 300;
+
+        URL.revokeObjectURL(url);
+        resolve({ width: w, height: h, hasTransparency, hasSolidBg });
+      };
+      img.onerror = () => {
+        URL.revokeObjectURL(url);
+        resolve({ width: 0, height: 0, hasTransparency: false, hasSolidBg: false });
+      };
+      img.src = url;
+    });
+  }
+
+  // ===== GOOGLE PLACES AUTOCOMPLETE =====
+  let placesAutocomplete = null;
+  function initPlacesAutocomplete() {
+    const input = document.getElementById('kuraNameInput');
+    if (!input || !window.google || !google.maps || !google.maps.places) return;
+    placesAutocomplete = new google.maps.places.Autocomplete(input, {
+      types: ['establishment'],
+      fields: ['name', 'formatted_address', 'address_components', 'geometry']
+    });
+    placesAutocomplete.addListener('place_changed', () => {
+      const place = placesAutocomplete.getPlace();
+      if (!place || !place.formatted_address) return;
+      // Auto-fill address
+      const addressInput = document.getElementById('addressInput');
+      if (addressInput) {
+        addressInput.value = place.formatted_address;
+        addressInput.classList.add('address-prefilled');
+        // Show autofill badge
+        const badge = document.getElementById('addressBadge');
+        if (badge) { badge.style.display = 'flex'; }
+        // Auto-dismiss badge after 5 seconds
+        setTimeout(() => { if (badge) badge.style.display = 'none'; }, 5000);
+      }
+      // Try to auto-set country from address components
+      if (place.address_components) {
+        const countryComp = place.address_components.find(c => c.types.includes('country'));
+        if (countryComp) {
+          const countryCode = countryComp.short_name;
+          const countrySelect = document.getElementById('countrySelect');
+          for (let i = 0; i < countrySelect.options.length; i++) {
+            if (countrySelect.options[i].value === countryCode) {
+              countrySelect.selectedIndex = i;
+              onCountryChange();
+              break;
+            }
+          }
+        }
+        // Auto-set prefecture for Japan
+        const prefComp = place.address_components.find(c => c.types.includes('administrative_area_level_1'));
+        if (prefComp) {
+          const countryVal = document.getElementById('countrySelect').value;
+          if (countryVal === 'JP') {
+            document.getElementById('prefectureInput').value = prefComp.long_name;
+          } else {
+            document.getElementById('regionInput').value = prefComp.long_name;
+          }
+        }
+      }
+      // Keep the kura name as the place name
+      if (place.name) { input.value = place.name; }
+    });
+    // Remove address prefilled style when user manually edits
+    const addressInput = document.getElementById('addressInput');
+    if (addressInput) {
+      addressInput.addEventListener('input', () => {
+        addressInput.classList.remove('address-prefilled');
+        const badge = document.getElementById('addressBadge');
+        if (badge) badge.style.display = 'none';
+      });
+    }
+  }
+  // Expose globally for Google Maps callback
+  window.initPlacesAutocomplete = initPlacesAutocomplete;
+  // Fallback: if API already loaded before script runs
+  if (window.google && google.maps && google.maps.places) { initPlacesAutocomplete(); }
+
+  // ===== RICE AUTOCOMPLETE =====
+  const riceVarieties = [
+    { ja: '山田錦', en: 'Yamada Nishiki' },
+    { ja: '五百万石', en: 'Gohyakumangoku' },
+    { ja: '美山錦', en: 'Miyama Nishiki' },
+    { ja: '雄町', en: 'Omachi' },
+    { ja: '愛山', en: 'Aiyama' },
+    { ja: '出羽燦々', en: 'Dewasansan' },
+    { ja: '八反錦', en: 'Hattan Nishiki' },
+    { ja: '吟風', en: 'Ginpu' },
+    { ja: '秋田酒こまち', en: 'Akita Sake Komachi' },
+    { ja: '亀の尾', en: 'Kame no O' },
+    { ja: '渡船', en: 'Wataribune' },
+    { ja: '一本〆', en: 'Ipponjime' },
+    { ja: '越淡麗', en: 'Koshi Tanrei' },
+    { ja: '華吹雪', en: 'Hanafubuki' },
+    { ja: '強力', en: 'Goriki' },
+    { ja: '神力', en: 'Shinriki' },
+    { ja: '雄山錦', en: 'Oyama Nishiki' },
+    { ja: '彗星', en: 'Suisei' },
+    { ja: '吟の夢', en: 'Gin no Yume' },
+    { ja: '結の香', en: 'Yui no Kaori' },
+  ];
+  let riceSelected = [];
+
+  function showRiceList() {
+    renderRiceList('');
+  }
+  function filterRiceList() {
+    renderRiceList(document.getElementById('riceInput').value.trim().toLowerCase());
+  }
+  function renderRiceList(query) {
+    const list = document.getElementById('riceList');
+    const filtered = riceVarieties.filter(r =>
+      !riceSelected.includes(r.ja) &&
+      (r.ja.toLowerCase().includes(query) || r.en.toLowerCase().includes(query) || !query)
+    );
+    if (filtered.length === 0) { list.classList.remove('show'); list.innerHTML = ''; return; }
+    list.innerHTML = filtered.map(r =>
+      '<div class="autocomplete-item" onclick="selectRice(\'' + r.ja + '\',\'' + r.en + '\')"><span class="jp">' + r.ja + '</span><span class="romaji">' + r.en + '</span></div>'
+    ).join('');
+    list.classList.add('show');
+  }
+  function selectRice(ja, en) {
+    riceSelected.push(ja);
+    document.getElementById('riceInput').value = '';
+    document.getElementById('riceList').classList.remove('show');
+    renderRiceTags();
+  }
+  function removeRice(ja) {
+    riceSelected = riceSelected.filter(r => r !== ja);
+    renderRiceTags();
+  }
+  function renderRiceTags() {
+    const container = document.getElementById('riceSelectedTags');
+    container.innerHTML = riceSelected.map(ja => {
+      const r = riceVarieties.find(v => v.ja === ja);
+      const label = r ? r.ja + ' / ' + r.en : ja;
+      return '<span class="selected-tag">' + label + '<span class="tag-remove" onclick="removeRice(\'' + ja + '\')">✕</span></span>';
+    }).join('');
+  }
+  // Close rice list on outside click
+  document.addEventListener('click', function(e) {
+    if (!e.target.closest('#riceInput') && !e.target.closest('#riceList')) {
+      document.getElementById('riceList').classList.remove('show');
+    }
+  });
+
+  updateWizard();
+</script>
+</body>
+</html>
