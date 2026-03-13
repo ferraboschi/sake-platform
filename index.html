@@ -803,7 +803,7 @@
   .ig-prefix:focus-within .ig-at { border-color: var(--accent); }
 </style>
 <!-- Google Places API for sakagura name autocomplete -->
-<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCLprVtdxEuSl56C56sakF2hMLSempP8Lc&libraries=places&callback=initPlacesAutocomplete"></script>
+<script>(g=>{var h,a,k,p="The Google Maps JavaScript API",c="google",l="importLibrary",q="__ib__",m=document,b=window;b=b[c]||(b[c]={});var d=b.maps||(b.maps={}),r=new Set,e=new URLSearchParams,u=()=>h||(h=new Promise(async(f,n)=>{await (a=m.createElement("script"));e.set("libraries",[...r]+"");for(k in g)e.set(k.replace(/[A-Z]/g,t=>"_"+t[0].toLowerCase()),g[k]);e.set("callback",c+".maps."+q);a.src=`https://maps.googleapis.com/maps/api/js?`+e;d[q]=f;a.onerror=()=>h=n(Error(p+" could not load."));a.nonce=m.querySelector("script[nonce]")?.nonce||"";m.head.append(a)}));d[l]?console.warn(p+" only loads once. Ignoring:",g):d[l]=(f,...n)=>r.add(f)&&u().then(()=>d[l](f,...n))})({key:"AIzaSyCLprVtdxEuSl56C56sakF2hMLSempP8Lc",v:"weekly"});</script>
 </head>
 <body>
 
@@ -2185,26 +2185,52 @@
     });
   }
 
-  // ===== GOOGLE PLACES AUTOCOMPLETE (New API - PlaceAutocompleteElement) =====
-  function initPlacesAutocomplete() {
+  // ===== GOOGLE PLACES AUTOCOMPLETE (New PlaceAutocompleteElement API) =====
+  async function initPlacesAutocomplete() {
     const kuraInput = document.getElementById('kuraNameInput');
-    if (!kuraInput || !window.google || !google.maps || !google.maps.places) return;
+    if (!kuraInput) return;
 
-    // Create the new PlaceAutocompleteElement
-    const autocompleteEl = new google.maps.places.PlaceAutocompleteElement({
-      inputElement: kuraInput,
-      types: ['establishment'],
-      componentRestrictions: null
+    // Load Places library via importLibrary
+    const { PlaceAutocompleteElement } = await google.maps.importLibrary('places');
+
+    // Create the PlaceAutocompleteElement
+    const placeAutocomplete = new PlaceAutocompleteElement({
+      types: ['establishment']
+    });
+
+    // Style the autocomplete element to match our design
+    placeAutocomplete.style.width = '100%';
+    placeAutocomplete.style.position = 'absolute';
+    placeAutocomplete.style.top = '0';
+    placeAutocomplete.style.left = '0';
+    placeAutocomplete.style.height = '100%';
+    placeAutocomplete.style.opacity = '1';
+
+    // Wrap existing input: make parent relative, overlay the autocomplete
+    const wrapper = kuraInput.parentElement;
+    wrapper.style.position = 'relative';
+
+    // Hide original input but keep it for form data
+    kuraInput.style.display = 'none';
+
+    // Insert autocomplete element
+    wrapper.appendChild(placeAutocomplete);
+
+    // Style the inner input of PlaceAutocompleteElement
+    requestAnimationFrame(() => {
+      const innerInput = placeAutocomplete.querySelector('input') || placeAutocomplete.shadowRoot?.querySelector('input');
+      if (innerInput) {
+        innerInput.placeholder = kuraInput.placeholder || '例: 京姫酒造';
+        innerInput.style.cssText = 'width:100%;padding:14px 16px;border:1.5px solid #ddd;border-radius:10px;font-size:15px;background:#fff;box-sizing:border-box;font-family:inherit;';
+      }
     });
 
     // Listen for place selection
-    autocompleteEl.addEventListener('gmp-select', async (event) => {
-      const placePrediction = event.placePrediction;
-      if (!placePrediction) return;
-
-      // Fetch full place details
-      const place = placePrediction.toPlace();
+    placeAutocomplete.addEventListener('gmp-placeselect', async ({ place }) => {
       await place.fetchFields({ fields: ['displayName', 'formattedAddress', 'addressComponents'] });
+
+      // Set the kura name in hidden input
+      if (place.displayName) { kuraInput.value = place.displayName; }
 
       // Auto-fill address
       const addressInput = document.getElementById('addressInput');
@@ -2241,9 +2267,6 @@
           }
         }
       }
-
-      // Set the kura name
-      if (place.displayName) { kuraInput.value = place.displayName; }
     });
 
     // Remove address prefilled style when user manually edits
@@ -2256,10 +2279,8 @@
       });
     }
   }
-  // Expose globally for Google Maps callback
-  window.initPlacesAutocomplete = initPlacesAutocomplete;
-  // Fallback: if API already loaded before script runs
-  if (window.google && google.maps && google.maps.places) { initPlacesAutocomplete(); }
+  // Init when DOM is ready
+  initPlacesAutocomplete();
 
   // ===== RICE AUTOCOMPLETE =====
   const riceVarieties = [
