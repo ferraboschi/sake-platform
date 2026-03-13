@@ -2185,34 +2185,43 @@
     });
   }
 
-  // ===== GOOGLE PLACES AUTOCOMPLETE =====
-  let placesAutocomplete = null;
+  // ===== GOOGLE PLACES AUTOCOMPLETE (New API - PlaceAutocompleteElement) =====
   function initPlacesAutocomplete() {
-    const input = document.getElementById('kuraNameInput');
-    if (!input || !window.google || !google.maps || !google.maps.places) return;
-    placesAutocomplete = new google.maps.places.Autocomplete(input, {
+    const kuraInput = document.getElementById('kuraNameInput');
+    if (!kuraInput || !window.google || !google.maps || !google.maps.places) return;
+
+    // Create the new PlaceAutocompleteElement
+    const autocompleteEl = new google.maps.places.PlaceAutocompleteElement({
+      inputElement: kuraInput,
       types: ['establishment'],
-      fields: ['name', 'formatted_address', 'address_components', 'geometry']
+      componentRestrictions: null
     });
-    placesAutocomplete.addListener('place_changed', () => {
-      const place = placesAutocomplete.getPlace();
-      if (!place || !place.formatted_address) return;
+
+    // Listen for place selection
+    autocompleteEl.addEventListener('gmp-select', async (event) => {
+      const placePrediction = event.placePrediction;
+      if (!placePrediction) return;
+
+      // Fetch full place details
+      const place = placePrediction.toPlace();
+      await place.fetchFields({ fields: ['displayName', 'formattedAddress', 'addressComponents'] });
+
       // Auto-fill address
       const addressInput = document.getElementById('addressInput');
-      if (addressInput) {
-        addressInput.value = place.formatted_address;
+      if (addressInput && place.formattedAddress) {
+        addressInput.value = place.formattedAddress;
         addressInput.classList.add('address-prefilled');
-        // Show autofill badge
         const badge = document.getElementById('addressBadge');
         if (badge) { badge.style.display = 'flex'; }
-        // Auto-dismiss badge after 5 seconds
         setTimeout(() => { if (badge) badge.style.display = 'none'; }, 5000);
       }
-      // Try to auto-set country from address components
-      if (place.address_components) {
-        const countryComp = place.address_components.find(c => c.types.includes('country'));
+
+      // Auto-set country and prefecture from address components
+      if (place.addressComponents) {
+        const components = place.addressComponents;
+        const countryComp = components.find(c => c.types.includes('country'));
         if (countryComp) {
-          const countryCode = countryComp.short_name;
+          const countryCode = countryComp.shortText;
           const countrySelect = document.getElementById('countrySelect');
           for (let i = 0; i < countrySelect.options.length; i++) {
             if (countrySelect.options[i].value === countryCode) {
@@ -2222,20 +2231,21 @@
             }
           }
         }
-        // Auto-set prefecture for Japan
-        const prefComp = place.address_components.find(c => c.types.includes('administrative_area_level_1'));
+        const prefComp = components.find(c => c.types.includes('administrative_area_level_1'));
         if (prefComp) {
           const countryVal = document.getElementById('countrySelect').value;
           if (countryVal === 'JP') {
-            document.getElementById('prefectureInput').value = prefComp.long_name;
+            document.getElementById('prefectureInput').value = prefComp.longText;
           } else {
-            document.getElementById('regionInput').value = prefComp.long_name;
+            document.getElementById('regionInput').value = prefComp.longText;
           }
         }
       }
-      // Keep the kura name as the place name
-      if (place.name) { input.value = place.name; }
+
+      // Set the kura name
+      if (place.displayName) { kuraInput.value = place.displayName; }
     });
+
     // Remove address prefilled style when user manually edits
     const addressInput = document.getElementById('addressInput');
     if (addressInput) {
