@@ -910,9 +910,9 @@
               <span>📍</span> <span data-i18n="address_autofilled">自動入力されました — 確認してください</span>
             </div>
           </div>
-          <div class="field-group">
-            <div class="field-label" data-i18n="label_country">国</div>
-            <select class="field-input" id="countrySelect" onchange="onCountryChange()">
+          <!-- Country/Prefecture/Region: hidden, auto-filled by Places -->
+          <div style="display:none;">
+            <select id="countrySelect" onchange="onCountryChange()">
               <option value="JP">🇯🇵 Japan</option>
               <option value="US">🇺🇸 United States</option>
               <option value="AU">🇦🇺 Australia</option>
@@ -937,18 +937,11 @@
               <option value="DK">🇩🇰 Denmark</option>
               <option value="OTHER">🌍 Other</option>
             </select>
-          </div>
-          <div class="field-group" id="prefectureGroup">
-            <div class="field-label" data-i18n="label_prefecture">都道府県</div>
-            <div class="field-input-with-icon">
-              <span class="icon">🔍</span>
-              <input class="field-input" type="text" id="prefectureInput" data-i18n-ph="ph_prefecture" placeholder="例: 京都府" autocomplete="off" onfocus="showPrefectures()" oninput="filterPrefectures()" onkeydown="prefectureKeydown(event)">
-            </div>
+            <input type="text" id="prefectureInput">
+            <div id="prefectureGroup"></div>
             <div class="autocomplete-list" id="prefectureList"></div>
-          </div>
-          <div class="field-group" id="regionGroup" style="display:none;">
-            <div class="field-label" data-i18n="label_region">州 / 地域</div>
-            <input class="field-input" type="text" id="regionInput" data-i18n-ph="ph_region" placeholder="e.g. California, New South Wales...">
+            <input type="text" id="regionInput">
+            <div id="regionGroup"></div>
           </div>
           <div class="field-group">
             <div class="field-label" data-i18n="label_brand">ブランド名</div>
@@ -975,7 +968,11 @@
         </div>
         <div class="island">
           <div class="island-title" data-i18n="island_contact">お客様向け情報</div>
-          <div id="extraContactFields" style="display:none;">
+          <div id="extraContactFields">
+            <div class="field-group">
+              <div class="field-label"><span data-i18n="label_phone">電話番号</span> <span class="optional" data-i18n="optional">任意</span></div>
+              <input class="field-input" type="tel" inputmode="tel" id="phoneInput" data-i18n-ph="ph_phone" placeholder="例: +81-827-86-6011">
+            </div>
             <div class="field-group">
               <div class="field-label"><span data-i18n="label_website">ウェブサイト</span> <span class="optional" data-i18n="optional">任意</span></div>
               <input class="field-input" type="url" inputmode="url" id="websiteInput" data-i18n-ph="ph_website" placeholder="例: https://kyohime.co.jp" oninput="checkWebsite(this)">
@@ -1000,10 +997,6 @@
               <input class="field-input" type="text" id="contactNameInput" data-i18n-ph="ph_contact_name" placeholder="例: 山田太郎">
             </div>
           </div>
-          <button class="add-contact-btn" id="addContactBtn" onclick="toggleExtraContacts()">
-            <span class="add-contact-icon">＋</span>
-            <span data-i18n="add_contact">お客様向け情報を追加</span>
-          </button>
         </div>
       </div>
 
@@ -2229,7 +2222,7 @@
     placeAutocomplete.addEventListener('gmp-select', async ({ placePrediction }) => {
       try {
         const place = placePrediction.toPlace();
-        await place.fetchFields({ fields: ['displayName', 'formattedAddress', 'addressComponents'] });
+        await place.fetchFields({ fields: ['displayName', 'formattedAddress', 'addressComponents', 'nationalPhoneNumber', 'internationalPhoneNumber', 'websiteURI'] });
 
         // In the new Places API, displayName is an object {text, languageCode}
         const displayName = place.displayName;
@@ -2246,7 +2239,7 @@
           setTimeout(() => { if (badge) badge.style.display = 'none'; }, 5000);
         }
 
-        // Auto-set country and prefecture from address components
+        // Auto-set country and prefecture from address components (hidden fields)
         if (place.addressComponents) {
           const components = place.addressComponents;
           const countryComp = components.find(c => c.types.includes('country'));
@@ -2272,7 +2265,24 @@
             }
           }
         }
-        console.log('[SakePlatform] Place selected:', nameStr, '| Address:', place.formattedAddress);
+
+        // Auto-fill phone from Places
+        const phoneInput = document.getElementById('phoneInput');
+        const phoneVal = place.internationalPhoneNumber || place.nationalPhoneNumber || '';
+        if (phoneInput && phoneVal) {
+          phoneInput.value = phoneVal;
+          phoneInput.classList.add('address-prefilled');
+        }
+
+        // Auto-fill website from Places
+        const websiteInput = document.getElementById('websiteInput');
+        const websiteVal = place.websiteURI || '';
+        if (websiteInput && websiteVal) {
+          websiteInput.value = websiteVal;
+          websiteInput.classList.add('address-prefilled');
+        }
+
+        console.log('[SakePlatform] Place selected:', nameStr, '| Phone:', phoneVal, '| Website:', websiteVal);
       } catch (err) {
         console.error('[SakePlatform] Error in place select handler:', err);
       }
