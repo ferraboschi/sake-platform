@@ -2227,45 +2227,53 @@
 
     // Listen for place selection
     placeAutocomplete.addEventListener('gmp-placeselect', async ({ place }) => {
-      await place.fetchFields({ fields: ['displayName', 'formattedAddress', 'addressComponents'] });
+      try {
+        await place.fetchFields({ fields: ['displayName', 'formattedAddress', 'addressComponents'] });
 
-      // Set the kura name in hidden input
-      if (place.displayName) { kuraInput.value = place.displayName; }
+        // In the new Places API, displayName is an object {text, languageCode}
+        const displayName = place.displayName;
+        const nameStr = (typeof displayName === 'string') ? displayName : (displayName?.text || displayName?.toString() || '');
+        if (nameStr) { kuraInput.value = nameStr; }
 
-      // Auto-fill address
-      const addressInput = document.getElementById('addressInput');
-      if (addressInput && place.formattedAddress) {
-        addressInput.value = place.formattedAddress;
-        addressInput.classList.add('address-prefilled');
-        const badge = document.getElementById('addressBadge');
-        if (badge) { badge.style.display = 'flex'; }
-        setTimeout(() => { if (badge) badge.style.display = 'none'; }, 5000);
-      }
+        // formattedAddress is a plain string in the new API
+        const addressInput = document.getElementById('addressInput');
+        if (addressInput && place.formattedAddress) {
+          addressInput.value = place.formattedAddress;
+          addressInput.classList.add('address-prefilled');
+          const badge = document.getElementById('addressBadge');
+          if (badge) { badge.style.display = 'flex'; }
+          setTimeout(() => { if (badge) badge.style.display = 'none'; }, 5000);
+        }
 
-      // Auto-set country and prefecture from address components
-      if (place.addressComponents) {
-        const components = place.addressComponents;
-        const countryComp = components.find(c => c.types.includes('country'));
-        if (countryComp) {
-          const countryCode = countryComp.shortText;
-          const countrySelect = document.getElementById('countrySelect');
-          for (let i = 0; i < countrySelect.options.length; i++) {
-            if (countrySelect.options[i].value === countryCode) {
-              countrySelect.selectedIndex = i;
-              onCountryChange();
-              break;
+        // Auto-set country and prefecture from address components
+        if (place.addressComponents) {
+          const components = place.addressComponents;
+          const countryComp = components.find(c => c.types.includes('country'));
+          if (countryComp) {
+            const countryCode = countryComp.shortText || countryComp.short_text || '';
+            const countrySelect = document.getElementById('countrySelect');
+            for (let i = 0; i < countrySelect.options.length; i++) {
+              if (countrySelect.options[i].value === countryCode) {
+                countrySelect.selectedIndex = i;
+                onCountryChange();
+                break;
+              }
+            }
+          }
+          const prefComp = components.find(c => c.types.includes('administrative_area_level_1'));
+          if (prefComp) {
+            const prefName = prefComp.longText || prefComp.long_text || '';
+            const countryVal = document.getElementById('countrySelect').value;
+            if (countryVal === 'JP') {
+              document.getElementById('prefectureInput').value = prefName;
+            } else {
+              document.getElementById('regionInput').value = prefName;
             }
           }
         }
-        const prefComp = components.find(c => c.types.includes('administrative_area_level_1'));
-        if (prefComp) {
-          const countryVal = document.getElementById('countrySelect').value;
-          if (countryVal === 'JP') {
-            document.getElementById('prefectureInput').value = prefComp.longText;
-          } else {
-            document.getElementById('regionInput').value = prefComp.longText;
-          }
-        }
+        console.log('[SakePlatform] Place selected:', nameStr, '| Address:', place.formattedAddress);
+      } catch (err) {
+        console.error('[SakePlatform] Error in place select handler:', err);
       }
     });
 
