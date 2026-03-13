@@ -2225,9 +2225,10 @@
       }
     });
 
-    // Listen for place selection
-    placeAutocomplete.addEventListener('gmp-placeselect', async ({ place }) => {
+    // Listen for place selection (new API uses 'gmp-select' event with placePrediction)
+    placeAutocomplete.addEventListener('gmp-select', async ({ placePrediction }) => {
       try {
+        const place = placePrediction.toPlace();
         await place.fetchFields({ fields: ['displayName', 'formattedAddress', 'addressComponents'] });
 
         // In the new Places API, displayName is an object {text, languageCode}
