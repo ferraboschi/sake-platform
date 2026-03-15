@@ -58,6 +58,28 @@ input,select,textarea,button{font-family:inherit;font-size:inherit}
 
 .landing-footer{text-align:center;padding:24px 40px;color:var(--text-muted);font-size:0.85rem;border-top:1px solid var(--border)}
 
+/* ==================== BILINGUAL EN|JP LAYOUT ==================== */
+.bilingual-row{display:grid;grid-template-columns:1fr 1fr;gap:0;align-items:start}
+.bilingual-row .lang-col{padding:0 40px}
+.bilingual-row .lang-col:first-child{border-right:1px solid var(--border-light)}
+.lang-tag{display:inline-block;font-size:0.65rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-muted);margin-bottom:8px;padding:2px 8px;border:1px solid var(--border);border-radius:12px}
+.bilingual-hero{max-width:1200px;margin:0 auto;padding:80px 0 60px}
+.bilingual-hero .lang-col h1{font-size:2.6rem;font-weight:800;line-height:1.25;margin-bottom:16px;letter-spacing:-0.02em}
+.bilingual-hero .lang-col p{font-size:1.1rem;color:var(--text-secondary);margin-bottom:32px}
+.bilingual-hero .lang-col .hero-cta-btn{font-size:1rem;padding:14px 32px}
+.bilingual-hero .lang-col .hero-free{font-size:0.8rem;color:var(--text-muted);margin-top:12px}
+.bilingual-features-section{max-width:1200px;margin:0 auto;padding:60px 0 80px}
+.bilingual-features-section .section-header{text-align:center;padding:0 40px;margin-bottom:48px}
+.bilingual-features-section .features-grid{display:grid;grid-template-columns:1fr 1fr;gap:0}
+.bilingual-features-section .feature-card{padding:32px 40px;border:none;border-radius:0;border-bottom:1px solid var(--border-light)}
+.bilingual-features-section .feature-card:nth-child(odd){border-right:1px solid var(--border-light)}
+.bilingual-features-section .feature-card h3{font-size:1.05rem;margin-bottom:8px}
+.bilingual-features-section .feature-card p{color:var(--text-secondary);font-size:0.9rem;line-height:1.6}
+.bilingual-cta{padding:60px 0 80px;background:var(--bg-subtle)}
+.bilingual-cta .bilingual-row{max-width:1200px;margin:0 auto}
+.bilingual-cta .lang-col{text-align:center}
+.bilingual-cta .lang-col p{color:var(--text-secondary);margin-bottom:24px;font-size:1.05rem}
+
 /* ==================== AUTH ==================== */
 #view-auth{display:none;min-height:100vh;background:var(--bg-subtle);align-items:center;justify-content:center}
 #view-auth.active{display:flex}
@@ -260,6 +282,11 @@ select.field-input{cursor:pointer}
   .features-grid{grid-template-columns:1fr}
   .landing-hero h1{font-size:2.2rem}
   .features-title{font-size:1.6rem}
+  .bilingual-row{grid-template-columns:1fr}
+  .bilingual-row .lang-col:first-child{border-right:none;border-bottom:1px solid var(--border-light);padding-bottom:40px;margin-bottom:40px}
+  .bilingual-hero .lang-col h1{font-size:2rem}
+  .bilingual-features-section .features-grid{grid-template-columns:1fr}
+  .bilingual-features-section .feature-card:nth-child(odd){border-right:none}
 }
 @media(max-width:768px){
   .app-sidebar{transform:translateX(-100%);transition:transform .25s ease;width:280px}
@@ -274,6 +301,10 @@ select.field-input{cursor:pointer}
   .landing-features{padding:40px 20px}
   .landing-cta{padding:40px 20px}
   .catalog-results{grid-template-columns:1fr}
+  .bilingual-row .lang-col{padding:0 20px}
+  .bilingual-hero{padding:40px 0}
+  .bilingual-features-section{padding:40px 0}
+  .bilingual-cta{padding:40px 0}
 }
 @media(max-width:480px){
   .landing-hero h1{font-size:1.8rem}
@@ -290,45 +321,79 @@ select.field-input{cursor:pointer}
   <nav class="landing-nav">
     <div class="landing-logo">🍶 Sake Platform</div>
     <div class="landing-nav-right">
-      <div class="landing-lang-bar">
-        <button class="landing-lang-btn selected" onclick="switchLandingLang('ja',this)">JA</button>
-        <button class="landing-lang-btn" onclick="switchLandingLang('en',this)">EN</button>
-        <button class="landing-lang-btn" onclick="switchLandingLang('fr',this)">FR</button>
-        <button class="landing-lang-btn" onclick="switchLandingLang('it',this)">IT</button>
-      </div>
-      <button class="landing-login-btn" onclick="navigate('auth','login')" data-i18n="nav_login">ログイン</button>
-      <button class="landing-register-btn" onclick="navigate('auth','register')" data-i18n="nav_register">無料で始める</button>
+      <button class="landing-login-btn" onclick="navigate('auth','login')">Log in · ログイン</button>
+      <button class="landing-register-btn" onclick="navigate('auth','register')">Get started free · 無料で始める</button>
     </div>
   </nav>
-  <section class="landing-hero">
-    <h1 data-i18n="hero_title">あなたのお酒を、<br>世界の言葉で届ける。</h1>
-    <p data-i18n="hero_sub">多言語の技術シートを自動生成。蔵元のための、無料プラットフォーム。</p>
-    <button class="hero-cta-btn" onclick="navigate('auth','register')" data-i18n="hero_cta">無料で登録する →</button>
-    <div class="hero-free" data-i18n="hero_free">クレジットカード不要・永久無料</div>
-  </section>
-  <section class="landing-features">
-    <div class="features-label" data-i18n="features_label">世界初</div>
-    <h2 class="features-title" data-i18n="features_title">ひとつのプラットフォーム。<br>すべてが、ここに。</h2>
-    <div class="features-grid">
-      <div class="feature-card">
-        <h3 data-i18n="feat1_title">多言語シート自動生成</h3>
-        <p data-i18n="feat1_desc">一度の入力で、日本語・英語・フランス語・イタリア語の技術シートを自動生成。PDF・リンク・転送で共有。</p>
+  <section class="bilingual-hero">
+    <div class="bilingual-row">
+      <div class="lang-col">
+        <span class="lang-tag">English</span>
+        <h1>Your sake.<br>Every language.</h1>
+        <p>Auto-generate multilingual technical sheets. A free platform built for sakagura.</p>
+        <button class="hero-cta-btn" onclick="navigate('auth','register')">Sign up free →</button>
+        <div class="hero-free">No credit card required — forever free</div>
       </div>
-      <div class="feature-card">
-        <h3 data-i18n="feat2_title">裏ラベル — 各国法規対応</h3>
-        <p data-i18n="feat2_desc">輸入者名と輸出国を選ぶだけで、各国の法規制に準拠した裏ラベルを自動作成。</p>
-      </div>
-      <div class="feature-card">
-        <h3 data-i18n="feat3_title">国際コンペ — ワンクリック出品</h3>
-        <p data-i18n="feat3_desc">登録済みのデータで、IWC・Kuramaster等の国際コンペにワンクリックで出品。受賞歴は自動でシートに反映。</p>
+      <div class="lang-col">
+        <span class="lang-tag">日本語</span>
+        <h1>あなたのお酒を、<br>世界の言葉で届ける。</h1>
+        <p>多言語の技術シートを自動生成。蔵元のための、無料プラットフォーム。</p>
+        <button class="hero-cta-btn" onclick="navigate('auth','register')">無料で登録する →</button>
+        <div class="hero-free">クレジットカード不要・永久無料</div>
       </div>
     </div>
   </section>
-  <section class="landing-cta">
-    <p data-i18n="cta_footnote">蔵元のために。蔵元と共に。</p>
-    <button class="hero-cta-btn" onclick="navigate('auth','register')" data-i18n="cta_register">登録をはじめる →</button>
+  <section class="bilingual-features-section">
+    <div class="section-header">
+      <div class="features-label">A world first · 世界初</div>
+      <h2 class="features-title">One platform. Everything you need.<br>ひとつのプラットフォーム。すべてが、ここに。</h2>
+    </div>
+    <div class="features-grid">
+      <div class="feature-card">
+        <span class="lang-tag">EN</span>
+        <h3>Auto-generated multilingual sheets</h3>
+        <p>One input generates technical sheets in Japanese, English, French and Italian. Share via PDF, link or forwarding.</p>
+      </div>
+      <div class="feature-card">
+        <span class="lang-tag">JP</span>
+        <h3>多言語シート自動生成</h3>
+        <p>一度の入力で、日本語・英語・フランス語・イタリア語の技術シートを自動生成。PDF・リンク・転送で共有。</p>
+      </div>
+      <div class="feature-card">
+        <span class="lang-tag">EN</span>
+        <h3>Back labels — country compliant</h3>
+        <p>Just select the importer and export country to auto-generate compliant back labels.</p>
+      </div>
+      <div class="feature-card">
+        <span class="lang-tag">JP</span>
+        <h3>裏ラベル — 各国法規対応</h3>
+        <p>輸入者名と輸出国を選ぶだけで、各国の法規制に準拠した裏ラベルを自動作成。</p>
+      </div>
+      <div class="feature-card">
+        <span class="lang-tag">EN</span>
+        <h3>Competitions — one-click entry</h3>
+        <p>Enter IWC, Kuramaster and more with one click using your registered data. Awards auto-reflect on sheets.</p>
+      </div>
+      <div class="feature-card">
+        <span class="lang-tag">JP</span>
+        <h3>国際コンペ — ワンクリック出品</h3>
+        <p>登録済みのデータで、IWC・Kuramaster等の国際コンペにワンクリックで出品。受賞歴は自動でシートに反映。</p>
+      </div>
+    </div>
   </section>
-  <footer class="landing-footer">© 2026 Sake Platform — Built for sakagura.</footer>
+  <section class="bilingual-cta">
+    <div class="bilingual-row">
+      <div class="lang-col">
+        <p>Built for sakagura. Built with sakagura.</p>
+        <button class="hero-cta-btn" onclick="navigate('auth','register')">Get started →</button>
+      </div>
+      <div class="lang-col">
+        <p>蔵元のために。蔵元と共に。</p>
+        <button class="hero-cta-btn" onclick="navigate('auth','register')">登録をはじめる →</button>
+      </div>
+    </div>
+  </section>
+  <footer class="landing-footer">© 2026 Sake Platform — Built for sakagura. · 蔵元のために。</footer>
 </div>
 
 <!-- ==================== AUTH ==================== -->
@@ -1368,12 +1433,7 @@ function toast(msg,type){
   setTimeout(()=>el.remove(),3000);
 }
 
-function switchLandingLang(lang,btn){
-  currentLang=lang;
-  document.querySelectorAll('.landing-lang-btn').forEach(b=>b.classList.remove('selected'));
-  btn.classList.add('selected');
-  applyI18n();
-}
+function switchLandingLang(){}
 
 function exportData(){
   if(!currentUser) return;
