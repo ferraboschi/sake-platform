@@ -269,6 +269,45 @@ select.field-input{cursor:pointer}
 .modal-btn{width:100%;padding:12px;border:1px solid var(--border);border-radius:var(--radius);background:var(--bg);cursor:pointer;font-size:0.95rem;transition:all .15s;text-align:left}
 .modal-btn:hover{border-color:var(--accent);background:var(--accent-light)}
 
+/* ==================== ONBOARDING WIZARD ==================== */
+#onboarding-overlay{position:fixed;inset:0;background:#F8F5ED;display:none;flex-direction:column;align-items:center;justify-content:center;z-index:2000;animation:fadeIn .4s ease;overflow-y:auto;padding:40px 20px}
+#onboarding-overlay.active{display:flex}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes fadeSlideUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+.onboarding-step{display:none;max-width:720px;width:100%;animation:fadeSlideUp .5s ease;padding:40px;background:#fff;border-radius:16px;box-shadow:0 8px 32px rgba(0,0,0,0.06)}
+.onboarding-step.active{display:block}
+.onboarding-header{text-align:center;margin-bottom:40px}
+.onboarding-progress{display:flex;justify-content:center;gap:12px;margin-bottom:28px}
+.onboarding-dot{width:10px;height:10px;border-radius:50%;background:#ddd;cursor:pointer;transition:all .3s}
+.onboarding-dot.active{background:#E05A33;width:28px;border-radius:14px}
+.onboarding-hero-emoji{font-size:5rem;margin-bottom:24px;display:block}
+.onboarding-title{font-family:Georgia,'Times New Roman',serif;font-size:2.2rem;font-weight:700;color:#1a1a1a;line-height:1.3;margin-bottom:12px}
+.onboarding-subtitle{font-size:1rem;color:#6b6b6b;margin-bottom:32px;line-height:1.6}
+.onboarding-subtitle-jp{display:block;font-size:0.95rem;color:#999;margin-top:8px;font-style:italic}
+.onboarding-body{color:#6b6b6b;font-size:1.05rem;line-height:1.8;margin-bottom:32px;text-align:center}
+.onboarding-body-jp{display:block;font-size:0.95rem;color:#999;margin-top:12px}
+.onboarding-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-bottom:32px}
+.onboarding-card{background:#F8F5ED;border-radius:12px;padding:24px;text-align:center;transition:all .3s}
+.onboarding-card:hover{transform:translateY(-4px);box-shadow:0 4px 16px rgba(0,0,0,0.08)}
+.onboarding-card-emoji{font-size:3rem;margin-bottom:16px;display:block}
+.onboarding-card-title{font-weight:700;color:#1a1a1a;margin-bottom:8px;font-size:1rem}
+.onboarding-card-title-jp{display:block;font-size:0.9rem;color:#999;font-weight:500;margin-top:6px}
+.onboarding-card-desc{font-size:0.9rem;color:#6b6b6b;line-height:1.5}
+.onboarding-card-desc-jp{display:block;font-size:0.85rem;color:#999;margin-top:8px}
+.onboarding-footer{display:flex;gap:12px;align-items:center;justify-content:center;margin-top:32px}
+.onboarding-btn{padding:14px 32px;background:#1a1a1a;color:#fff;border:none;border-radius:8px;font-weight:600;font-size:1rem;cursor:pointer;transition:all .2s}
+.onboarding-btn:hover{background:#333;transform:translateY(-2px)}
+.onboarding-btn-back{padding:12px 24px;border:1px solid #ddd;background:transparent;color:#1a1a1a;border-radius:8px;font-weight:500;cursor:pointer;transition:all .2s}
+.onboarding-btn-back:hover{border-color:#1a1a1a;background:#f5f5f5}
+.onboarding-skip{font-size:0.85rem;color:#999;cursor:pointer;transition:color .2s}
+.onboarding-skip:hover{color:#1a1a1a;text-decoration:underline}
+@media(max-width:768px){
+  .onboarding-step{padding:32px 24px}
+  .onboarding-cards{grid-template-columns:1fr}
+  .onboarding-title{font-size:1.8rem}
+  .onboarding-hero-emoji{font-size:4rem}
+}
+
 /* ==================== TOAST ==================== */
 .toast-container{position:fixed;top:20px;right:20px;z-index:9999;display:flex;flex-direction:column;gap:8px}
 .toast{padding:12px 20px;border-radius:var(--radius);font-size:0.9rem;font-weight:500;animation:toastIn .3s ease;box-shadow:0 4px 12px rgba(0,0,0,0.15)}
@@ -767,6 +806,123 @@ select.field-input{cursor:pointer}
   </main>
 </div>
 
+<!-- ONBOARDING WIZARD -->
+<div id="onboarding-overlay">
+  <!-- STEP 1: Welcome / Why -->
+  <div class="onboarding-step active" data-step="1">
+    <div class="onboarding-header">
+      <div class="onboarding-progress">
+        <div class="onboarding-dot active"></div>
+        <div class="onboarding-dot"></div>
+        <div class="onboarding-dot"></div>
+      </div>
+      <span class="onboarding-hero-emoji">🍶</span>
+      <h2 class="onboarding-title">Welcome to Sake Platform</h2>
+      <div class="onboarding-subtitle">
+        ようこそ、Sake Platformへ
+        <span class="onboarding-subtitle-jp">「ようこそ、Sake Platformへ」</span>
+      </div>
+    </div>
+    <div class="onboarding-body">
+      This platform exists to help sakagura share their sake with the world. Generate multilingual tech sheets, compliant back labels, and enter international competitions — all from one place. And it's free. Forever.
+      <span class="onboarding-body-jp">このプラットフォームは蔵元が世界中のお客様にお酒を届けるために作られました。多言語の技術シート、各国法規対応の裏ラベル、国際コンペへの出品 — すべてをこの場所で実現できます。しかも無料です。永遠に。</span>
+    </div>
+    <div style="text-align:center;color:#999;font-size:0.95rem;margin-bottom:32px;font-style:italic;">
+      Built for sakagura. Built with sakagura. / 「蔵元のために。蔵元と共に。」
+    </div>
+    <div class="onboarding-footer">
+      <button class="onboarding-btn" onclick="onboardingNext()">Next →</button>
+    </div>
+    <div style="text-align:center;margin-top:20px;">
+      <span class="onboarding-skip" onclick="dismissOnboarding()">Skip → あとで</span>
+    </div>
+  </div>
+
+  <!-- STEP 2: The Journey -->
+  <div class="onboarding-step" data-step="2">
+    <div class="onboarding-header">
+      <div class="onboarding-progress">
+        <div class="onboarding-dot"></div>
+        <div class="onboarding-dot active"></div>
+        <div class="onboarding-dot"></div>
+      </div>
+      <h2 class="onboarding-title">Three steps to the world</h2>
+      <div class="onboarding-subtitle">
+        3つのステップで、世界へ
+        <span class="onboarding-subtitle-jp">「3つのステップで、世界へ」</span>
+      </div>
+    </div>
+    <div class="onboarding-cards">
+      <div class="onboarding-card">
+        <span class="onboarding-card-emoji">🏯</span>
+        <div class="onboarding-card-title">
+          Register your sakagura
+          <span class="onboarding-card-title-jp">蔵元を登録</span>
+        </div>
+        <div class="onboarding-card-desc">
+          Tell us about your brewery: name, brands, location.
+          <span class="onboarding-card-desc-jp">蔵元について教えてください：蔵元名、ブランド、所在地。</span>
+        </div>
+      </div>
+      <div class="onboarding-card">
+        <span class="onboarding-card-emoji">🍶</span>
+        <div class="onboarding-card-title">
+          Add your products
+          <span class="onboarding-card-title-jp">商品を追加</span>
+        </div>
+        <div class="onboarding-card-desc">
+          Enter your sake details: rice, polishing, tasting notes. The more detail, the better your sheets.
+          <span class="onboarding-card-desc-jp">お酒の詳細を入力：米、精米、テイスティングノート。詳細なほど、シートがよくなります。</span>
+        </div>
+      </div>
+      <div class="onboarding-card">
+        <span class="onboarding-card-emoji">📄</span>
+        <div class="onboarding-card-title">
+          Generate & share
+          <span class="onboarding-card-title-jp">生成して共有</span>
+        </div>
+        <div class="onboarding-card-desc">
+          Auto-generate tech sheets in 4 languages, print back labels, enter competitions.
+          <span class="onboarding-card-desc-jp">4言語での技術シートを自動生成、裏ラベルを印刷、コンペに出品。</span>
+        </div>
+      </div>
+    </div>
+    <div class="onboarding-footer">
+      <button class="onboarding-btn-back" onclick="onboardingPrev()">← Back</button>
+      <button class="onboarding-btn" onclick="onboardingNext()">Next →</button>
+    </div>
+    <div style="text-align:center;margin-top:20px;">
+      <span class="onboarding-skip" onclick="dismissOnboarding()">Skip → あとで</span>
+    </div>
+  </div>
+
+  <!-- STEP 3: Motivation / Quality Pledge -->
+  <div class="onboarding-step" data-step="3">
+    <div class="onboarding-header">
+      <div class="onboarding-progress">
+        <div class="onboarding-dot"></div>
+        <div class="onboarding-dot"></div>
+        <div class="onboarding-dot active"></div>
+      </div>
+      <h2 class="onboarding-title">Great data makes great results</h2>
+      <div class="onboarding-subtitle">
+        最高のデータが、最高の結果を生む
+        <span class="onboarding-subtitle-jp">「最高のデータが、最高の結果を生む」</span>
+      </div>
+    </div>
+    <div style="background:#F8F5ED;border-radius:12px;padding:32px;margin-bottom:32px;border-left:4px solid #E05A33;">
+      <div class="onboarding-body">
+        The quality of your technical sheets depends on what you put in. Take your time. Be thorough. Your importers, sommeliers, and competition judges will thank you.
+        <span class="onboarding-body-jp">技術シートの質は、あなたが入力する情報の質に依存します。時間をかけて。丁寧に。輸入者、ソムリエ、コンペの審査員があなたに感謝するでしょう。</span>
+      </div>
+    </div>
+    <div class="onboarding-footer">
+      <button class="onboarding-btn-back" onclick="onboardingPrev()">← Back</button>
+      <button class="onboarding-btn" onclick="dismissOnboarding()">Let's begin → 始めましょう</button>
+    </div>
+  </div>
+</div>
+
 <!-- TOAST -->
 <div class="toast-container" id="toast-container"></div>
 
@@ -776,6 +932,7 @@ let currentLang = 'ja';
 let currentUser = null;
 let currentCompany = null;
 let catalogFilter = 'all';
+let onboardingStep = 1;
 
 // ==================== i18n ====================
 const i18n = {
@@ -1135,7 +1292,7 @@ function doRegister(){
   const user={id:'u_'+Date.now(),email,password:btoa(pass),created_at:new Date().toISOString()};
   users.push(user); setUsers(users);
   setSession({userId:user.id,email:user.email});
-  currentUser=user; toast(t('toast_registered'),'success'); navigate('app');
+  currentUser=user; toast(t('toast_registered'),'success'); navigate('app'); showOnboarding();
 }
 
 function doLogin(){
@@ -1164,6 +1321,34 @@ function doLogout(){
 }
 
 function showAuthError(el,msg){el.textContent=msg;el.style.display='block';}
+
+// ==================== ONBOARDING WIZARD ====================
+function showOnboarding(){
+  onboardingStep=1;
+  const overlay=document.getElementById('onboarding-overlay');
+  overlay.classList.add('active');
+  showOnboardingStep(1);
+}
+
+function showOnboardingStep(step){
+  onboardingStep=step;
+  document.querySelectorAll('.onboarding-step').forEach(s=>s.classList.remove('active'));
+  document.querySelector(`.onboarding-step[data-step="${step}"]`).classList.add('active');
+  document.querySelectorAll('.onboarding-dot').forEach((d,i)=>d.classList.toggle('active',i+1===step));
+}
+
+function onboardingNext(){
+  if(onboardingStep<3) showOnboardingStep(onboardingStep+1);
+}
+
+function onboardingPrev(){
+  if(onboardingStep>1) showOnboardingStep(onboardingStep-1);
+}
+
+function dismissOnboarding(){
+  document.getElementById('onboarding-overlay').classList.remove('active');
+  showAppScreen('onboarding');
+}
 
 // ==================== APP INIT ====================
 function initApp(){
