@@ -135,9 +135,37 @@ input,select,textarea,button{font-family:inherit;font-size:inherit}
 .empty-state button{padding:10px 24px;background:var(--text);color:#fff;border:none;border-radius:var(--radius);font-weight:600;cursor:pointer}
 
 /* ==================== ONBOARDING ==================== */
-.onboarding-screen{max-width:640px}
+.onboarding-screen{max-width:680px;margin:0 auto}
 .onboarding-screen h2{font-size:1.6rem;font-weight:700;margin-bottom:8px}
 .onboarding-screen>p{color:var(--text-secondary);margin-bottom:32px}
+
+/* Welcome hero */
+.onb-welcome{background:#F8F5ED;border-radius:16px;padding:48px 32px;text-align:center;margin-bottom:32px;position:relative;overflow:hidden}
+.onb-welcome-emoji{font-size:4rem;margin-bottom:16px;display:block}
+.onb-welcome h2{font-family:Georgia,'Times New Roman',serif;font-size:2rem;font-weight:700;color:#1A1A1A;margin-bottom:12px;letter-spacing:-0.02em}
+.onb-welcome p{color:#6B6B6B;font-size:1.05rem;line-height:1.6;max-width:480px;margin:0 auto}
+.onb-welcome-sparkle{position:absolute;font-size:1.5rem;opacity:0.3}
+
+/* Conversational form sections */
+.onb-section{background:#fff;border:1px solid #F0F0ED;border-radius:16px;padding:28px 28px 24px;margin-bottom:20px;border-left:3px solid #E05A33;animation:fadeSlideUp .5s ease both}
+.onb-section:nth-child(2){animation-delay:.1s}
+.onb-section:nth-child(3){animation-delay:.2s}
+.onb-section:nth-child(4){animation-delay:.3s}
+.onb-section-header{display:flex;align-items:flex-start;gap:12px;margin-bottom:20px}
+.onb-section-emoji{font-size:1.6rem;flex-shrink:0;margin-top:2px}
+.onb-section-question{font-family:Georgia,'Times New Roman',serif;font-size:1.15rem;font-weight:600;color:#1A1A1A;line-height:1.4}
+.onb-section-hint{font-size:0.85rem;color:#999;margin-top:4px;font-style:italic}
+
+/* Warmer field styling */
+.onb-section .field-input{padding:12px 16px;border-radius:10px;border:1px solid #E8E8E5;font-size:1rem;background:#FAFAF8;transition:all .2s}
+.onb-section .field-input:focus{border-color:#E05A33;background:#fff;box-shadow:0 0 0 3px rgba(224,90,51,0.08)}
+.onb-section .field-label{font-size:0.85rem;color:#999;margin-bottom:8px}
+
+/* Warm save button */
+.btn-save-company{width:100%;padding:16px;background:linear-gradient(135deg,#E05A33,#C94E2B);color:#fff;border:none;border-radius:12px;font-weight:600;font-size:1.05rem;cursor:pointer;margin-top:12px;transition:all .3s;box-shadow:0 4px 16px rgba(224,90,51,0.2)}
+.btn-save-company:hover{transform:translateY(-1px);box-shadow:0 6px 24px rgba(224,90,51,0.3)}
+
+@keyframes fadeSlideUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
 .island{background:var(--bg-subtle);border:1px solid var(--border);border-radius:var(--radius-lg);padding:24px;margin-bottom:20px}
 .island-title{font-size:0.9rem;font-weight:600;color:var(--text-secondary);text-transform:uppercase;letter-spacing:0.03em;margin-bottom:16px}
 .field-group{margin-bottom:16px}
@@ -469,30 +497,51 @@ select.field-input{cursor:pointer}
       <!-- SCREEN: ONBOARDING -->
       <div class="app-screen" id="screen-onboarding">
         <div class="onboarding-screen">
-          <h2 data-i18n="onb_title">蔵元を登録しましょう</h2>
-          <p data-i18n="onb_sub">まず、あなたの蔵元の基本情報を入力してください。</p>
-          <div class="island">
-            <div class="island-title" data-i18n="island_kura">蔵元情報</div>
+          <!-- WELCOME HERO -->
+          <div class="onb-welcome">
+            <span class="onb-welcome-sparkle" style="top:12%;left:15%">✨</span>
+            <span class="onb-welcome-sparkle" style="top:20%;right:18%">🌸</span>
+            <span class="onb-welcome-sparkle" style="bottom:15%;left:20%">🌾</span>
+            <span class="onb-welcome-emoji">🏯</span>
+            <h2 data-i18n="onb_welcome_title">Let's get to know your sakagura</h2>
+            <p data-i18n="onb_welcome_sub">This will only take a minute. Tell us about your brewery, and we'll set everything up for you.</p>
+          </div>
+
+          <!-- SECTION 1: Brewery Name -->
+          <div class="onb-section">
+            <div class="onb-section-header">
+              <span class="onb-section-emoji">🍶</span>
+              <div>
+                <div class="onb-section-question" data-i18n="onb_q_name">What's the name of your sakagura?</div>
+                <div class="onb-section-hint" data-i18n="onb_q_name_hint">Start typing — we might already know you</div>
+              </div>
+            </div>
             <div class="field-group">
-              <div class="field-label" data-i18n="label_kura_name">蔵元名</div>
               <div class="autocomplete-wrapper">
-                <input class="field-input" type="text" id="onb-company-name" placeholder="例: 京姫酒造" autocomplete="off">
+                <input class="field-input" type="text" id="onb-company-name" data-i18n-placeholder="onb_ph_name" placeholder="e.g. Kyohime Shuzo" autocomplete="off">
                 <div class="autocomplete-list" id="sakagura-autocomplete"></div>
               </div>
             </div>
             <div class="field-group">
-              <div class="field-label"><span data-i18n="label_address">住所</span> <span class="opt" data-i18n="optional">任意</span></div>
-              <input class="field-input" type="text" id="onb-address" placeholder="例: 京都市伏見区...">
+              <div class="field-label"><span data-i18n="onb_q_address">Where is it located?</span> <span class="opt" data-i18n="optional">optional</span></div>
+              <input class="field-input" type="text" id="onb-address" data-i18n-placeholder="onb_ph_address" placeholder="e.g. Kyoto, Fushimi-ku...">
             </div>
           </div>
-          <div class="island">
-            <div class="island-title" data-i18n="island_images">蔵元の顔</div>
+
+          <!-- SECTION 2: Brands -->
+          <div class="onb-section">
+            <div class="onb-section-header">
+              <span class="onb-section-emoji">🏷️</span>
+              <div>
+                <div class="onb-section-question" data-i18n="onb_q_brands">What brands do you produce?</div>
+                <div class="onb-section-hint" data-i18n="onb_q_brands_hint">You can add more brands later anytime</div>
+              </div>
+            </div>
             <div class="field-group">
-              <div class="field-label" data-i18n="label_brand">ブランド名</div>
               <div id="onb-brand-list">
                 <div class="brand-entry" data-index="0">
                   <div class="brand-top-row">
-                    <input class="field-input brand-input" type="text" placeholder="例: 匠" style="flex:1">
+                    <input class="field-input brand-input" type="text" data-i18n-placeholder="onb_ph_brand" placeholder="e.g. Takumi" style="flex:1">
                     <button type="button" class="remove-brand-btn" onclick="removeOnbBrand(this)" style="display:none">×</button>
                   </div>
                   <div class="brand-logo-area">
@@ -500,36 +549,45 @@ select.field-input{cursor:pointer}
                       <img class="brand-logo-thumb" src="" alt="">
                       <span class="brand-logo-icon">🏷️</span>
                       <div>
-                        <div class="brand-logo-text" data-i18n="upload_brand_logo">ロゴを追加（任意）</div>
-                        <div class="brand-logo-hint">PNG・SVG推奨 — 透過背景が最適</div>
+                        <div class="brand-logo-text" data-i18n="upload_brand_logo">Add logo (optional)</div>
+                        <div class="brand-logo-hint">PNG · SVG recommended — transparent background is best</div>
                       </div>
                       <input type="file" accept="image/png,image/svg+xml,image/jpeg,image/webp" style="display:none" onchange="handleBrandLogo(this)">
                     </label>
                   </div>
                 </div>
               </div>
-              <button class="add-brand-btn" onclick="addOnbBrand()" data-i18n="add_brand">＋ ブランドを追加</button>
+              <button class="add-brand-btn" onclick="addOnbBrand()" data-i18n="add_brand">＋ Add brand</button>
             </div>
           </div>
-          <div class="island">
-            <div class="island-title" data-i18n="island_contact">お客様向け情報</div>
-            <div class="field-group">
-              <div class="field-label"><span data-i18n="auth_email">メールアドレス</span> <span class="opt" data-i18n="optional">任意</span></div>
-              <input class="field-input" type="email" id="onb-email" placeholder="例: info@kyohime.co.jp">
+
+          <!-- SECTION 3: Contact -->
+          <div class="onb-section">
+            <div class="onb-section-header">
+              <span class="onb-section-emoji">🌐</span>
+              <div>
+                <div class="onb-section-question" data-i18n="onb_q_contact">How can customers find you?</div>
+                <div class="onb-section-hint" data-i18n="onb_q_contact_hint">All optional — add what you'd like to share</div>
+              </div>
             </div>
             <div class="field-group">
-              <div class="field-label"><span data-i18n="label_website">ウェブサイト</span> <span class="opt" data-i18n="optional">任意</span></div>
-              <input class="field-input" type="url" id="onb-website" placeholder="例: https://kyohime.co.jp">
+              <div class="field-label" data-i18n="auth_email">Email</div>
+              <input class="field-input" type="email" id="onb-email" placeholder="info@kyohime.co.jp">
             </div>
             <div class="field-group">
-              <div class="field-label">Instagram <span class="opt" data-i18n="optional">任意</span></div>
+              <div class="field-label" data-i18n="label_website">Website</div>
+              <input class="field-input" type="url" id="onb-website" placeholder="https://kyohime.co.jp">
+            </div>
+            <div class="field-group">
+              <div class="field-label">Instagram</div>
               <div class="ig-prefix">
                 <span class="ig-at">@</span>
-                <input class="field-input" type="text" id="onb-instagram" placeholder="例: kyohime_shuzo">
+                <input class="field-input" type="text" id="onb-instagram" placeholder="kyohime_shuzo">
               </div>
             </div>
           </div>
-          <button class="btn-save-company" onclick="saveCompany()" data-i18n="onb_save">蔵元を登録する →</button>
+
+          <button class="btn-save-company" onclick="saveCompany()" data-i18n="onb_save_warm">Let's go! Save & continue →</button>
         </div>
       </div>
 
@@ -862,6 +920,19 @@ const i18n = {
     auth_login_link:'ログイン', auth_back:'戻る',
     onb_title:'蔵元を登録しましょう', onb_sub:'まず、あなたの蔵元の基本情報を入力してください。',
     onb_save:'蔵元を登録する →',
+    onb_welcome_title:'あなたの蔵元について教えてください',
+    onb_welcome_sub:'1分で終わります。蔵元の情報を入力するだけで、すべてを準備します。',
+    onb_q_name:'蔵元の名前は？',
+    onb_q_name_hint:'入力を始めてください — もうご存知かもしれません',
+    onb_q_address:'どこにありますか？',
+    onb_q_brands:'どんなブランドを造っていますか？',
+    onb_q_brands_hint:'ブランドはあとからいつでも追加できます',
+    onb_q_contact:'お客様はどうやって見つけられますか？',
+    onb_q_contact_hint:'すべて任意です — 共有したい情報だけ',
+    onb_save_warm:'始めましょう！保存して次へ →',
+    onb_ph_name:'例: 京姫酒造',
+    onb_ph_address:'例: 京都市伏見区...',
+    onb_ph_brand:'例: 匠',
     island_kura:'蔵元情報', label_kura_name:'蔵元名', label_address:'住所',
     label_brand:'ブランド名', add_brand:'＋ ブランドを追加',
     island_images:'蔵元の顔', island_contact:'お客様向け情報',
@@ -926,6 +997,19 @@ const i18n = {
     auth_login_link:'Log in', auth_back:'Back',
     onb_title:'Set up your sakagura', onb_sub:'Start by entering your brewery\'s basic information.',
     onb_save:'Save brewery →',
+    onb_welcome_title:'Let\'s get to know your sakagura',
+    onb_welcome_sub:'This will only take a minute. Tell us about your brewery, and we\'ll set everything up for you.',
+    onb_q_name:'What\'s the name of your sakagura?',
+    onb_q_name_hint:'Start typing — we might already know you',
+    onb_q_address:'Where is it located?',
+    onb_q_brands:'What brands do you produce?',
+    onb_q_brands_hint:'You can add more brands later anytime',
+    onb_q_contact:'How can customers find you?',
+    onb_q_contact_hint:'All optional — add what you\'d like to share',
+    onb_save_warm:'Let\'s go! Save & continue →',
+    onb_ph_name:'e.g. Kyohime Shuzo',
+    onb_ph_address:'e.g. Kyoto, Fushimi-ku...',
+    onb_ph_brand:'e.g. Takumi',
     island_kura:'Brewery info', label_kura_name:'Brewery name', label_address:'Address',
     label_brand:'Brand name', add_brand:'＋ Add brand',
     island_images:'Face of your sakagura', island_contact:'Contact information',
