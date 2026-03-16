@@ -681,8 +681,9 @@ body {
 .gmaps-count { color: var(--text3); font-size: 12px; }
 .gmaps-address { font-size: 13px; color: var(--text2); margin-bottom: 12px; }
 .gmaps-map { margin: 12px 0; border-radius: 12px; overflow: hidden; }
+.gmaps-links { display: flex; gap: 20px; margin-top: 8px; }
 .gmaps-link {
-  display: inline-block; margin-top: 8px;
+  display: inline-block;
   font-size: 13px; color: var(--accent); text-decoration: none;
   font-weight: 500;
 }
@@ -792,8 +793,6 @@ body {
     <p id="settings-desc"></p>
     <label id="settings-api-label"></label>
     <input type="password" id="api-key-input" placeholder="sk-ant-...">
-    <label id="settings-gmaps-label"></label>
-    <input type="password" id="gmaps-key-input" placeholder="AIza...">
     <label id="settings-email-label"></label>
     <input type="text" id="user-email-input" placeholder="name@company.com">
     <div class="modal-actions">
@@ -1126,7 +1125,6 @@ function applyLang() {
   document.getElementById('settings-title').textContent = t('settings_title');
   document.getElementById('settings-desc').textContent = t('settings_desc');
   document.getElementById('settings-api-label').textContent = t('settings_api_label');
-  document.getElementById('settings-gmaps-label').textContent = t('settings_gmaps_label');
   document.getElementById('settings-email-label').textContent = t('settings_email_label');
   document.getElementById('settings-cancel-btn').textContent = t('cancel');
   document.getElementById('settings-save-btn').textContent = t('save');
@@ -1157,7 +1155,6 @@ function showScreen(name) {
 // ─────────────────────────────────────────
 function openSettings() {
   document.getElementById('api-key-input').value = state.apiKey;
-  document.getElementById('gmaps-key-input').value = state.gmapsKey;
   document.getElementById('user-email-input').value = state.email;
   document.getElementById('settings-modal').classList.add('active');
 }
@@ -1166,10 +1163,8 @@ function closeSettings() {
 }
 function saveSettings() {
   state.apiKey = document.getElementById('api-key-input').value.trim();
-  state.gmapsKey = document.getElementById('gmaps-key-input').value.trim();
   state.email = document.getElementById('user-email-input').value.trim();
   localStorage.setItem('sp_api_key', state.apiKey);
-  localStorage.setItem('sp_gmaps_key', state.gmapsKey);
   localStorage.setItem('sp_email', state.email);
   closeSettings();
   applyLang(); // refresh hint
@@ -1247,19 +1242,16 @@ async function startDiscovery() {
   showScreen('discovery');
   startTimer();
 
-  // If Google Maps key available, validate via Places API first
-  if (state.gmapsKey) {
-    setStep(0, 'active', t('gmaps_searching'));
-    const place = await googlePlacesLookup(name);
-    if (state.discoveryAborted) return;
-    if (place) {
-      state.googlePlace = place;
-      setStep(0, 'done', '✓ ' + t('gmaps_verified') + ': ' + (place.displayName || place.name));
-      // Update display name with verified name
-      document.getElementById('disc-name').textContent = place.displayName || name;
-    } else {
-      setStep(0, 'done', t('gmaps_not_found'));
-    }
+  // Always verify via free Nominatim/OSM — no API key needed
+  setStep(0, 'active', t('gmaps_searching'));
+  const place = await geocodeLookup(name);
+  if (state.discoveryAborted) return;
+  if (place) {
+    state.googlePlace = place;
+    setStep(0, 'done', '✓ ' + t('gmaps_verified') + ': ' + (place.displayName || name));
+    document.getElementById('disc-name').textContent = place.displayName || name;
+  } else {
+    setStep(0, 'done', t('gmaps_not_found'));
   }
 
   if (!state.apiKey) {
@@ -1270,59 +1262,53 @@ async function startDiscovery() {
 }
 
 // ─────────────────────────────────────────
-//  GOOGLE PLACES API
+//  GEOCODE LOOKUP (Free — Nominatim / OSM)
 // ─────────────────────────────────────────
-async function googlePlacesLookup(name) {
-  if (!state.gmapsKey) return null;
+async function geocodeLookup(name) {
   try {
-    // Use Places API (New) Text Search
-    const query = name + ' 酒造 sake brewery';
-    const resp = await fetch('https://places.googleapis.com/v1/places:searchText', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'X-Goog-Api-Key': state.gmapsKey,
-        'X-Goog-FieldMask': 'places.id,places.displayName,places.formattedAddress,places.location,places.nationalPhoneNumber,places.internationalPhoneNumber,places.websiteUri,places.googleMapsUri,places.businessStatus,places.rating,places.userRatingCount,places.types'
-      },
-      body: JSON.stringify({
-        textQuery: query,
-        languageCode: 'ja',
-        maxResultCount: 3
-      })
-    });
-    if (!resp.ok) {
-      console.warn('Google Places API error:', resp.status);
-      return null;
+    // Search Nominatim for the brewery — add 酒造 to improve Japanese results
+    const queries = [
+      name + ' 酒造',
+      name + ' sake brewery',
+      name
+    ];
+    for (const query of queries) {
+      const url = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(query)}&format=json&addressdetails=1&limit=3&accept-language=ja`;
+      const resp = await fetch(url, {
+        headers: { 'User-Agent': 'SakePlatform/1.0 (sakeplatform.com)' }
+      });
+      if (!resp.ok) continue;
+      const results = await resp.json();
+      if (!results || results.length === 0) continue;
+
+      // Find best result — prefer ones in Japan
+      const best = results.find(r => r.address?.country_code === 'jp') || results[0];
+      const addr = best.address || {};
+      const prefecture = addr.province || addr.state || addr.county || '';
+      const fullAddress = best.display_name || '';
+      const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${best.lat},${best.lon}`;
+
+      return {
+        displayName: best.name || best.display_name?.split(',')[0] || '',
+        address: fullAddress,
+        lat: parseFloat(best.lat),
+        lng: parseFloat(best.lon),
+        prefecture: prefecture,
+        mapsUrl: mapsUrl,
+        osmType: best.type,
+        osmClass: best.class,
+        importance: best.importance
+      };
     }
-    const data = await resp.json();
-    if (!data.places || data.places.length === 0) return null;
-    // Pick the best match (first result)
-    const p = data.places[0];
-    return {
-      placeId: p.id,
-      displayName: p.displayName?.text || '',
-      address: p.formattedAddress || '',
-      lat: p.location?.latitude,
-      lng: p.location?.longitude,
-      phone: p.nationalPhoneNumber || p.internationalPhoneNumber || '',
-      website: p.websiteUri || '',
-      mapsUrl: p.googleMapsUri || '',
-      rating: p.rating,
-      ratingCount: p.userRatingCount,
-      businessStatus: p.businessStatus,
-      types: p.types || []
-    };
+    return null;
   } catch (err) {
-    console.warn('Google Places lookup failed:', err);
+    console.warn('Geocode lookup failed:', err);
     return null;
   }
 }
 
 async function simulateDiscovery(name) {
   const delay = ms => new Promise(r => setTimeout(r, ms));
-  if (state.discoveryAborted) return;
-  setStep(0, 'active', t('step_detail_0'));
-  await delay(1500);
   if (state.discoveryAborted) return;
   const brewery = getDemoBrewery(name);
 
@@ -1336,9 +1322,9 @@ async function simulateDiscovery(name) {
 
   const site = brewery.company.website;
   const prodCount = brewery.products.length;
-  setStep(0, 'done', t('sim_found') + ' ' + site);
+  // Step 0 already done by geocode in startDiscovery
   setStep(1, 'active', t('sim_reading'));
-  await delay(2000);
+  await delay(1500);
   if (state.discoveryAborted) return;
   setStep(1, 'done', '3 ' + t('sim_pages'));
   setStep(2, 'active', t('sim_parsing'));
@@ -1390,7 +1376,8 @@ function showDemoNotFound(name) {
 // ─────────────────────────────────────────
 async function aiDiscovery(name) {
   const delay = ms => new Promise(r => setTimeout(r, ms));
-  setStep(0, 'active', t('ai_asking'));
+  // Step 0 already done by geocode in startDiscovery
+  setStep(1, 'active', t('ai_asking'));
 
   try {
     const searchPrompt = `Search for the Japanese sake brewery "${name}". Find:
@@ -1425,8 +1412,8 @@ Return ONLY valid JSON:
       throw new Error(err.error?.message || 'API error');
     }
 
-    setStep(0, 'done', t('ai_found'));
-    setStep(1, 'active', t('ai_analyzing'));
+    setStep(1, 'done', t('ai_found'));
+    setStep(2, 'active', t('ai_analyzing'));
     await delay(500);
 
     const data = await resp.json();
@@ -1436,10 +1423,7 @@ Return ONLY valid JSON:
 
     const brewery = JSON.parse(jsonMatch[0]);
 
-    setStep(1, 'done', `${brewery.products?.length || 0} ${t('sim_products')}`);
-    setStep(2, 'active', t('ai_extracted'));
-    await delay(800);
-    setStep(2, 'done', t('ai_extracted'));
+    setStep(2, 'done', `${brewery.products?.length || 0} ${t('sim_products')}`);
     setStep(3, 'active', t('ai_integrating'));
     await delay(600);
     setStep(3, 'done', t('ai_integrated'));
@@ -1650,22 +1634,25 @@ function renderResults(data) {
     if (gp.website && !c.website) c.website = gp.website;
   }
 
-  // Google Maps section
+  // Location verification section
   let gmapsHtml = '';
   if (gp) {
-    const stars = gp.rating ? '★'.repeat(Math.round(gp.rating)) + '☆'.repeat(5 - Math.round(gp.rating)) : '';
-    const mapEmbedUrl = state.gmapsKey && gp.placeId
-      ? `https://www.google.com/maps/embed/v1/place?key=${encodeURIComponent(state.gmapsKey)}&q=place_id:${encodeURIComponent(gp.placeId)}&language=ja`
+    // OpenStreetMap embed — free, no API key
+    const osmEmbed = gp.lat && gp.lng
+      ? `https://www.openstreetmap.org/export/embed.html?bbox=${gp.lng-0.005},${gp.lat-0.003},${gp.lng+0.005},${gp.lat+0.003}&layer=mapnik&marker=${gp.lat},${gp.lng}`
       : '';
     gmapsHtml = `
       <div class="gmaps-card slide-up">
         <div class="gmaps-header">
           <div class="gmaps-badge">✓ ${esc(t('gmaps_verified_badge'))}</div>
-          ${gp.rating ? `<div class="gmaps-rating"><span class="gmaps-stars">${stars}</span> <strong>${gp.rating}</strong> <span class="gmaps-count">(${gp.ratingCount || 0})</span></div>` : ''}
+          ${gp.prefecture ? `<div class="gmaps-rating">${esc(gp.prefecture)}</div>` : ''}
         </div>
         ${gp.address ? `<div class="gmaps-address">${esc(gp.address)}</div>` : ''}
-        ${mapEmbedUrl ? `<div class="gmaps-map"><iframe src="${mapEmbedUrl}" width="100%" height="250" style="border:0;border-radius:12px" allowfullscreen loading="lazy"></iframe></div>` : ''}
-        ${gp.mapsUrl ? `<a href="${esc(gp.mapsUrl)}" target="_blank" class="gmaps-link">${esc(t('gmaps_view_map'))} →</a>` : ''}
+        ${osmEmbed ? `<div class="gmaps-map"><iframe src="${osmEmbed}" width="100%" height="250" style="border:0;border-radius:12px" allowfullscreen loading="lazy"></iframe></div>` : ''}
+        <div class="gmaps-links">
+          ${gp.mapsUrl ? `<a href="${esc(gp.mapsUrl)}" target="_blank" class="gmaps-link">${esc(t('gmaps_view_map'))} →</a>` : ''}
+          ${gp.lat ? `<a href="https://www.openstreetmap.org/?mlat=${gp.lat}&mlon=${gp.lng}#map=16/${gp.lat}/${gp.lng}" target="_blank" class="gmaps-link">OpenStreetMap →</a>` : ''}
+        </div>
       </div>
     `;
   }
