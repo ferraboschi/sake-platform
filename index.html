@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ja">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -33,7 +33,7 @@ input,select,textarea,button{font-family:inherit;font-size:inherit}
 .landing-lang-toggle button{padding:6px 14px;border:none;background:transparent;cursor:pointer;font-size:0.8rem;font-weight:500;color:var(--text-secondary);transition:all .2s}
 .landing-lang-toggle button.active{background:var(--text);color:#fff}
 .landing-lang-toggle button:first-child{border-right:1px solid var(--border)}
-.landing-login-btn{padding:8px 20px;border:1px solid var(--border);border-radius:var(--radius);background:var(--bg);cursor:pointer;font-weight:500;transition:all .2s;data-i18n:attr}
+.landing-login-btn{padding:8px 20px;border:1px solid var(--border);border-radius:var(--radius);background:var(--bg);cursor:pointer;font-weight:500;transition:all .2s}
 .landing-login-btn:hover{border-color:var(--text)}
 .landing-register-btn{padding:8px 20px;border:none;border-radius:var(--radius);background:var(--text);color:#fff;cursor:pointer;font-weight:500;transition:all .2s}
 .landing-register-btn:hover{background:#333}
@@ -58,7 +58,6 @@ input,select,textarea,button{font-family:inherit;font-size:inherit}
 .landing-cta p{color:var(--text-secondary);margin-bottom:24px;font-size:1.05rem}
 
 .landing-footer{text-align:center;padding:24px 40px;color:var(--text-muted);font-size:0.85rem;border-top:1px solid var(--border)}
-
 
 /* ==================== AUTH ==================== */
 #view-auth{display:none;min-height:100vh;background:var(--bg-subtle);align-items:center;justify-content:center}
@@ -111,8 +110,81 @@ input,select,textarea,button{font-family:inherit;font-size:inherit}
 .app-topbar-actions{display:flex;align-items:center;gap:12px}
 .mobile-menu-btn{display:none;background:none;border:none;font-size:1.5rem;cursor:pointer;padding:4px}
 
-.app-content{padding:32px;max-width:1000px}
+.app-content{padding:32px;max-width:1200px}
 .app-screen{display:none}.app-screen.active{display:block}
+
+/* ==================== COMPIFY-STYLE CARDS ==================== */
+.form-card{background:#fff;border:1px solid var(--border);border-radius:var(--radius-lg);padding:32px;margin-bottom:24px;box-shadow:0 1px 3px rgba(0,0,0,0.05)}
+.form-card-title{font-size:1.1rem;font-weight:700;margin-bottom:4px;color:var(--text)}
+.form-card-subtitle{font-size:0.85rem;color:var(--text-secondary);margin-bottom:24px}
+.form-grid-2col{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.form-grid-1col{display:grid;grid-template-columns:1fr;gap:20px}
+
+.field-group{margin-bottom:20px}
+.field-group:last-child{margin-bottom:0}
+.field-label{display:block;font-size:0.85rem;font-weight:600;margin-bottom:8px;color:var(--text)}
+.field-label .required{color:var(--error)}
+.field-input{width:100%;padding:12px 14px;border:1px solid var(--border);border-radius:var(--radius);font-size:1rem;background:var(--bg);transition:border-color .2s}
+.field-input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-light)}
+select.field-input{cursor:pointer}
+textarea.field-input{resize:vertical;min-height:100px}
+
+/* ==================== UPLOAD AREA ==================== */
+.upload-area{border:2px dashed var(--border);border-radius:var(--radius-lg);padding:32px;text-align:center;cursor:pointer;transition:all .2s;background:var(--bg-subtle)}
+.upload-area:hover{border-color:var(--accent);background:var(--accent-light)}
+.upload-area.has-image{border-style:solid;border-color:var(--success);background:#E8F5E9}
+.upload-icon{font-size:2rem;margin-bottom:12px;display:block}
+.upload-text{font-weight:500;color:var(--text);margin-bottom:4px}
+.upload-hint{font-size:0.8rem;color:var(--text-secondary)}
+.image-preview{width:100%;height:200px;object-fit:cover;border-radius:var(--radius);margin-bottom:12px;display:none}
+.upload-area.has-image .image-preview{display:block}
+.upload-area.has-image .upload-content{display:none}
+.remove-image-btn{padding:8px 16px;background:var(--error);color:#fff;border:none;border-radius:var(--radius);cursor:pointer;font-size:0.85rem;font-weight:600}
+
+/* ==================== CHIP SELECTORS ==================== */
+.chip-group{display:flex;flex-wrap:wrap;gap:12px}
+.chip{padding:10px 16px;border:1px solid var(--border);border-radius:20px;background:var(--bg);cursor:pointer;font-size:0.9rem;font-weight:500;transition:all .15s;white-space:nowrap}
+.chip:hover{border-color:var(--accent);background:var(--accent-light)}
+.chip.selected{background:var(--accent);color:#fff;border-color:var(--accent)}
+
+/* ==================== PRODUCT TYPE SELECTOR ==================== */
+.product-type-selector{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:24px}
+.product-type-card{border:2px solid var(--border);border-radius:var(--radius-lg);padding:24px;text-align:center;cursor:pointer;transition:all .2s}
+.product-type-card:hover{border-color:var(--accent);background:var(--accent-light)}
+.product-type-card.selected{border-color:var(--accent);background:var(--accent);color:#fff}
+.product-type-emoji{font-size:3rem;margin-bottom:12px;display:block}
+.product-type-title{font-weight:700;font-size:1.1rem;margin-bottom:4px}
+.product-type-desc{font-size:0.85rem;opacity:0.7}
+.product-type-card.selected .product-type-desc{opacity:1}
+
+/* ==================== CONTACT CARDS ==================== */
+.contact-card{background:var(--bg-subtle);border:1px solid var(--border);border-radius:var(--radius);padding:16px;margin-bottom:12px;position:relative}
+.contact-card-remove{position:absolute;top:12px;right:12px;width:24px;height:24px;border:none;background:none;cursor:pointer;color:var(--text-muted);font-size:1.2rem}
+.contact-card-remove:hover{color:var(--error)}
+.contact-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+
+/* ==================== BUTTONS ==================== */
+.btn-primary{padding:14px 28px;background:var(--accent);color:#fff;border:none;border-radius:var(--radius);font-weight:600;font-size:1rem;cursor:pointer;transition:all .2s}
+.btn-primary:hover{background:var(--accent-hover);transform:translateY(-1px)}
+.btn-secondary{padding:12px 24px;border:1px solid var(--border);background:var(--bg);color:var(--text);border-radius:var(--radius);font-weight:600;cursor:pointer;transition:all .2s}
+.btn-secondary:hover{border-color:var(--text)}
+.btn-danger{padding:12px 24px;background:var(--error);color:#fff;border:none;border-radius:var(--radius);font-weight:600;cursor:pointer;transition:all .2s}
+.btn-danger:hover{opacity:0.9}
+.btn-add{padding:10px 16px;border:1px dashed var(--border);border-radius:var(--radius);background:none;color:var(--accent);font-weight:600;cursor:pointer;width:100%;transition:all .15s}
+.btn-add:hover{background:var(--accent-light);border-color:var(--accent)}
+
+.form-actions{display:flex;gap:12px;margin-top:32px;justify-content:flex-end}
+.form-actions .btn-secondary{margin-right:auto}
+
+/* ==================== PRODUCT TABLE ==================== */
+.product-table{width:100%;border-collapse:collapse;margin-top:20px}
+.product-table thead{background:var(--bg-subtle)}
+.product-table th{padding:12px;text-align:left;font-weight:600;font-size:0.85rem;color:var(--text-secondary);border-bottom:1px solid var(--border)}
+.product-table td{padding:12px;border-bottom:1px solid var(--border-light)}
+.product-table-thumb{width:40px;height:40px;object-fit:cover;border-radius:var(--radius)}
+.product-table-actions{display:flex;gap:8px}
+.product-table-btn{background:none;border:none;cursor:pointer;font-size:1rem;transition:opacity .2s}
+.product-table-btn:hover{opacity:0.7}
 
 /* ==================== DASHBOARD ==================== */
 .dash-welcome{margin-bottom:32px}
@@ -122,207 +194,22 @@ input,select,textarea,button{font-family:inherit;font-size:inherit}
 .stat-card{background:var(--bg-subtle);border:1px solid var(--border);border-radius:var(--radius-lg);padding:24px}
 .stat-number{font-size:2rem;font-weight:700;color:var(--accent)}
 .stat-label{font-size:0.85rem;color:var(--text-secondary);margin-top:4px}
-.dash-section-title{font-size:1.1rem;font-weight:600;margin-bottom:16px}
-.product-list{display:flex;flex-direction:column;gap:8px}
-.product-card{display:flex;align-items:center;gap:16px;padding:16px 20px;border:1px solid var(--border);border-radius:var(--radius);cursor:pointer;transition:all .15s}
-.product-card:hover{border-color:var(--accent);box-shadow:0 2px 8px rgba(0,0,0,0.04)}
-.product-card-icon{font-size:1.5rem}
-.product-card-info{flex:1;min-width:0}
-.product-card-name{font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.product-card-brand{font-size:0.85rem;color:var(--text-secondary)}
-.product-card-status{font-size:0.75rem;padding:4px 10px;border-radius:20px;font-weight:500}
-.status-published{background:#E8F5E9;color:var(--success)}
-.status-draft{background:#FFF3E0;color:#E65100}
 .empty-state{text-align:center;padding:60px 20px}
 .empty-state-icon{font-size:3rem;margin-bottom:16px}
 .empty-state h3{font-size:1.2rem;margin-bottom:8px}
 .empty-state p{color:var(--text-secondary);margin-bottom:24px}
 .empty-state button{padding:10px 24px;background:var(--text);color:#fff;border:none;border-radius:var(--radius);font-weight:600;cursor:pointer}
 
-/* ==================== ONBOARDING ==================== */
-.onboarding-screen{max-width:680px;margin:0 auto}
-.onboarding-screen h2{font-size:1.6rem;font-weight:700;margin-bottom:8px}
-.onboarding-screen>p{color:var(--text-secondary);margin-bottom:32px}
-
-/* Welcome hero */
-.onb-welcome{background:#F8F5ED;border-radius:16px;padding:48px 32px;text-align:center;margin-bottom:32px;position:relative;overflow:hidden}
-.onb-welcome-emoji{font-size:4rem;margin-bottom:16px;display:block}
-.onb-welcome h2{font-family:Georgia,'Times New Roman',serif;font-size:2rem;font-weight:700;color:#1A1A1A;margin-bottom:12px;letter-spacing:-0.02em}
-.onb-welcome p{color:#6B6B6B;font-size:1.05rem;line-height:1.6;max-width:480px;margin:0 auto}
-.onb-welcome-sparkle{position:absolute;font-size:1.5rem;opacity:0.3}
-
-/* Conversational form sections */
-.onb-section{background:#fff;border:1px solid #F0F0ED;border-radius:16px;padding:28px 28px 24px;margin-bottom:20px;border-left:3px solid #E05A33;animation:fadeSlideUp .5s ease both}
-.onb-section:nth-child(2){animation-delay:.1s}
-.onb-section:nth-child(3){animation-delay:.2s}
-.onb-section:nth-child(4){animation-delay:.3s}
-.onb-section-header{display:flex;align-items:flex-start;gap:12px;margin-bottom:20px}
-.onb-section-emoji{font-size:1.6rem;flex-shrink:0;margin-top:2px}
-.onb-section-question{font-family:Georgia,'Times New Roman',serif;font-size:1.15rem;font-weight:600;color:#1A1A1A;line-height:1.4}
-.onb-section-hint{font-size:0.85rem;color:#999;margin-top:4px;font-style:italic}
-
-/* Warmer field styling */
-.onb-section .field-input{padding:12px 16px;border-radius:10px;border:1px solid #E8E8E5;font-size:1rem;background:#FAFAF8;transition:all .2s}
-.onb-section .field-input:focus{border-color:#E05A33;background:#fff;box-shadow:0 0 0 3px rgba(224,90,51,0.08)}
-.onb-section .field-label{font-size:0.85rem;color:#999;margin-bottom:8px}
-
-/* Warm save button */
-.btn-save-company{width:100%;padding:16px;background:linear-gradient(135deg,#E05A33,#C94E2B);color:#fff;border:none;border-radius:12px;font-weight:600;font-size:1.05rem;cursor:pointer;margin-top:12px;transition:all .3s;box-shadow:0 4px 16px rgba(224,90,51,0.2)}
-.btn-save-company:hover{transform:translateY(-1px);box-shadow:0 6px 24px rgba(224,90,51,0.3)}
-
-@keyframes fadeSlideUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
-.island{background:var(--bg-subtle);border:1px solid var(--border);border-radius:var(--radius-lg);padding:24px;margin-bottom:20px}
-.island-title{font-size:0.9rem;font-weight:600;color:var(--text-secondary);text-transform:uppercase;letter-spacing:0.03em;margin-bottom:16px}
-.field-group{margin-bottom:16px}
-.field-group:last-child{margin-bottom:0}
-.field-label{font-size:0.85rem;font-weight:500;margin-bottom:6px;color:var(--text-secondary)}
-.field-label .opt{font-size:0.75rem;color:var(--text-muted);font-weight:400}
-.field-input{width:100%;padding:10px 14px;border:1px solid var(--border);border-radius:var(--radius);font-size:1rem;background:var(--bg);transition:border .2s}
-.field-input:focus{outline:none;border-color:var(--accent)}
-select.field-input{cursor:pointer}
-
-/* Autocomplete dropdown */
-.autocomplete-wrapper{position:relative}
-.autocomplete-list{position:absolute;top:100%;left:0;right:0;background:var(--bg);border:1px solid var(--border);border-radius:0 0 var(--radius) var(--radius);max-height:200px;overflow-y:auto;z-index:200;box-shadow:0 4px 12px rgba(0,0,0,0.1);display:none}
-.autocomplete-list.visible{display:block}
-.autocomplete-item{padding:10px 14px;cursor:pointer;font-size:0.9rem;border-bottom:1px solid var(--border-light)}
-.autocomplete-item:last-child{border-bottom:none}
-.autocomplete-item:hover,.autocomplete-item.highlighted{background:var(--accent-light)}
-.autocomplete-item .ac-name{font-weight:600}
-.autocomplete-item .ac-detail{font-size:0.8rem;color:var(--text-secondary);margin-top:2px}
-
-/* Brand management */
-.brand-entry{margin-bottom:12px;padding:12px;background:var(--bg);border:1px solid var(--border-light);border-radius:var(--radius)}
-.brand-top-row{display:flex;align-items:center;gap:8px}
-.remove-brand-btn{width:32px;height:32px;border:none;background:none;color:var(--text-muted);font-size:1.3rem;cursor:pointer;border-radius:50%;display:flex;align-items:center;justify-content:center}
-.remove-brand-btn:hover{background:#FEE;color:var(--error)}
-.brand-logo-area{margin-top:10px}
-.brand-logo-upload{display:flex;align-items:center;gap:12px;padding:10px;border:1px dashed var(--border);border-radius:var(--radius);cursor:pointer;transition:all .15s}
-.brand-logo-upload:hover{border-color:var(--accent);background:var(--accent-light)}
-.brand-logo-upload.has-file{border-style:solid;border-color:var(--success)}
-.brand-logo-thumb{width:36px;height:36px;object-fit:contain;border-radius:4px;display:none}
-.brand-logo-upload.has-file .brand-logo-thumb{display:block}
-.brand-logo-upload.has-file .brand-logo-icon{display:none}
-.brand-logo-icon{font-size:1.5rem}
-.brand-logo-text{font-size:0.85rem;font-weight:500}
-.brand-logo-hint{font-size:0.75rem;color:var(--text-muted)}
-.add-brand-btn{width:100%;padding:10px;border:1px dashed var(--border);border-radius:var(--radius);background:none;cursor:pointer;color:var(--accent);font-weight:500;transition:all .15s}
-.add-brand-btn:hover{background:var(--accent-light);border-color:var(--accent)}
-.btn-save-company{width:100%;padding:14px;background:var(--text);color:#fff;border:none;border-radius:var(--radius);font-weight:600;font-size:1rem;cursor:pointer;margin-top:8px;transition:all .2s}
-.btn-save-company:hover{background:#333}
-.ig-prefix{display:flex;align-items:center;gap:0;border:1px solid var(--border);border-radius:var(--radius);overflow:hidden}
-.ig-at{padding:10px 12px;background:var(--bg-subtle);color:var(--text-muted);font-weight:500;border-right:1px solid var(--border)}
-.ig-prefix .field-input{border:none;border-radius:0}
-
-/* ==================== PRODUCT EDITOR ==================== */
-.editor-header{display:flex;align-items:center;gap:16px;margin-bottom:28px}
-.editor-back{background:none;border:1px solid var(--border);border-radius:var(--radius);padding:8px 14px;cursor:pointer;font-size:1rem;transition:all .15s}
-.editor-back:hover{border-color:var(--text)}
-.editor-title{flex:1;font-size:1.3rem;font-weight:700}
-.editor-save{padding:8px 20px;background:var(--accent);color:#fff;border:none;border-radius:var(--radius);font-weight:600;cursor:pointer;transition:all .15s}
-.editor-save:hover{background:var(--accent-hover)}
-.editor-body{max-width:640px}
-.editor-body .island{margin-bottom:20px}
-.chip-group{display:flex;flex-wrap:wrap;gap:8px}
-.chip{padding:6px 14px;border:1px solid var(--border);border-radius:20px;background:var(--bg);cursor:pointer;font-size:0.85rem;transition:all .15s}
-.chip:hover{border-color:var(--accent)}
-.chip.selected{background:var(--accent);color:#fff;border-color:var(--accent)}
-.slider-field{margin-bottom:16px}
-.slider-field:last-child{margin-bottom:0}
-.slider-label{display:flex;justify-content:space-between;font-size:0.85rem;margin-bottom:8px}
-.slider-label .extremes{color:var(--text-muted);font-size:0.8rem}
-.slider-dots{display:flex;gap:8px}
-.slider-dot{width:32px;height:32px;border-radius:50%;border:2px solid var(--border);cursor:pointer;transition:all .15s}
-.slider-dot:hover{border-color:var(--accent)}
-.slider-dot.active{background:var(--accent);border-color:var(--accent)}
-.editor-actions{display:flex;gap:12px;margin-top:24px;max-width:640px}
-.btn-draft{flex:1;padding:12px;border:1px solid var(--border);border-radius:var(--radius);background:var(--bg);cursor:pointer;font-weight:600;transition:all .15s}
-.btn-draft:hover{border-color:var(--text)}
-.btn-publish{flex:1;padding:12px;border:none;border-radius:var(--radius);background:var(--accent);color:#fff;cursor:pointer;font-weight:600;transition:all .15s}
-.btn-publish:hover{background:var(--accent-hover)}
-
-/* ==================== CATALOG ==================== */
-.catalog-header{margin-bottom:28px}
-.catalog-header h2{font-size:1.6rem;font-weight:700;margin-bottom:16px}
-.catalog-search{position:relative;max-width:400px;margin-bottom:16px}
-.catalog-search-icon{position:absolute;left:14px;top:50%;transform:translateY(-50%);font-size:1rem}
-.catalog-search input{width:100%;padding:10px 14px 10px 40px;border:1px solid var(--border);border-radius:var(--radius);font-size:1rem}
-.catalog-search input:focus{outline:none;border-color:var(--accent)}
-.catalog-filters{display:flex;flex-wrap:wrap;gap:8px}
-.filter-chip{padding:6px 14px;border:1px solid var(--border);border-radius:20px;background:var(--bg);cursor:pointer;font-size:0.85rem;transition:all .15s}
-.filter-chip:hover{border-color:var(--accent)}
-.filter-chip.active{background:var(--text);color:#fff;border-color:var(--text)}
-.catalog-results{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:16px}
-.catalog-item{border:1px solid var(--border);border-radius:var(--radius-lg);padding:20px;transition:all .15s}
-.catalog-item:hover{border-color:var(--accent);box-shadow:0 2px 12px rgba(0,0,0,0.04)}
-.catalog-item-top{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:12px}
-.catalog-item-name{font-weight:600;font-size:1.05rem}
-.catalog-item-brewery{font-size:0.85rem;color:var(--text-secondary);margin-top:2px}
-.catalog-item-badge{font-size:0.75rem;padding:4px 10px;border-radius:20px;background:var(--bg-subtle);border:1px solid var(--border);white-space:nowrap;font-weight:500}
-.catalog-item-specs{display:flex;flex-wrap:wrap;gap:12px}
-.catalog-item-spec{font-size:0.85rem;color:var(--text-secondary)}
-.catalog-count{grid-column:1/-1;text-align:center;padding:16px;color:var(--text-muted);font-size:0.9rem}
-
-/* ==================== SETTINGS ==================== */
-.settings-screen h2{font-size:1.6rem;font-weight:700;margin-bottom:24px}
-.settings-section{margin-bottom:24px;border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden}
-.settings-item{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;cursor:pointer;transition:background .15s;border-bottom:1px solid var(--border-light)}
-.settings-item:last-child{border-bottom:none}
-.settings-item:hover{background:var(--bg-subtle)}
-.settings-item-left{display:flex;align-items:center;gap:12px}
-.settings-item-icon{font-size:1.2rem}
-.settings-item-arrow{color:var(--text-muted);font-size:1.1rem}
-.settings-danger{color:var(--error)}
-.settings-danger:hover{background:#FFF5F5}
-
-/* ==================== MODAL ==================== */
-.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.4);display:flex;align-items:center;justify-content:center;z-index:1000;backdrop-filter:blur(4px)}
-.modal{background:var(--bg);border-radius:var(--radius-lg);padding:32px;max-width:360px;width:90%}
-.modal h3{font-size:1.1rem;font-weight:600;margin-bottom:16px;text-align:center}
-.modal-btn{width:100%;padding:12px;border:1px solid var(--border);border-radius:var(--radius);background:var(--bg);cursor:pointer;font-size:0.95rem;transition:all .15s;text-align:left}
-.modal-btn:hover{border-color:var(--accent);background:var(--accent-light)}
-
-/* ==================== ONBOARDING WIZARD ==================== */
-#onboarding-overlay{position:fixed;inset:0;background:#F8F5ED;display:none;flex-direction:column;align-items:center;justify-content:center;z-index:2000;animation:fadeIn .4s ease;overflow-y:auto;padding:40px 20px}
-#onboarding-overlay.active{display:flex}
-@keyframes fadeIn{from{opacity:0}to{opacity:1}}
-@keyframes fadeSlideUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
-.onboarding-step{display:none;max-width:720px;width:100%;animation:fadeSlideUp .5s ease;padding:40px;background:#fff;border-radius:16px;box-shadow:0 8px 32px rgba(0,0,0,0.06)}
-.onboarding-step.active{display:block}
-.onboarding-header{text-align:center;margin-bottom:40px}
-.onboarding-progress{display:flex;justify-content:center;gap:12px;margin-bottom:28px}
-.onboarding-dot{width:10px;height:10px;border-radius:50%;background:#ddd;cursor:pointer;transition:all .3s}
-.onboarding-dot.active{background:#E05A33;width:28px;border-radius:14px}
-.onboarding-hero-emoji{font-size:5rem;margin-bottom:24px;display:block}
-.onboarding-title{font-family:Georgia,'Times New Roman',serif;font-size:2.2rem;font-weight:700;color:#1a1a1a;line-height:1.3;margin-bottom:12px}
-.onboarding-subtitle{font-size:1rem;color:#6b6b6b;margin-bottom:32px;line-height:1.6}
-.onboarding-body{color:#6b6b6b;font-size:1.05rem;line-height:1.8;margin-bottom:32px;text-align:center}
-.onboarding-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-bottom:32px}
-.onboarding-card{background:#F8F5ED;border-radius:12px;padding:24px;text-align:center;transition:all .3s}
-.onboarding-card:hover{transform:translateY(-4px);box-shadow:0 4px 16px rgba(0,0,0,0.08)}
-.onboarding-card-emoji{font-size:3rem;margin-bottom:16px;display:block}
-.onboarding-card-title{font-weight:700;color:#1a1a1a;margin-bottom:8px;font-size:1rem}
-.onboarding-card-desc{font-size:0.9rem;color:#6b6b6b;line-height:1.5}
-.onboarding-footer{display:flex;gap:12px;align-items:center;justify-content:center;margin-top:32px}
-.onboarding-btn{padding:14px 32px;background:#1a1a1a;color:#fff;border:none;border-radius:8px;font-weight:600;font-size:1rem;cursor:pointer;transition:all .2s}
-.onboarding-btn:hover{background:#333;transform:translateY(-2px)}
-.onboarding-btn-back{padding:12px 24px;border:1px solid #ddd;background:transparent;color:#1a1a1a;border-radius:8px;font-weight:500;cursor:pointer;transition:all .2s}
-.onboarding-btn-back:hover{border-color:#1a1a1a;background:#f5f5f5}
-.onboarding-skip{font-size:0.85rem;color:#999;cursor:pointer;transition:color .2s}
-.onboarding-skip:hover{color:#1a1a1a;text-decoration:underline}
-@media(max-width:768px){
-  .onboarding-step{padding:32px 24px}
-  .onboarding-cards{grid-template-columns:1fr}
-  .onboarding-title{font-size:1.8rem}
-  .onboarding-hero-emoji{font-size:4rem}
-}
+/* ==================== PRODUCT TYPE BADGE ==================== */
+.product-badge{display:inline-block;padding:4px 12px;border-radius:20px;font-size:0.75rem;font-weight:600}
+.badge-nihonshu{background:#E3F2FD;color:#1565C0}
+.badge-shochu{background:#F3E5F5;color:#6A1B9A}
 
 /* ==================== TOAST ==================== */
 .toast-container{position:fixed;top:20px;right:20px;z-index:9999;display:flex;flex-direction:column;gap:8px}
 .toast{padding:12px 20px;border-radius:var(--radius);font-size:0.9rem;font-weight:500;animation:toastIn .3s ease;box-shadow:0 4px 12px rgba(0,0,0,0.15)}
 .toast-success{background:#2E7D32;color:#fff}
 .toast-error{background:#D32F2F;color:#fff}
-.toast-info{background:var(--text);color:#fff}
 @keyframes toastIn{from{opacity:0;transform:translateY(-10px)}to{opacity:1;transform:translateY(0)}}
 
 /* ==================== RESPONSIVE ==================== */
@@ -330,6 +217,8 @@ select.field-input{cursor:pointer}
   .features-grid{grid-template-columns:1fr}
   .landing-hero h1{font-size:2.2rem}
   .features-title{font-size:1.6rem}
+  .form-grid-2col{grid-template-columns:1fr}
+  .product-type-selector{grid-template-columns:1fr}
 }
 @media(max-width:768px){
   .app-sidebar{transform:translateX(-100%);transition:transform .25s ease;width:280px}
@@ -343,13 +232,14 @@ select.field-input{cursor:pointer}
   .landing-hero{padding:40px 20px 40px}
   .landing-features{padding:40px 20px}
   .landing-cta{padding:40px 20px}
-  .catalog-results{grid-template-columns:1fr}
+  .form-card{padding:20px}
+  .form-actions{flex-direction:column}
+  .form-actions .btn-secondary{margin-right:0}
 }
 @media(max-width:480px){
   .landing-hero h1{font-size:1.8rem}
   .landing-nav-right .landing-login-btn{display:none}
-  .dash-stats{grid-template-columns:1fr 1fr}
-  .editor-actions{flex-direction:column}
+  .form-grid-2col{grid-template-columns:1fr}
 }
 </style>
 </head>
@@ -370,30 +260,30 @@ select.field-input{cursor:pointer}
   </nav>
   <section class="landing-hero">
     <h1 data-i18n="hero_title">Your sake. Every language.</h1>
-    <p data-i18n="hero_sub">Auto-generate multilingual technical sheets. A free platform for sakagura.</p>
+    <p data-i18n="hero_sub">Manage your sake company and products in one place.</p>
     <button class="hero-cta-btn" data-i18n="hero_cta" onclick="navigate('auth','register')">Sign up free →</button>
     <div class="hero-free" data-i18n="hero_free">No credit card required — forever free</div>
   </section>
   <section class="landing-features">
-    <div class="features-label" data-i18n="features_label">A world first</div>
-    <h2 class="features-title" data-i18n="features_title">One platform. Everything you need.</h2>
+    <div class="features-label" data-i18n="features_label">FEATURES</div>
+    <h2 class="features-title" data-i18n="features_title">Built for sake makers</h2>
     <div class="features-grid">
       <div class="feature-card">
-        <h3 data-i18n="feat1_title">Auto-generated multilingual sheets</h3>
-        <p data-i18n="feat1_desc">One input generates technical sheets in Japanese and English. Share via PDF, link or forwarding.</p>
+        <h3 data-i18n="feat1_title">Manage multiple products</h3>
+        <p data-i18n="feat1_desc">Support for both Nihonshu and Shochu with their specific technical fields.</p>
       </div>
       <div class="feature-card">
-        <h3 data-i18n="feat2_title">Back labels — country compliant</h3>
-        <p data-i18n="feat2_desc">Just select the importer and export country to auto-generate compliant back labels.</p>
+        <h3 data-i18n="feat2_title">Company profiles</h3>
+        <p data-i18n="feat2_desc">Manage brewery information, contacts, and social media links in one place.</p>
       </div>
       <div class="feature-card">
-        <h3 data-i18n="feat3_title">Competitions — one-click entry</h3>
-        <p data-i18n="feat3_desc">Enter IWC, Kuramaster and more with one click using your registered data. Awards auto-reflect on sheets.</p>
+        <h3 data-i18n="feat3_title">Bilingual support</h3>
+        <p data-i18n="feat3_desc">Everything works in English and Japanese.</p>
       </div>
     </div>
   </section>
   <section class="landing-cta">
-    <p data-i18n="cta_footnote">Built for sakagura. Built with sakagura.</p>
+    <p data-i18n="cta_footnote">Built for sakagura</p>
     <button class="hero-cta-btn" data-i18n="cta_register" onclick="navigate('auth','register')">Get started →</button>
   </section>
   <footer class="landing-footer">© 2026 Sake Platform</footer>
@@ -404,56 +294,53 @@ select.field-input{cursor:pointer}
   <div class="auth-container">
     <div class="auth-card">
       <div class="auth-logo">🍶</div>
-      <!-- LOGIN -->
       <div class="auth-card-inner active" id="auth-login">
-        <h2 data-i18n="auth_login_title">おかえりなさい</h2>
-        <p class="auth-sub" data-i18n="auth_login_sub">アカウントにログイン</p>
+        <h2 data-i18n="auth_login_title">Welcome back</h2>
+        <p class="auth-sub" data-i18n="auth_login_sub">Sign in to your account</p>
         <div class="auth-field">
-          <label data-i18n="auth_email">メールアドレス</label>
+          <label data-i18n="auth_email">Email</label>
           <input type="email" id="login-email" autocomplete="email">
         </div>
         <div class="auth-field">
-          <label data-i18n="auth_password">パスワード</label>
+          <label data-i18n="auth_password">Password</label>
           <input type="password" id="login-password" autocomplete="current-password">
         </div>
-        <button class="auth-btn" onclick="doLogin()" data-i18n="auth_login_btn">ログイン</button>
+        <button class="auth-btn" onclick="doLogin()" data-i18n="auth_login_btn">Sign in</button>
         <div class="auth-error" id="login-error"></div>
         <div class="auth-links">
-          <a onclick="showAuthPanel('forgot')" data-i18n="auth_forgot_link">パスワードを忘れた？</a>
+          <a onclick="showAuthPanel('forgot')" data-i18n="auth_forgot_link">Forgot password?</a>
         </div>
-        <div class="auth-links"><span data-i18n="auth_no_account">アカウントがない？</span> <a onclick="showAuthPanel('register')" data-i18n="auth_register_link">新規登録</a></div>
+        <div class="auth-links"><span data-i18n="auth_no_account">No account?</span> <a onclick="showAuthPanel('register')" data-i18n="auth_register_link">Sign up</a></div>
       </div>
-      <!-- REGISTER -->
       <div class="auth-card-inner" id="auth-register">
-        <h2 data-i18n="auth_register_title">アカウント作成</h2>
-        <p class="auth-sub" data-i18n="auth_register_sub">無料で始めましょう</p>
+        <h2 data-i18n="auth_register_title">Create account</h2>
+        <p class="auth-sub" data-i18n="auth_register_sub">Start for free</p>
         <div class="auth-field">
-          <label data-i18n="auth_email">メールアドレス</label>
+          <label data-i18n="auth_email">Email</label>
           <input type="email" id="register-email" autocomplete="email">
         </div>
         <div class="auth-field">
-          <label data-i18n="auth_password">パスワード</label>
+          <label data-i18n="auth_password">Password</label>
           <input type="password" id="register-password" autocomplete="new-password">
         </div>
         <div class="auth-field">
-          <label data-i18n="auth_password_confirm">パスワード確認</label>
+          <label data-i18n="auth_password_confirm">Confirm password</label>
           <input type="password" id="register-password2" autocomplete="new-password">
         </div>
-        <button class="auth-btn" onclick="doRegister()" data-i18n="auth_register_btn">アカウントを作成</button>
+        <button class="auth-btn" onclick="doRegister()" data-i18n="auth_register_btn">Create account</button>
         <div class="auth-error" id="register-error"></div>
-        <div class="auth-links"><span data-i18n="auth_have_account">アカウントをお持ちですか？</span> <a onclick="showAuthPanel('login')" data-i18n="auth_login_link">ログイン</a></div>
+        <div class="auth-links"><span data-i18n="auth_have_account">Have an account?</span> <a onclick="showAuthPanel('login')" data-i18n="auth_login_link">Sign in</a></div>
       </div>
-      <!-- FORGOT -->
       <div class="auth-card-inner" id="auth-forgot">
-        <h2 data-i18n="auth_forgot_title">パスワードリセット</h2>
-        <p class="auth-sub" data-i18n="auth_forgot_sub">登録メールアドレスにリセットリンクを送信します</p>
+        <h2 data-i18n="auth_forgot_title">Reset password</h2>
+        <p class="auth-sub" data-i18n="auth_forgot_sub">Enter your email to reset</p>
         <div class="auth-field">
-          <label data-i18n="auth_email">メールアドレス</label>
+          <label data-i18n="auth_email">Email</label>
           <input type="email" id="forgot-email" autocomplete="email">
         </div>
-        <button class="auth-btn" onclick="doForgotPassword()" data-i18n="auth_reset_btn">リセットリンクを送信</button>
+        <button class="auth-btn" onclick="doForgotPassword()" data-i18n="auth_reset_btn">Send reset link</button>
         <div class="auth-error" id="forgot-error"></div>
-        <a class="auth-back-link" onclick="showAuthPanel('login')" data-i18n="auth_back">戻る</a>
+        <a class="auth-back-link" onclick="showAuthPanel('login')" data-i18n="auth_back">Back</a>
       </div>
     </div>
   </div>
@@ -466,13 +353,13 @@ select.field-input{cursor:pointer}
     <div class="sidebar-logo">🍶 Sake Platform</div>
     <nav class="sidebar-nav">
       <button class="sidebar-nav-item active" onclick="showAppScreen('dashboard')" data-screen="dashboard">
-        <span class="nav-icon">📊</span><span data-i18n="nav_dashboard">ホーム</span>
+        <span class="nav-icon">📊</span><span data-i18n="nav_home">Home</span>
       </button>
-      <button class="sidebar-nav-item" onclick="openProductEditor()" data-screen="product-edit">
-        <span class="nav-icon">＋</span><span data-i18n="nav_add">商品を追加</span>
+      <button class="sidebar-nav-item" onclick="showAppScreen('products')" data-screen="products">
+        <span class="nav-icon">📦</span><span data-i18n="nav_products">Products</span>
       </button>
       <button class="sidebar-nav-item" onclick="showAppScreen('catalog')" data-screen="catalog">
-        <span class="nav-icon">🔍</span><span data-i18n="nav_catalog">カタログ</span>
+        <span class="nav-icon">📚</span><span data-i18n="nav_catalog">Catalog</span>
       </button>
     </nav>
     <div class="sidebar-lang-select">
@@ -483,7 +370,7 @@ select.field-input{cursor:pointer}
       </select>
     </div>
     <div class="sidebar-footer">
-      <div class="sidebar-user" onclick="showAppScreen('settings')">
+      <div class="sidebar-user" onclick="doLogout()">
         <div class="sidebar-avatar" id="sidebar-avatar">S</div>
         <div class="sidebar-user-info">
           <div class="sidebar-user-name" id="sidebar-user-name"></div>
@@ -497,1108 +384,956 @@ select.field-input{cursor:pointer}
     <header class="app-topbar">
       <div style="display:flex;align-items:center;gap:12px">
         <button class="mobile-menu-btn" onclick="toggleSidebar()">☰</button>
-        <div class="app-topbar-title" id="app-title">ダッシュボード</div>
+        <div class="app-topbar-title" id="app-title">Home</div>
       </div>
       <div class="app-topbar-actions"></div>
     </header>
 
     <div class="app-content">
-      <!-- SCREEN: ONBOARDING -->
-      <div class="app-screen" id="screen-onboarding">
-        <div class="onboarding-screen">
-          <!-- WELCOME HERO -->
-          <div class="onb-welcome">
-            <span class="onb-welcome-sparkle" style="top:12%;left:15%">✨</span>
-            <span class="onb-welcome-sparkle" style="top:20%;right:18%">🌸</span>
-            <span class="onb-welcome-sparkle" style="bottom:15%;left:20%">🌾</span>
-            <span class="onb-welcome-emoji">🏯</span>
-            <h2 data-i18n="onb_welcome_title">Let's get to know your sakagura</h2>
-            <p data-i18n="onb_welcome_sub">This will only take a minute. Tell us about your brewery, and we'll set everything up for you.</p>
-          </div>
-
-          <!-- SECTION 1: Brewery Name -->
-          <div class="onb-section">
-            <div class="onb-section-header">
-              <span class="onb-section-emoji">🍶</span>
-              <div>
-                <div class="onb-section-question" data-i18n="onb_q_name">What's the name of your sakagura?</div>
-                <div class="onb-section-hint" data-i18n="onb_q_name_hint">Start typing — we might already know you</div>
-              </div>
-            </div>
-            <div class="field-group">
-              <div class="autocomplete-wrapper">
-                <input class="field-input" type="text" id="onb-company-name" data-i18n-placeholder="onb_ph_name" placeholder="e.g. Kyohime Shuzo" autocomplete="off">
-                <div class="autocomplete-list" id="sakagura-autocomplete"></div>
-              </div>
-            </div>
-            <div class="field-group">
-              <div class="field-label"><span data-i18n="onb_q_address">Where is it located?</span> <span class="opt" data-i18n="optional">optional</span></div>
-              <input class="field-input" type="text" id="onb-address" data-i18n-placeholder="onb_ph_address" placeholder="e.g. Kyoto, Fushimi-ku...">
-            </div>
-          </div>
-
-          <!-- SECTION 2: Brands -->
-          <div class="onb-section">
-            <div class="onb-section-header">
-              <span class="onb-section-emoji">🏷️</span>
-              <div>
-                <div class="onb-section-question" data-i18n="onb_q_brands">What brands do you produce?</div>
-                <div class="onb-section-hint" data-i18n="onb_q_brands_hint">You can add more brands later anytime</div>
-              </div>
-            </div>
-            <div class="field-group">
-              <div id="onb-brand-list">
-                <div class="brand-entry" data-index="0">
-                  <div class="brand-top-row">
-                    <input class="field-input brand-input" type="text" data-i18n-placeholder="onb_ph_brand" placeholder="e.g. Takumi" style="flex:1">
-                    <button type="button" class="remove-brand-btn" onclick="removeOnbBrand(this)" style="display:none">×</button>
-                  </div>
-                  <div class="brand-logo-area">
-                    <label class="brand-logo-upload" onclick="this.querySelector('input[type=file]').click()">
-                      <img class="brand-logo-thumb" src="" alt="">
-                      <span class="brand-logo-icon">🏷️</span>
-                      <div>
-                        <div class="brand-logo-text" data-i18n="upload_brand_logo">Add logo (optional)</div>
-                        <div class="brand-logo-hint">PNG · SVG recommended — transparent background is best</div>
-                      </div>
-                      <input type="file" accept="image/png,image/svg+xml,image/jpeg,image/webp" style="display:none" onchange="handleBrandLogo(this)">
-                    </label>
-                  </div>
-                </div>
-              </div>
-              <button class="add-brand-btn" onclick="addOnbBrand()" data-i18n="add_brand">＋ Add brand</button>
-            </div>
-          </div>
-
-          <!-- SECTION 3: Contact -->
-          <div class="onb-section">
-            <div class="onb-section-header">
-              <span class="onb-section-emoji">🌐</span>
-              <div>
-                <div class="onb-section-question" data-i18n="onb_q_contact">How can customers find you?</div>
-                <div class="onb-section-hint" data-i18n="onb_q_contact_hint">All optional — add what you'd like to share</div>
-              </div>
-            </div>
-            <div class="field-group">
-              <div class="field-label" data-i18n="auth_email">Email</div>
-              <input class="field-input" type="email" id="onb-email" placeholder="info@kyohime.co.jp">
-            </div>
-            <div class="field-group">
-              <div class="field-label" data-i18n="label_website">Website</div>
-              <input class="field-input" type="url" id="onb-website" placeholder="https://kyohime.co.jp">
-            </div>
-            <div class="field-group">
-              <div class="field-label">Instagram</div>
-              <div class="ig-prefix">
-                <span class="ig-at">@</span>
-                <input class="field-input" type="text" id="onb-instagram" placeholder="kyohime_shuzo">
-              </div>
-            </div>
-          </div>
-
-          <button class="btn-save-company" onclick="saveCompany()" data-i18n="onb_save_warm">Let's go! Save & continue →</button>
-        </div>
-      </div>
-
       <!-- SCREEN: DASHBOARD -->
-      <div class="app-screen" id="screen-dashboard">
+      <div class="app-screen" id="screen-dashboard" class="active">
         <div class="dash-welcome">
-          <h2 id="dash-greeting">おかえりなさい</h2>
+          <h2 id="dash-greeting" data-i18n="welcome">Welcome</h2>
           <p id="dash-company-name"></p>
         </div>
         <div class="dash-stats">
           <div class="stat-card">
             <div class="stat-number" id="stat-products">0</div>
-            <div class="stat-label" data-i18n="stat_products">登録商品</div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-number" id="stat-published">0</div>
-            <div class="stat-label" data-i18n="stat_published">公開中</div>
+            <div class="stat-label" data-i18n="stat_products">Products</div>
           </div>
         </div>
-        <div class="dash-section-title" data-i18n="my_products">マイ商品</div>
-        <div class="product-list" id="product-list"></div>
+        <div id="dashboard-content"></div>
+      </div>
+
+      <!-- SCREEN: PRODUCTS -->
+      <div class="app-screen" id="screen-products">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:24px">
+          <h2 data-i18n="products_title">Your products</h2>
+          <button class="btn-primary" onclick="openProductEditor(null)" data-i18n="add_product">+ Add Product</button>
+        </div>
+        <div id="products-list"></div>
       </div>
 
       <!-- SCREEN: PRODUCT EDITOR -->
-      <div class="app-screen" id="screen-product-edit">
-        <div class="editor-header">
-          <button class="editor-back" onclick="showAppScreen('dashboard')">←</button>
-          <div class="editor-title" data-i18n="edit_product">商品を編集</div>
-          <button class="editor-save" onclick="saveProduct()" data-i18n="save">保存</button>
-        </div>
-        <div class="editor-body">
-          <input type="hidden" id="edit-product-id">
-          <div class="island">
-            <div class="island-title" data-i18n="island_product">商品情報</div>
-            <div class="field-group">
-              <div class="field-label" data-i18n="label_brand">ブランド</div>
-              <select class="field-input" id="edit-brand"></select>
-            </div>
-            <div class="field-group">
-              <div class="field-label" data-i18n="label_product_name">商品名</div>
-              <input class="field-input" type="text" id="edit-product-name" placeholder="例: 匠 純米吟醸">
-            </div>
-            <div class="field-group">
-              <div class="field-label" data-i18n="label_type">特定名称</div>
-              <div class="chip-group" id="edit-category">
-                <button class="chip" data-val="junmai" onclick="selectChip(this)">純米</button>
-                <button class="chip" data-val="honjozo" onclick="selectChip(this)">本醸造</button>
-                <button class="chip" data-val="ginjo" onclick="selectChip(this)">吟醸</button>
-                <button class="chip" data-val="daiginjo" onclick="selectChip(this)">大吟醸</button>
-                <button class="chip" data-val="junmai_ginjo" onclick="selectChip(this)">純米吟醸</button>
-                <button class="chip" data-val="junmai_daiginjo" onclick="selectChip(this)">純米大吟醸</button>
-                <button class="chip" data-val="tokubetsu_junmai" onclick="selectChip(this)">特別純米</button>
-                <button class="chip" data-val="tokubetsu_honjozo" onclick="selectChip(this)">特別本醸造</button>
-                <button class="chip" data-val="futsu" onclick="selectChip(this)">普通酒</button>
+      <div class="app-screen" id="screen-product-editor">
+        <div style="max-width:900px;margin:0 auto;">
+          <h2 data-i18n="edit_product">Edit Product</h2>
+
+          <div class="form-card">
+            <div class="form-card-title" data-i18n="product_type_title">Product Type</div>
+            <div class="product-type-selector" id="product-type-selector">
+              <div class="product-type-card selected" data-type="nihonshu" onclick="selectProductType('nihonshu')">
+                <span class="product-type-emoji">🍶</span>
+                <div class="product-type-title" data-i18n="type_nihonshu">Nihonshu</div>
+                <div class="product-type-desc" data-i18n="type_nihonshu_desc">Japanese sake</div>
+              </div>
+              <div class="product-type-card" data-type="shochu" onclick="selectProductType('shochu')">
+                <span class="product-type-emoji">🥃</span>
+                <div class="product-type-title" data-i18n="type_shochu">Shochu/Awamori</div>
+                <div class="product-type-desc" data-i18n="type_shochu_desc">Distilled spirits</div>
               </div>
             </div>
+            <div style="font-size:0.85rem;color:var(--text-secondary);margin-top:12px" data-i18n="type_hint">Product type cannot be changed after creation</div>
           </div>
-          <div class="island">
-            <div class="island-title" data-i18n="island_ingredients">原材料</div>
-            <div class="field-group">
-              <div class="field-label" data-i18n="label_rice">使用米</div>
-              <input class="field-input" type="text" id="edit-rice" placeholder="例: 山田錦">
-            </div>
-            <div class="field-group">
-              <div class="field-label"><span data-i18n="label_yeast">酵母</span> <span class="opt" data-i18n="optional">任意</span></div>
-              <input class="field-input" type="text" id="edit-yeast" placeholder="例: 協会9号">
-            </div>
-          </div>
-          <div class="island">
-            <div class="island-title" data-i18n="island_basic_num">基本数値</div>
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+
+          <div class="form-card">
+            <div class="form-card-title" data-i18n="product_info">Product Information</div>
+            <div class="form-grid-2col">
               <div class="field-group">
-                <div class="field-label" data-i18n="label_seimai">精米歩合 (%)</div>
-                <input class="field-input" type="number" id="edit-seimai" placeholder="60" min="1" max="100">
+                <label class="field-label"><span data-i18n="product_name_en">Product Name (English)</span> <span class="required">*</span></label>
+                <input type="text" class="field-input" id="form-product-name-en" placeholder="e.g. Moonlight Sake">
               </div>
               <div class="field-group">
-                <div class="field-label" data-i18n="label_alcohol">アルコール (%)</div>
-                <input class="field-input" type="number" id="edit-alcohol" placeholder="15" step="0.1">
-              </div>
-              <div class="field-group">
-                <div class="field-label"><span data-i18n="label_smv">日本酒度</span> <span class="opt" data-i18n="optional">任意</span></div>
-                <input class="field-input" type="number" id="edit-smv" placeholder="+3" step="0.1">
-              </div>
-              <div class="field-group">
-                <div class="field-label"><span data-i18n="label_acidity">酸度</span> <span class="opt" data-i18n="optional">任意</span></div>
-                <input class="field-input" type="number" id="edit-acidity" placeholder="1.4" step="0.1">
+                <label class="field-label"><span data-i18n="product_name_ja">Product Name (Japanese)</span></label>
+                <input type="text" class="field-input" id="form-product-name-ja" placeholder="e.g. 月光酒">
               </div>
             </div>
-          </div>
-          <div class="island">
-            <div class="island-title" data-i18n="island_taste">味わいプロフィール</div>
-            <div class="slider-field">
-              <div class="slider-label"><span data-i18n="label_body">ボディ</span><span class="extremes" data-i18n="body_range">軽い → 重い</span></div>
-              <div class="slider-dots" id="edit-body">
-                <div class="slider-dot" onclick="selectSlider(this,0)"></div>
-                <div class="slider-dot" onclick="selectSlider(this,1)"></div>
-                <div class="slider-dot active" onclick="selectSlider(this,2)"></div>
-                <div class="slider-dot" onclick="selectSlider(this,3)"></div>
-                <div class="slider-dot" onclick="selectSlider(this,4)"></div>
-              </div>
-            </div>
-            <div class="slider-field">
-              <div class="slider-label"><span data-i18n="label_aroma">香り</span><span class="extremes" data-i18n="aroma_range">穏やか → 華やか</span></div>
-              <div class="slider-dots" id="edit-aroma">
-                <div class="slider-dot" onclick="selectSlider(this,0)"></div>
-                <div class="slider-dot" onclick="selectSlider(this,1)"></div>
-                <div class="slider-dot active" onclick="selectSlider(this,2)"></div>
-                <div class="slider-dot" onclick="selectSlider(this,3)"></div>
-                <div class="slider-dot" onclick="selectSlider(this,4)"></div>
-              </div>
-            </div>
-            <div class="slider-field">
-              <div class="slider-label"><span data-i18n="label_sweetness">甘辛</span><span class="extremes" data-i18n="sweet_range">甘口 → 辛口</span></div>
-              <div class="slider-dots" id="edit-sweetness">
-                <div class="slider-dot" onclick="selectSlider(this,0)"></div>
-                <div class="slider-dot" onclick="selectSlider(this,1)"></div>
-                <div class="slider-dot active" onclick="selectSlider(this,2)"></div>
-                <div class="slider-dot" onclick="selectSlider(this,3)"></div>
-                <div class="slider-dot" onclick="selectSlider(this,4)"></div>
-              </div>
-            </div>
-          </div>
-          <div class="island">
-            <div class="island-title" data-i18n="island_temp">おすすめ温度</div>
-            <div class="chip-group" id="edit-temp">
-              <button class="chip" data-val="cold" onclick="toggleChip(this)">❄️ 5-10°C</button>
-              <button class="chip" data-val="cool" onclick="toggleChip(this)">🌿 10-15°C</button>
-              <button class="chip" data-val="room" onclick="toggleChip(this)">🌡️ 20°C</button>
-              <button class="chip" data-val="warm" onclick="toggleChip(this)">♨️ 40°C</button>
-              <button class="chip" data-val="hot" onclick="toggleChip(this)">🔥 50°C+</button>
-            </div>
-          </div>
-          <div class="island">
-            <div class="island-title" data-i18n="island_bottle">ボトル情報</div>
             <div class="field-group">
-              <div class="field-label" data-i18n="label_volume">容量</div>
-              <div class="chip-group" id="edit-volume">
-                <button class="chip" data-val="180" onclick="selectChip(this)">180ml</button>
-                <button class="chip" data-val="300" onclick="selectChip(this)">300ml</button>
-                <button class="chip" data-val="720" onclick="selectChip(this)">720ml</button>
-                <button class="chip" data-val="1800" onclick="selectChip(this)">1800ml</button>
+              <label class="field-label" data-i18n="product_image">Product Image</label>
+              <div class="upload-area" id="upload-product-image" onclick="document.getElementById('input-product-image').click()">
+                <img class="image-preview" id="preview-product-image">
+                <div class="upload-content">
+                  <span class="upload-icon">📸</span>
+                  <div class="upload-text" data-i18n="upload_area">Drag or click to upload</div>
+                  <div class="upload-hint">PNG, JPG</div>
+                </div>
+                <input type="file" id="input-product-image" accept="image/*" style="display:none" onchange="handleImageUpload(event, 'product-image')">
+              </div>
+              <button class="remove-image-btn" id="remove-product-image-btn" style="display:none;margin-top:12px" onclick="removeImage('product-image')">Remove</button>
+            </div>
+          </div>
+
+          <div class="form-card">
+            <div class="form-card-title" data-i18n="codes">Product Codes</div>
+            <div class="form-grid-2col">
+              <div class="field-group">
+                <label class="field-label">EAN Code</label>
+                <div>
+                  <input type="text" class="field-input" id="form-ean-code" placeholder="e.g. 4901234567890">
+                  <label style="margin-top:8px;display:flex;align-items:center;gap:8px">
+                    <input type="checkbox" id="form-no-ean" onchange="toggleCheckbox('no-ean')">
+                    <span style="font-size:0.85rem" data-i18n="no_ean_code">This product does not have EAN CODE</span>
+                  </label>
+                </div>
+              </div>
+              <div class="field-group">
+                <label class="field-label">JAN Code</label>
+                <div>
+                  <input type="text" class="field-input" id="form-jan-code" placeholder="e.g. 4901234567890">
+                  <label style="margin-top:8px;display:flex;align-items:center;gap:8px">
+                    <input type="checkbox" id="form-no-jan" onchange="toggleCheckbox('no-jan')">
+                    <span style="font-size:0.85rem" data-i18n="no_jan_code">No JAN code</span>
+                  </label>
+                </div>
               </div>
             </div>
           </div>
-          <div class="island">
-            <div class="island-title"><span data-i18n="island_notes">テイスティングノート</span> <span class="opt" data-i18n="optional">任意</span></div>
-            <textarea class="field-input" id="edit-notes" rows="3" placeholder="香りや味わいの特徴..." style="resize:vertical;"></textarea>
+
+          <!-- NIHONSHU FIELDS -->
+          <div id="nihonshu-fields" style="display:none">
+            <div class="form-card">
+              <div class="form-card-title" data-i18n="nihonshu_category">Category</div>
+              <div class="field-group">
+                <label class="field-label"><span data-i18n="nihonshu_category">Category</span> <span class="required">*</span></label>
+                <select class="field-input" id="form-nihonshu-category">
+                  <option value="">Select...</option>
+                  <option value="junmai_daiginjo">Junmai Daiginjo - 純米大吟醸</option>
+                  <option value="daiginjo">Daiginjo - 大吟醸</option>
+                  <option value="junmai_ginjo">Junmai Ginjo - 純米吟醸</option>
+                  <option value="ginjo">Ginjo - 吟醸</option>
+                  <option value="tokubetsu_junmai">Tokubetsu Junmai - 特別純米</option>
+                  <option value="tokubetsu_honjozo">Tokubetsu Honjozo - 特別本醸造</option>
+                  <option value="junmai">Junmai - 純米</option>
+                  <option value="honjozo">Honjozo - 本醸造</option>
+                  <option value="futsu_shu">Futsu-shu - 普通酒</option>
+                  <option value="sparkling">Sparkling - スパークリング</option>
+                  <option value="nigori">Nigori - にごり酒</option>
+                  <option value="koshu">Koshu - 古酒</option>
+                  <option value="special_method">Special method - 特殊製法</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-card">
+              <div class="form-card-title" data-i18n="nihonshu_finishing">Finishing</div>
+              <div class="chip-group" id="nihonshu-finishing-chips"></div>
+            </div>
+
+            <div class="form-card">
+              <div class="form-card-title" data-i18n="koji">Koji</div>
+              <div class="chip-group" id="nihonshu-koji-chips"></div>
+            </div>
+
+            <div class="form-card">
+              <div class="form-card-title" data-i18n="technical_specs">Technical Specifications</div>
+              <div class="form-grid-2col">
+                <div class="field-group">
+                  <label class="field-label" data-i18n="rice_variety">Rice Variety</label>
+                  <input type="text" class="field-input" id="form-nihonshu-rice" placeholder="e.g. Yamadanishiki">
+                </div>
+                <div class="field-group">
+                  <label class="field-label" data-i18n="yeast">Yeast</label>
+                  <input type="text" class="field-input" id="form-nihonshu-yeast" placeholder="e.g. Kyokai No. 9">
+                </div>
+                <div class="field-group">
+                  <label class="field-label"><span data-i18n="polishing_rate">Polishing Rate</span> <span class="required">*</span></label>
+                  <div style="display:flex;gap:8px">
+                    <input type="number" class="field-input" id="form-nihonshu-polish" placeholder="50" min="0" max="100">
+                    <span style="padding:12px 14px;background:var(--bg-subtle);border:1px solid var(--border);border-radius:var(--radius)">%</span>
+                  </div>
+                </div>
+                <div class="field-group">
+                  <label class="field-label"><span data-i18n="smv">Sake Meter Value</span> <span class="required">*</span></label>
+                  <input type="number" class="field-input" id="form-nihonshu-smv" placeholder="e.g. +5" step="0.1">
+                </div>
+                <div class="field-group">
+                  <label class="field-label"><span data-i18n="alcohol">Alcohol Level</span> <span class="required">*</span></label>
+                  <div style="display:flex;gap:8px">
+                    <input type="number" class="field-input" id="form-nihonshu-alcohol" placeholder="16" min="0" max="20" step="0.1">
+                    <span style="padding:12px 14px;background:var(--bg-subtle);border:1px solid var(--border);border-radius:var(--radius)">%</span>
+                  </div>
+                </div>
+                <div class="field-group">
+                  <label class="field-label" data-i18n="acidity">Acidity</label>
+                  <input type="number" class="field-input" id="form-nihonshu-acidity" placeholder="e.g. 1.2" step="0.1">
+                </div>
+              </div>
+            </div>
           </div>
-        </div>
-        <div class="editor-actions">
-          <button class="btn-draft" onclick="saveProduct('draft')" data-i18n="btn_draft">下書き保存</button>
-          <button class="btn-publish" onclick="saveProduct('published')" data-i18n="btn_publish">公開する</button>
+
+          <!-- SHOCHU FIELDS -->
+          <div id="shochu-fields" style="display:none">
+            <div class="form-card">
+              <div class="form-card-title" data-i18n="shochu_category">Category</div>
+              <div class="field-group">
+                <label class="field-label"><span data-i18n="shochu_category">Category</span> <span class="required">*</span></label>
+                <select class="field-input" id="form-shochu-category">
+                  <option value="">Select...</option>
+                  <option value="sweet_potato">Sweet potato shochu - 芋焼酎</option>
+                  <option value="rice">Rice shochu - 米焼酎</option>
+                  <option value="barley">Barley shochu - 麦焼酎</option>
+                  <option value="awamori">Awamori - 泡盛</option>
+                  <option value="special">Special shochu - スペシャル焼酎</option>
+                  <option value="aged">Aged honkaku shochu - エイジド本格焼酎</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-card">
+              <div class="form-card-title" data-i18n="distillation_method">Distillation Method</div>
+              <div class="chip-group" id="shochu-distillation-chips"></div>
+            </div>
+
+            <div class="form-card">
+              <div class="form-card-title" data-i18n="koji">Koji</div>
+              <div class="chip-group" id="shochu-koji-chips"></div>
+            </div>
+
+            <div class="form-card">
+              <div class="form-card-title" data-i18n="technical_specs">Technical Specifications</div>
+              <div class="form-grid-2col">
+                <div class="field-group">
+                  <label class="field-label" data-i18n="base_ingredient">Base Ingredient</label>
+                  <input type="text" class="field-input" id="form-shochu-ingredient" placeholder="e.g. Sweet potato, Rice">
+                </div>
+                <div class="field-group">
+                  <label class="field-label" data-i18n="aging_period">Aging Period</label>
+                  <input type="text" class="field-input" id="form-shochu-aging" placeholder="e.g. 3 years">
+                </div>
+                <div class="field-group">
+                  <label class="field-label"><span data-i18n="alcohol">Alcohol Level</span> <span class="required">*</span></label>
+                  <div style="display:flex;gap:8px">
+                    <input type="number" class="field-input" id="form-shochu-alcohol" placeholder="25" min="0" max="50" step="0.1">
+                    <span style="padding:12px 14px;background:var(--bg-subtle);border:1px solid var(--border);border-radius:var(--radius)">%</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- COMMON BOTTOM FIELDS -->
+          <div class="form-card">
+            <div class="form-card-title" data-i18n="pricing">Pricing</div>
+            <div class="form-grid-2col">
+              <div class="field-group">
+                <label class="field-label" data-i18n="price">Price</label>
+                <input type="number" class="field-input" id="form-price" placeholder="0" step="0.01">
+              </div>
+              <div class="field-group">
+                <label class="field-label" data-i18n="currency">Currency</label>
+                <select class="field-input" id="form-currency">
+                  <option value="JPY">JPY (¥)</option>
+                  <option value="USD">USD ($)</option>
+                  <option value="EUR">EUR (€)</option>
+                </select>
+              </div>
+            </div>
+            <label style="display:flex;align-items:center;gap:8px;margin-top:12px">
+              <input type="checkbox" id="form-no-price" onchange="toggleCheckbox('no-price')">
+              <span style="font-size:0.85rem" data-i18n="no_retail_price">This product has no retail price</span>
+            </label>
+          </div>
+
+          <div class="form-card">
+            <div class="form-card-title" data-i18n="volume">Volume</div>
+            <div class="field-group">
+              <label class="field-label" data-i18n="volume">Volume</label>
+              <div style="display:flex;gap:8px">
+                <input type="number" class="field-input" id="form-volume" placeholder="720" step="1">
+                <span style="padding:12px 14px;background:var(--bg-subtle);border:1px solid var(--border);border-radius:var(--radius)">ml</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-card">
+            <div class="form-card-title" data-i18n="tasting_notes">Tasting Notes</div>
+            <div class="field-group">
+              <label class="field-label" data-i18n="notes">Notes</label>
+              <textarea class="field-input" id="form-notes" placeholder="Describe the taste and aroma..."></textarea>
+            </div>
+          </div>
+
+          <div class="form-actions">
+            <button class="btn-danger" id="btn-delete-product" style="display:none" onclick="deleteProduct()">Delete</button>
+            <div>
+              <button class="btn-secondary" onclick="showAppScreen('products')" data-i18n="cancel">Cancel</button>
+              <button class="btn-primary" onclick="saveProduct()" data-i18n="save">Save Product</button>
+            </div>
+          </div>
         </div>
       </div>
 
       <!-- SCREEN: CATALOG -->
       <div class="app-screen" id="screen-catalog">
-        <div class="catalog-header">
-          <h2 data-i18n="catalog_title">酒カタログ</h2>
-          <div class="catalog-search">
-            <span class="catalog-search-icon">🔍</span>
-            <input type="text" id="catalog-search-input" data-i18n-placeholder="catalog_search_ph" placeholder="商品名・蔵元名で検索..." oninput="filterCatalog()">
-          </div>
-          <div class="catalog-filters" id="catalog-filters">
-            <button class="filter-chip active" data-val="all" onclick="setCatalogFilter('all',this)" data-i18n="filter_all">すべて</button>
-            <button class="filter-chip" data-val="junmai_daiginjo" onclick="setCatalogFilter('junmai_daiginjo',this)">純米大吟醸</button>
-            <button class="filter-chip" data-val="junmai_ginjo" onclick="setCatalogFilter('junmai_ginjo',this)">純米吟醸</button>
-            <button class="filter-chip" data-val="junmai" onclick="setCatalogFilter('junmai',this)">純米</button>
-            <button class="filter-chip" data-val="daiginjo" onclick="setCatalogFilter('daiginjo',this)">大吟醸</button>
-            <button class="filter-chip" data-val="ginjo" onclick="setCatalogFilter('ginjo',this)">吟醸</button>
-          </div>
-        </div>
-        <div class="catalog-results" id="catalog-results"></div>
-      </div>
-
-      <!-- SCREEN: SETTINGS -->
-      <div class="app-screen" id="screen-settings">
-        <div class="settings-screen">
-          <h2 data-i18n="settings_title">設定</h2>
-          <div class="settings-section">
-            <div class="settings-item" onclick="showAppScreen('onboarding')">
-              <div class="settings-item-left"><span class="settings-item-icon">🏯</span> <span data-i18n="settings_company">蔵元情報を編集</span></div>
-              <span class="settings-item-arrow">›</span>
-            </div>
-            <div class="settings-item" onclick="showLanguageModal()">
-              <div class="settings-item-left"><span class="settings-item-icon">🌐</span> <span data-i18n="settings_lang">言語</span></div>
-              <span class="settings-item-arrow" id="settings-current-lang">日本語 ›</span>
-            </div>
-          </div>
-          <div class="settings-section">
-            <div class="settings-item" onclick="exportData()">
-              <div class="settings-item-left"><span class="settings-item-icon">📤</span> <span data-i18n="settings_export">データエクスポート</span></div>
-              <span class="settings-item-arrow">›</span>
-            </div>
-          </div>
-          <div class="settings-section">
-            <div class="settings-item settings-danger" onclick="doLogout()">
-              <div class="settings-item-left"><span class="settings-item-icon">🚪</span> <span data-i18n="settings_logout">ログアウト</span></div>
-              <span class="settings-item-arrow">›</span>
-            </div>
-          </div>
-        </div>
+        <h2 data-i18n="catalog_title">Public Catalog</h2>
+        <p data-i18n="catalog_desc">View published products</p>
       </div>
     </div>
   </main>
 </div>
 
-<!-- ONBOARDING WIZARD -->
-<div id="onboarding-overlay">
-  <!-- STEP 1: Welcome / Why -->
-  <div class="onboarding-step active" data-step="1">
-    <div class="onboarding-header">
-      <div class="onboarding-progress">
-        <div class="onboarding-dot active"></div>
-        <div class="onboarding-dot"></div>
-        <div class="onboarding-dot"></div>
-      </div>
-      <span class="onboarding-hero-emoji">🍶</span>
-      <h2 class="onboarding-title" data-i18n="onb_wizard_title_1">Welcome to Sake Platform</h2>
-      <div class="onboarding-subtitle" data-i18n="onb_wizard_sub_1">ようこそ、Sake Platformへ</div>
-    </div>
-    <div class="onboarding-body" data-i18n="onb_wizard_body_1">This platform exists to help sakagura share their sake with the world. Generate multilingual tech sheets, compliant back labels, and enter international competitions — all from one place. And it's free. Forever.</div>
-    <div style="text-align:center;color:#999;font-size:0.95rem;margin-bottom:32px;font-style:italic;" data-i18n="onb_wizard_motto">Built for sakagura. Built with sakagura.</div>
-    <div class="onboarding-footer">
-      <button class="onboarding-btn" onclick="onboardingNext()" data-i18n="onb_next">Next →</button>
-    </div>
-    <div style="text-align:center;margin-top:20px;">
-      <span class="onboarding-skip" onclick="dismissOnboarding()" data-i18n="onb_skip">Skip</span>
-    </div>
-  </div>
-
-  <!-- STEP 2: The Journey -->
-  <div class="onboarding-step" data-step="2">
-    <div class="onboarding-header">
-      <div class="onboarding-progress">
-        <div class="onboarding-dot"></div>
-        <div class="onboarding-dot active"></div>
-        <div class="onboarding-dot"></div>
-      </div>
-      <h2 class="onboarding-title" data-i18n="onb_wizard_title_2">Three steps to the world</h2>
-      <div class="onboarding-subtitle" data-i18n="onb_wizard_sub_2">3つのステップで、世界へ</div>
-    </div>
-    <div class="onboarding-cards">
-      <div class="onboarding-card">
-        <span class="onboarding-card-emoji">🏯</span>
-        <div class="onboarding-card-title" data-i18n="onb_step2_card1_title">Register your sakagura</div>
-        <div class="onboarding-card-desc" data-i18n="onb_step2_card1_desc">Tell us about your brewery: name, brands, location.</div>
-      </div>
-      <div class="onboarding-card">
-        <span class="onboarding-card-emoji">🍶</span>
-        <div class="onboarding-card-title" data-i18n="onb_step2_card2_title">Add your products</div>
-        <div class="onboarding-card-desc" data-i18n="onb_step2_card2_desc">Enter your sake details: rice, polishing, tasting notes. The more detail, the better your sheets.</div>
-      </div>
-      <div class="onboarding-card">
-        <span class="onboarding-card-emoji">📄</span>
-        <div class="onboarding-card-title" data-i18n="onb_step2_card3_title">Generate & share</div>
-        <div class="onboarding-card-desc" data-i18n="onb_step2_card3_desc">Auto-generate tech sheets in 2 languages, print back labels, enter competitions.</div>
-      </div>
-    </div>
-    <div class="onboarding-footer">
-      <button class="onboarding-btn-back" onclick="onboardingPrev()" data-i18n="onb_back">← Back</button>
-      <button class="onboarding-btn" onclick="onboardingNext()" data-i18n="onb_next">Next →</button>
-    </div>
-    <div style="text-align:center;margin-top:20px;">
-      <span class="onboarding-skip" onclick="dismissOnboarding()" data-i18n="onb_skip">Skip</span>
-    </div>
-  </div>
-
-  <!-- STEP 3: Motivation / Quality Pledge -->
-  <div class="onboarding-step" data-step="3">
-    <div class="onboarding-header">
-      <div class="onboarding-progress">
-        <div class="onboarding-dot"></div>
-        <div class="onboarding-dot"></div>
-        <div class="onboarding-dot active"></div>
-      </div>
-      <h2 class="onboarding-title" data-i18n="onb_wizard_title_3">Great data makes great results</h2>
-      <div class="onboarding-subtitle" data-i18n="onb_wizard_sub_3">最高のデータが、最高の結果を生む</div>
-    </div>
-    <div style="background:#F8F5ED;border-radius:12px;padding:32px;margin-bottom:32px;border-left:4px solid #E05A33;">
-      <div class="onboarding-body" data-i18n="onb_wizard_body_3">The quality of your technical sheets depends on what you put in. Take your time. Be thorough. Your importers, sommeliers, and competition judges will thank you.</div>
-    </div>
-    <div class="onboarding-footer">
-      <button class="onboarding-btn-back" onclick="onboardingPrev()" data-i18n="onb_back">← Back</button>
-      <button class="onboarding-btn" onclick="dismissOnboarding()" data-i18n="onb_begin">Let's begin →</button>
-    </div>
-  </div>
-</div>
-
-<!-- TOAST -->
 <div class="toast-container" id="toast-container"></div>
 
 <script>
-// ==================== STATE ====================
-let currentLang = 'ja';
-let currentUser = null;
-let currentCompany = null;
-let catalogFilter = 'all';
-let onboardingStep = 1;
-
-// ==================== i18n ====================
-const i18n = {
-  ja: {
-    nav_login:'ログイン', nav_register:'無料で始める',
-    hero_title:'あなたのお酒を、<br>世界の言葉で届ける。',
-    hero_sub:'多言語の技術シートを自動生成。蔵元のための、無料プラットフォーム。',
-    hero_cta:'無料で登録する →', hero_free:'クレジットカード不要・永久無料',
-    features_label:'世界初', features_title:'ひとつのプラットフォーム。<br>すべてが、ここに。',
-    feat1_title:'多言語シート自動生成', feat1_desc:'一度の入力で、日本語・英語の技術シートを自動生成。PDF・リンク・転送で共有。',
-    feat2_title:'裏ラベル — 各国法規対応', feat2_desc:'輸入者名と輸出国を選ぶだけで、各国の法規制に準拠した裏ラベルを自動作成。',
-    feat3_title:'国際コンペ — ワンクリック出品', feat3_desc:'登録済みのデータで、IWC・Kuramaster等の国際コンペにワンクリックで出品。受賞歴は自動でシートに反映。',
-    cta_footnote:'蔵元のために。蔵元と共に。', cta_register:'登録をはじめる →',
-    onb_wizard_title_1:'Sake Platformへようこそ', onb_wizard_sub_1:'ようこそ、Sake Platformへ',
-    onb_wizard_body_1:'このプラットフォームは蔵元が世界中のお客様にお酒を届けるために作られました。多言語の技術シート、各国法規対応の裏ラベル、国際コンペへの出品 — すべてをこの場所で実現できます。しかも無料です。永遠に。',
-    onb_wizard_motto:'蔵元のために。蔵元と共に。',
-    onb_wizard_title_2:'3つのステップで、世界へ', onb_wizard_sub_2:'3つのステップで、世界へ',
-    onb_step2_card1_title:'蔵元を登録', onb_step2_card1_desc:'蔵元について教えてください：蔵元名、ブランド、所在地。',
-    onb_step2_card2_title:'商品を追加', onb_step2_card2_desc:'お酒の詳細を入力：米、精米、テイスティングノート。詳細なほど、シートがよくなります。',
-    onb_step2_card3_title:'生成して共有', onb_step2_card3_desc:'2言語での技術シートを自動生成、裏ラベルを印刷、コンペに出品。',
-    onb_wizard_title_3:'最高のデータが、最高の結果を生む', onb_wizard_sub_3:'最高のデータが、最高の結果を生む',
-    onb_wizard_body_3:'技術シートの質は、あなたが入力する情報の質に依存します。時間をかけて。丁寧に。輸入者、ソムリエ、コンペの審査員があなたに感謝するでしょう。',
-    onb_next:'次へ →', onb_back:'← 戻る', onb_skip:'あとで', onb_begin:'始めましょう →',
-    auth_login_title:'おかえりなさい', auth_login_sub:'アカウントにログイン',
-    auth_register_title:'アカウント作成', auth_register_sub:'無料で始めましょう',
-    auth_forgot_title:'パスワードリセット', auth_forgot_sub:'登録メールアドレスにリセットリンクを送信します',
-    auth_email:'メールアドレス', auth_password:'パスワード', auth_password_confirm:'パスワード確認',
-    auth_login_btn:'ログイン', auth_register_btn:'アカウントを作成', auth_reset_btn:'リセットリンクを送信',
-    auth_forgot_link:'パスワードを忘れた？', auth_no_account:'アカウントがない？',
-    auth_register_link:'新規登録', auth_have_account:'アカウントをお持ちですか？',
-    auth_login_link:'ログイン', auth_back:'戻る',
-    onb_title:'蔵元を登録しましょう', onb_sub:'まず、あなたの蔵元の基本情報を入力してください。',
-    onb_save:'蔵元を登録する →',
-    onb_welcome_title:'あなたの蔵元について教えてください',
-    onb_welcome_sub:'1分で終わります。蔵元の情報を入力するだけで、すべてを準備します。',
-    onb_q_name:'蔵元の名前は？',
-    onb_q_name_hint:'入力を始めてください — もうご存知かもしれません',
-    onb_q_address:'どこにありますか？',
-    onb_q_brands:'どんなブランドを造っていますか？',
-    onb_q_brands_hint:'ブランドはあとからいつでも追加できます',
-    onb_q_contact:'お客様はどうやって見つけられますか？',
-    onb_q_contact_hint:'すべて任意です — 共有したい情報だけ',
-    onb_save_warm:'始めましょう！保存して次へ →',
-    onb_ph_name:'例: 京姫酒造',
-    onb_ph_address:'例: 京都市伏見区...',
-    onb_ph_brand:'例: 匠',
-    island_kura:'蔵元情報', label_kura_name:'蔵元名', label_address:'住所',
-    label_brand:'ブランド名', add_brand:'＋ ブランドを追加',
-    island_images:'蔵元の顔', island_contact:'お客様向け情報',
-    upload_brand_logo:'ロゴを追加（任意）', optional:'任意',
-    label_website:'ウェブサイト',
-    island_product:'商品情報', label_product_name:'商品名', label_type:'特定名称',
-    island_ingredients:'原材料', label_rice:'使用米', label_yeast:'酵母',
-    island_basic_num:'基本数値', island_taste:'味わいプロフィール',
-    label_seimai:'精米歩合 (%)', label_alcohol:'アルコール (%)', label_smv:'日本酒度', label_acidity:'酸度',
-    label_body:'ボディ', label_aroma:'香り', label_sweetness:'甘辛',
-    body_range:'軽い → 重い', aroma_range:'穏やか → 華やか', sweet_range:'甘口 → 辛口',
-    island_temp:'おすすめ温度', island_bottle:'ボトル情報', label_volume:'容量',
-    island_notes:'テイスティングノート',
-    btn_draft:'下書き保存', btn_publish:'公開する',
-    stat_products:'登録商品', stat_published:'公開中', my_products:'マイ商品',
-    catalog_title:'酒カタログ', catalog_search_ph:'商品名・蔵元名で検索...',
-    filter_all:'すべて',
-    settings_title:'設定', settings_company:'蔵元情報を編集', settings_lang:'言語',
-    settings_export:'データエクスポート', settings_logout:'ログアウト',
-    nav_dashboard:'ホーム', nav_add:'商品を追加', nav_catalog:'カタログ', nav_settings:'設定',
-    edit_product:'商品を編集', save:'保存',
-    toast_registered:'登録完了！', toast_login_ok:'ログインしました',
-    toast_company_saved:'蔵元情報を保存しました', toast_product_saved:'商品を保存しました',
-    toast_product_deleted:'商品を削除しました', toast_logout:'ログアウトしました',
-    toast_reset_sent:'リセットリンクを送信しました',
-    err_fill_fields:'必須項目を入力してください', err_password_match:'パスワードが一致しません',
-    err_password_short:'パスワードは8文字以上', err_email_exists:'このメールアドレスは既に登録されています',
-    err_invalid_login:'メールアドレスまたはパスワードが違います',
-    err_company_name:'蔵元名を入力してください',
-    empty_title:'まだ商品がありません', empty_sub:'最初のお酒を登録して、技術シートを作成しましょう。',
-    empty_cta:'最初のお酒を登録する', greeting:'おかえりなさい',
-    catalog_no_results:'見つかりません', catalog_no_results_sub:'検索条件を変更してみてください。',
-    published:'公開', draft:'下書き',
-  },
+// ==================== LOCALIZATION ====================
+const translations = {
   en: {
-    nav_login:'Log in', nav_register:'Get started free',
-    hero_title:'Your sake.<br>Every language.',
-    hero_sub:'Auto-generate multilingual technical sheets. A free platform for sakagura.',
-    hero_cta:'Sign up free →', hero_free:'No credit card required — forever free',
-    features_label:'A world first', features_title:'One platform.<br>Everything you need.',
-    feat1_title:'Auto-generated multilingual sheets', feat1_desc:'One input generates technical sheets in Japanese and English. Share via PDF, link or forwarding.',
-    feat2_title:'Back labels — country compliant', feat2_desc:'Just select the importer and export country to auto-generate compliant back labels.',
-    feat3_title:'Competitions — one-click entry', feat3_desc:'Enter IWC, Kuramaster and more with one click using your registered data. Awards auto-reflect on sheets.',
-    cta_footnote:'Built for sakagura. Built with sakagura.', cta_register:'Get started →',
-    onb_wizard_title_1:'Welcome to Sake Platform', onb_wizard_sub_1:'Welcome to Sake Platform',
-    onb_wizard_body_1:'This platform exists to help sakagura share their sake with the world. Generate multilingual tech sheets, compliant back labels, and enter international competitions — all from one place. And it\'s free. Forever.',
-    onb_wizard_motto:'Built for sakagura. Built with sakagura.',
-    onb_wizard_title_2:'Three steps to the world', onb_wizard_sub_2:'Three steps to the world',
-    onb_step2_card1_title:'Register your sakagura', onb_step2_card1_desc:'Tell us about your brewery: name, brands, location.',
-    onb_step2_card2_title:'Add your products', onb_step2_card2_desc:'Enter your sake details: rice, polishing, tasting notes. The more detail, the better your sheets.',
-    onb_step2_card3_title:'Generate & share', onb_step2_card3_desc:'Auto-generate tech sheets in 2 languages, print back labels, enter competitions.',
-    onb_wizard_title_3:'Great data makes great results', onb_wizard_sub_3:'Great data makes great results',
-    onb_wizard_body_3:'The quality of your technical sheets depends on what you put in. Take your time. Be thorough. Your importers, sommeliers, and competition judges will thank you.',
-    onb_next:'Next →', onb_back:'← Back', onb_skip:'Skip', onb_begin:'Let\'s begin →',
-    auth_login_title:'Welcome back', auth_login_sub:'Log in to your account',
-    auth_register_title:'Create account', auth_register_sub:'Start for free',
-    auth_forgot_title:'Reset password', auth_forgot_sub:'We\'ll send a reset link to your email',
-    auth_email:'Email', auth_password:'Password', auth_password_confirm:'Confirm password',
-    auth_login_btn:'Log in', auth_register_btn:'Create account', auth_reset_btn:'Send reset link',
-    auth_forgot_link:'Forgot password?', auth_no_account:'Don\'t have an account?',
-    auth_register_link:'Sign up', auth_have_account:'Already have an account?',
-    auth_login_link:'Log in', auth_back:'Back',
-    onb_title:'Set up your sakagura', onb_sub:'Start by entering your brewery\'s basic information.',
-    onb_save:'Save brewery →',
-    onb_welcome_title:'Let\'s get to know your sakagura',
-    onb_welcome_sub:'This will only take a minute. Tell us about your brewery, and we\'ll set everything up for you.',
-    onb_q_name:'What\'s the name of your sakagura?',
-    onb_q_name_hint:'Start typing — we might already know you',
-    onb_q_address:'Where is it located?',
-    onb_q_brands:'What brands do you produce?',
-    onb_q_brands_hint:'You can add more brands later anytime',
-    onb_q_contact:'How can customers find you?',
-    onb_q_contact_hint:'All optional — add what you\'d like to share',
-    onb_save_warm:'Let\'s go! Save & continue →',
-    onb_ph_name:'e.g. Kyohime Shuzo',
-    onb_ph_address:'e.g. Kyoto, Fushimi-ku...',
-    onb_ph_brand:'e.g. Takumi',
-    island_kura:'Brewery info', label_kura_name:'Brewery name', label_address:'Address',
-    label_brand:'Brand name', add_brand:'＋ Add brand',
-    island_images:'Face of your sakagura', island_contact:'Contact information',
-    upload_brand_logo:'Add logo (optional)', optional:'optional',
-    label_website:'Website',
-    island_product:'Product info', label_product_name:'Product name', label_type:'Classification',
-    island_ingredients:'Ingredients', label_rice:'Rice variety', label_yeast:'Yeast',
-    island_basic_num:'Key numbers', island_taste:'Taste profile',
-    label_seimai:'Polishing ratio (%)', label_alcohol:'Alcohol (%)', label_smv:'SMV', label_acidity:'Acidity',
-    label_body:'Body', label_aroma:'Aroma', label_sweetness:'Sweetness',
-    body_range:'Light → Full', aroma_range:'Subtle → Fragrant', sweet_range:'Sweet → Dry',
-    island_temp:'Serving temperature', island_bottle:'Bottle info', label_volume:'Volume',
-    island_notes:'Tasting notes',
-    btn_draft:'Save as draft', btn_publish:'Publish',
-    stat_products:'Products', stat_published:'Published', my_products:'My products',
-    catalog_title:'Sake Catalog', catalog_search_ph:'Search by product or brewery...',
-    filter_all:'All',
-    settings_title:'Settings', settings_company:'Edit brewery info', settings_lang:'Language',
-    settings_export:'Export data', settings_logout:'Log out',
-    nav_dashboard:'Home', nav_add:'Add product', nav_catalog:'Catalog', nav_settings:'Settings',
-    edit_product:'Edit product', save:'Save',
-    toast_registered:'Account created!', toast_login_ok:'Logged in',
-    toast_company_saved:'Brewery info saved', toast_product_saved:'Product saved',
-    toast_product_deleted:'Product deleted', toast_logout:'Logged out',
-    toast_reset_sent:'Reset link sent',
-    err_fill_fields:'Please fill in all required fields', err_password_match:'Passwords don\'t match',
-    err_password_short:'Password must be 8+ characters', err_email_exists:'Email already registered',
-    err_invalid_login:'Invalid email or password',
-    err_company_name:'Please enter brewery name',
-    empty_title:'No products yet', empty_sub:'Register your first sake and create a technical sheet.',
-    empty_cta:'Add your first sake', greeting:'Welcome back',
-    catalog_no_results:'No results', catalog_no_results_sub:'Try adjusting your search.',
-    published:'Published', draft:'Draft',
+    nav_login: 'Log in',
+    nav_register: 'Get started free',
+    hero_title: 'Your sake. Every language.',
+    hero_sub: 'Manage your sake company and products in one place.',
+    hero_cta: 'Sign up free →',
+    hero_free: 'No credit card required — forever free',
+    features_label: 'FEATURES',
+    features_title: 'Built for sake makers',
+    feat1_title: 'Manage multiple products',
+    feat1_desc: 'Support for both Nihonshu and Shochu with their specific technical fields.',
+    feat2_title: 'Company profiles',
+    feat2_desc: 'Manage brewery information, contacts, and social media links in one place.',
+    feat3_title: 'Bilingual support',
+    feat3_desc: 'Everything works in English and Japanese.',
+    cta_footnote: 'Built for sakagura',
+    cta_register: 'Get started →',
+    auth_login_title: 'Welcome back',
+    auth_login_sub: 'Sign in to your account',
+    auth_email: 'Email',
+    auth_password: 'Password',
+    auth_login_btn: 'Sign in',
+    auth_forgot_link: 'Forgot password?',
+    auth_no_account: 'No account?',
+    auth_register_link: 'Sign up',
+    auth_register_title: 'Create account',
+    auth_register_sub: 'Start for free',
+    auth_password_confirm: 'Confirm password',
+    auth_register_btn: 'Create account',
+    auth_have_account: 'Have an account?',
+    auth_login_link: 'Sign in',
+    auth_forgot_title: 'Reset password',
+    auth_forgot_sub: 'Enter your email to reset',
+    auth_reset_btn: 'Send reset link',
+    auth_back: 'Back',
+    nav_home: 'Home',
+    nav_products: 'Products',
+    nav_catalog: 'Catalog',
+    welcome: 'Welcome',
+    stat_products: 'Products',
+    products_title: 'Your products',
+    add_product: '+ Add Product',
+    edit_product: 'Edit Product',
+    product_type_title: 'Product Type',
+    type_nihonshu: 'Nihonshu',
+    type_nihonshu_desc: 'Japanese sake',
+    type_shochu: 'Shochu/Awamori',
+    type_shochu_desc: 'Distilled spirits',
+    type_hint: 'Product type cannot be changed after creation',
+    product_info: 'Product Information',
+    product_name_en: 'Product Name (English)',
+    product_name_ja: 'Product Name (Japanese)',
+    product_image: 'Product Image',
+    codes: 'Product Codes',
+    no_ean_code: 'This product does not have EAN CODE',
+    no_jan_code: 'No JAN code',
+    nihonshu_category: 'Category',
+    nihonshu_finishing: 'Finishing',
+    koji: 'Koji',
+    technical_specs: 'Technical Specifications',
+    rice_variety: 'Rice Variety',
+    yeast: 'Yeast',
+    polishing_rate: 'Polishing Rate',
+    smv: 'Sake Meter Value',
+    alcohol: 'Alcohol Level',
+    acidity: 'Acidity',
+    shochu_category: 'Category',
+    distillation_method: 'Distillation Method',
+    base_ingredient: 'Base Ingredient',
+    aging_period: 'Aging Period',
+    pricing: 'Pricing',
+    price: 'Price',
+    currency: 'Currency',
+    no_retail_price: 'This product has no retail price',
+    volume: 'Volume',
+    tasting_notes: 'Tasting Notes',
+    notes: 'Notes',
+    cancel: 'Cancel',
+    save: 'Save Product',
+    upload_area: 'Drag or click to upload',
+    catalog_title: 'Public Catalog',
+    catalog_desc: 'View published products'
+  },
+  ja: {
+    nav_login: 'ログイン',
+    nav_register: '無料で始める',
+    hero_title: 'あなたの日本酒を世界へ',
+    hero_sub: 'ワンプレイスで蔵元と商品を管理',
+    hero_cta: '無料登録 →',
+    hero_free: 'クレジットカード不要 — 永遠に無料',
+    features_label: '特徴',
+    features_title: '蔵元のために作られた',
+    feat1_title: '複数の商品を管理',
+    feat1_desc: '日本酒と焼酎両方に対応。それぞれの技術フィールドに対応',
+    feat2_title: '蔵元プロフィール',
+    feat2_desc: 'ワンプレイスで蔵元情報、連絡先、ソーシャルメディアを管理',
+    feat3_title: 'バイリンガル対応',
+    feat3_desc: '英語と日本語の両方に対応',
+    cta_footnote: '蔵元のために作られた',
+    cta_register: '始める →',
+    auth_login_title: 'おかえりなさい',
+    auth_login_sub: 'アカウントにログイン',
+    auth_email: 'メール',
+    auth_password: 'パスワード',
+    auth_login_btn: 'ログイン',
+    auth_forgot_link: 'パスワードをお忘れですか？',
+    auth_no_account: 'アカウントをお持ちですか？',
+    auth_register_link: '新規登録',
+    auth_register_title: 'アカウント作成',
+    auth_register_sub: '無料で始めましょう',
+    auth_password_confirm: 'パスワード確認',
+    auth_register_btn: 'アカウントを作成',
+    auth_have_account: 'アカウントをお持ちですか？',
+    auth_login_link: 'ログイン',
+    auth_forgot_title: 'パスワードリセット',
+    auth_forgot_sub: 'メールアドレスを入力してリセット',
+    auth_reset_btn: 'リセットリンクを送信',
+    auth_back: '戻る',
+    nav_home: 'ホーム',
+    nav_products: '商品',
+    nav_catalog: 'カタログ',
+    welcome: 'ようこそ',
+    stat_products: '登録商品',
+    products_title: 'あなたの商品',
+    add_product: '+ 商品を追加',
+    edit_product: '商品編集',
+    product_type_title: '商品種別',
+    type_nihonshu: '日本酒',
+    type_nihonshu_desc: '日本酒',
+    type_shochu: '焼酎/泡盛',
+    type_shochu_desc: '蒸留酒',
+    type_hint: '作成後は商品種別を変更できません',
+    product_info: '商品情報',
+    product_name_en: '商品名（英語）',
+    product_name_ja: '商品名（日本語）',
+    product_image: '商品画像',
+    codes: '商品コード',
+    no_ean_code: 'この商品にはEANコードがありません',
+    no_jan_code: 'JANコードなし',
+    nihonshu_category: 'カテゴリー',
+    nihonshu_finishing: 'フィニッシング',
+    koji: '麹',
+    technical_specs: '技術仕様',
+    rice_variety: '米の品種',
+    yeast: '酵母',
+    polishing_rate: '精米歩合',
+    smv: '日本酒度',
+    alcohol: 'アルコール度数',
+    acidity: '酸度',
+    shochu_category: 'カテゴリー',
+    distillation_method: '蒸留方法',
+    base_ingredient: 'ベース原料',
+    aging_period: '熟成期間',
+    pricing: '価格',
+    price: '価格',
+    currency: '通貨',
+    no_retail_price: 'この商品に小売価格がありません',
+    volume: 'ボリューム',
+    tasting_notes: 'テイスティングノート',
+    notes: 'ノート',
+    cancel: 'キャンセル',
+    save: '商品を保存',
+    upload_area: 'ドラッグするか、ここをクリック',
+    catalog_title: 'パブリックカタログ',
+    catalog_desc: '公開商品を表示'
   }
 };
 
+let currentLang = 'en';
+
 function t(key) {
-  return (i18n[currentLang] && i18n[currentLang][key]) || (i18n.ja[key]) || key;
+  return translations[currentLang][key] || translations.en[key] || key;
 }
 
 function applyI18n() {
   document.querySelectorAll('[data-i18n]').forEach(el => {
-    const key = el.dataset.i18n;
-    const val = t(key);
-    if (val && val !== key) el.innerHTML = val;
+    el.textContent = t(el.getAttribute('data-i18n'));
   });
   document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
-    const key = el.dataset.i18nPlaceholder;
-    const val = t(key);
-    if (val && val !== key) el.placeholder = val;
+    el.placeholder = t(el.getAttribute('data-i18n-placeholder'));
   });
 }
 
-// ==================== SAKAGURA DATABASE (for autocomplete) ====================
-const sakaguraDB = [
-  {name:'旭酒造', address:'山口県岩国市周東町獺越2167-4', brands:['獺祭']},
-  {name:'朝日酒造', address:'新潟県長岡市朝日880-1', brands:['久保田','朝日山']},
-  {name:'八海醸造', address:'新潟県南魚沼市長森1051', brands:['八海山']},
-  {name:'高木酒造', address:'山形県村山市富並1826', brands:['十四代']},
-  {name:'南部美人', address:'岩手県二戸市福岡字上町13', brands:['南部美人']},
-  {name:'黒龍酒造', address:'福井県吉田郡永平寺町松岡春日1-38', brands:['黒龍','九頭龍']},
-  {name:'新政酒造', address:'秋田県秋田市大町6-2-35', brands:['新政','No.6']},
-  {name:'木屋正酒造', address:'三重県名張市本町314-1', brands:['而今']},
-  {name:'廣木酒造', address:'福島県河沼郡会津坂下町字市中二番甲3574', brands:['飛露喜']},
-  {name:'磯自慢酒造', address:'静岡県焼津市鰯ケ島307', brands:['磯自慢']},
-  {name:'京姫酒造', address:'京都府京都市伏見区山崎町368-1', brands:['京姫','匠']},
-  {name:'獺祭酒造', address:'山口県岩国市周東町獺越', brands:['獺祭']},
-  {name:'梵・加藤吉平商店', address:'福井県鯖江市吉江町1-11', brands:['梵']},
-  {name:'出羽桜酒造', address:'山形県天童市一日町1-4-6', brands:['出羽桜']},
-  {name:'一ノ蔵', address:'宮城県大崎市松山千石字大欅14', brands:['一ノ蔵']},
-  {name:'菊正宗酒造', address:'兵庫県神戸市東灘区御影本町1-7-15', brands:['菊正宗']},
-  {name:'白鶴酒造', address:'兵庫県神戸市東灘区住吉南町4-5-5', brands:['白鶴']},
-  {name:'大関', address:'兵庫県西宮市今津出在家町4-9', brands:['大関']},
-  {name:'月桂冠', address:'京都府京都市伏見区南浜町247', brands:['月桂冠']},
-  {name:'宝酒造', address:'京都府京都市伏見区竹中町609', brands:['松竹梅']},
-  {name:'真澄・宮坂醸造', address:'長野県諏訪市元町1-16', brands:['真澄']},
-  {name:'〆張鶴・宮尾酒造', address:'新潟県村上市上片町5-15', brands:['〆張鶴']},
-  {name:'田酒・西田酒造店', address:'青森県青森市油川字大浜46', brands:['田酒','喜久泉']},
-  {name:'花陽浴・南陽醸造', address:'埼玉県羽生市上新郷5951', brands:['花陽浴']},
-  {name:'写楽・宮泉銘醸', address:'福島県会津若松市東栄町8-7', brands:['写楽','會津宮泉']},
-  {name:'鍋島・富久千代酒造', address:'佐賀県鹿島市浜町乙2424-1', brands:['鍋島']},
-  {name:'醸し人九平次・萬乗醸造', address:'愛知県名古屋市緑区大高町西門田36', brands:['醸し人九平次']},
-  {name:'作・清水清三郎商店', address:'三重県鈴鹿市若松東3-9-33', brands:['作']},
-  {name:'天狗舞・車多酒造', address:'石川県白山市坊丸町60-1', brands:['天狗舞']},
-  {name:'賀茂鶴酒造', address:'広島県東広島市西条本町4-31', brands:['賀茂鶴']},
-];
-
-// ==================== DEMO CATALOG DATA ====================
-const demoCatalog = [
-  {id:'demo1',company_name:'旭酒造',brand:'獺祭',product_name:'獺祭 純米大吟醸 磨き三割九分',category:'junmai_daiginjo',rice:'山田錦',seimai:39,alcohol:16,smv:null,status:'published',prefecture:'山口県'},
-  {id:'demo2',company_name:'朝日酒造',brand:'久保田',product_name:'久保田 萬寿 純米大吟醸',category:'junmai_daiginjo',rice:'五百万石',seimai:33,alcohol:15.5,smv:2,status:'published',prefecture:'新潟県'},
-  {id:'demo3',company_name:'八海醸造',brand:'八海山',product_name:'八海山 純米吟醸',category:'junmai_ginjo',rice:'山田錦・美山錦',seimai:50,alcohol:15.5,smv:1,status:'published',prefecture:'新潟県'},
-  {id:'demo4',company_name:'高木酒造',brand:'十四代',product_name:'十四代 本丸 秘伝玉返し',category:'tokubetsu_honjozo',rice:'五百万石',seimai:55,alcohol:15,smv:2,status:'published',prefecture:'山形県'},
-  {id:'demo5',company_name:'南部美人',brand:'南部美人',product_name:'南部美人 特別純米',category:'tokubetsu_junmai',rice:'ぎんおとめ',seimai:55,alcohol:15.5,smv:4,status:'published',prefecture:'岩手県'},
-  {id:'demo6',company_name:'黒龍酒造',brand:'黒龍',product_name:'黒龍 大吟醸',category:'daiginjo',rice:'山田錦',seimai:35,alcohol:15.5,smv:5,status:'published',prefecture:'福井県'},
-  {id:'demo7',company_name:'新政酒造',brand:'新政',product_name:'新政 No.6 X-type',category:'junmai',rice:'秋田県産米',seimai:45,alcohol:14,smv:null,status:'published',prefecture:'秋田県'},
-  {id:'demo8',company_name:'木屋正酒造',brand:'而今',product_name:'而今 純米吟醸 山田錦',category:'junmai_ginjo',rice:'山田錦',seimai:50,alcohol:16,smv:1,status:'published',prefecture:'三重県'},
-  {id:'demo9',company_name:'廣木酒造',brand:'飛露喜',product_name:'飛露喜 特別純米 無濾過生原酒',category:'tokubetsu_junmai',rice:'五百万石',seimai:55,alcohol:16.8,smv:3,status:'published',prefecture:'福島県'},
-  {id:'demo10',company_name:'磯自慢酒造',brand:'磯自慢',product_name:'磯自慢 純米大吟醸',category:'junmai_daiginjo',rice:'山田錦',seimai:40,alcohol:16.5,smv:4,status:'published',prefecture:'静岡県'},
-];
-
-const categoryNames = {
-  junmai:'純米', honjozo:'本醸造', ginjo:'吟醸', daiginjo:'大吟醸',
-  junmai_ginjo:'純米吟醸', junmai_daiginjo:'純米大吟醸',
-  tokubetsu_junmai:'特別純米', tokubetsu_honjozo:'特別本醸造', futsu:'普通酒'
-};
-
-// ==================== LOCAL STORAGE ====================
-function getUsers(){return JSON.parse(localStorage.getItem('sp_users')||'[]')}
-function setUsers(u){localStorage.setItem('sp_users',JSON.stringify(u))}
-function getSession(){return JSON.parse(localStorage.getItem('sp_session')||'null')}
-function setSession(s){localStorage.setItem('sp_session',JSON.stringify(s))}
-function getCompany(userId){return JSON.parse(localStorage.getItem('sp_company_'+userId)||'null')}
-function setCompany(userId,c){localStorage.setItem('sp_company_'+userId,JSON.stringify(c))}
-function getProducts(userId){return JSON.parse(localStorage.getItem('sp_products_'+userId)||'[]')}
-function setProducts(userId,p){localStorage.setItem('sp_products_'+userId,JSON.stringify(p))}
-function getAllProducts(){
-  const all=[...demoCatalog];
-  getUsers().forEach(u=>{
-    const prods=getProducts(u.id), comp=getCompany(u.id);
-    prods.forEach(p=>all.push({...p,company_name:comp?comp.company_name:'',prefecture:comp?comp.address:''}));
-  });
-  return all;
+function setLandingLang(lang) {
+  currentLang = lang;
+  document.querySelectorAll('.landing-lang-toggle button').forEach(b => b.classList.remove('active'));
+  event.target.classList.add('active');
+  applyI18n();
 }
 
-// ==================== NAVIGATION ====================
-function navigate(view, panel) {
-  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
-  document.getElementById('view-'+view).classList.add('active');
-  if(view==='auth'&&panel) showAuthPanel(panel);
-  if(view==='app') initApp();
-  window.scrollTo(0,0);
+function setAppLang(lang) {
+  currentLang = lang;
+  document.getElementById('sidebar-lang-dropdown').value = lang;
+  applyI18n();
+}
+
+// ==================== AUTHENTICATION ====================
+let currentUser = null;
+
+function doLogin() {
+  const email = document.getElementById('login-email').value.trim();
+  const password = document.getElementById('login-password').value;
+  if (!email || !password) {
+    showError('login-error', 'Please enter email and password');
+    return;
+  }
+  let users = JSON.parse(localStorage.getItem('users') || '{}');
+  if (users[email] && users[email].password === password) {
+    currentUser = { email };
+    localStorage.setItem('currentUser', JSON.stringify(currentUser));
+    navigate('app');
+  } else {
+    showError('login-error', 'Invalid credentials');
+  }
+}
+
+function doRegister() {
+  const email = document.getElementById('register-email').value.trim();
+  const password = document.getElementById('register-password').value;
+  const password2 = document.getElementById('register-password2').value;
+  if (!email || !password || password !== password2) {
+    showError('register-error', 'Please check your inputs');
+    return;
+  }
+  let users = JSON.parse(localStorage.getItem('users') || '{}');
+  if (users[email]) {
+    showError('register-error', 'Email already exists');
+    return;
+  }
+  users[email] = { password };
+  localStorage.setItem('users', JSON.stringify(users));
+  currentUser = { email };
+  localStorage.setItem('currentUser', JSON.stringify(currentUser));
+  navigate('app');
+}
+
+function doForgotPassword() {
+  const email = document.getElementById('forgot-email').value.trim();
+  if (!email) {
+    showError('forgot-error', 'Please enter email');
+    return;
+  }
+  showError('forgot-error', 'Link sent to ' + email, true);
+}
+
+function doLogout() {
+  localStorage.removeItem('currentUser');
+  currentUser = null;
+  navigate('landing');
+}
+
+function showError(id, msg, isSuccess = false) {
+  const el = document.getElementById(id);
+  el.textContent = msg;
+  el.style.display = 'block';
+  if (isSuccess) el.style.color = 'var(--success)';
+  else el.style.color = 'var(--error)';
 }
 
 function showAuthPanel(panel) {
-  document.querySelectorAll('.auth-card-inner').forEach(c=>c.classList.remove('active'));
-  document.getElementById('auth-'+panel).classList.add('active');
-  document.querySelectorAll('.auth-error').forEach(e=>{e.style.display='none';e.textContent='';});
+  document.querySelectorAll('.auth-card-inner').forEach(e => e.classList.remove('active'));
+  document.getElementById('auth-' + panel).classList.add('active');
+  document.querySelectorAll('.auth-error').forEach(e => e.style.display = 'none');
+}
+
+// ==================== ROUTING ====================
+function navigate(view, panel = null) {
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+  if (view === 'auth' && panel) showAuthPanel(panel);
+  const viewEl = document.getElementById('view-' + view);
+  if (viewEl) viewEl.classList.add('active');
+  if (view === 'app') initApp();
+  applyI18n();
 }
 
 function showAppScreen(screen) {
-  document.querySelectorAll('.app-screen').forEach(s=>s.classList.remove('active'));
-  document.getElementById('screen-'+screen).classList.add('active');
-  // Update sidebar
-  document.querySelectorAll('.sidebar-nav-item').forEach(b=>b.classList.toggle('active',b.dataset.screen===screen));
-  // Update topbar title
-  const titles={dashboard:t('nav_dashboard'),'product-edit':t('edit_product'),catalog:t('catalog_title'),settings:t('settings_title'),onboarding:t('onb_title')};
-  document.getElementById('app-title').textContent=titles[screen]||'';
-  if(screen==='dashboard') renderDashboard();
-  if(screen==='catalog') renderCatalog();
-  if(screen==='onboarding') prefillOnboarding();
-  closeSidebar();
+  document.querySelectorAll('.app-screen').forEach(s => s.classList.remove('active'));
+  document.getElementById('screen-' + screen).classList.add('active');
+  document.querySelectorAll('.sidebar-nav-item').forEach(i => i.classList.remove('active'));
+  document.querySelector('[data-screen="' + screen + '"]').classList.add('active');
+
+  if (screen === 'dashboard') renderDashboard();
+  else if (screen === 'products') renderProducts();
+  applyI18n();
 }
 
-// ==================== MOBILE SIDEBAR ====================
-function toggleSidebar(){
+// ==================== APP INITIALIZATION ====================
+function initApp() {
+  currentUser = JSON.parse(localStorage.getItem('currentUser'));
+  if (!currentUser) {
+    navigate('landing');
+    return;
+  }
+  updateSidebar();
+  showAppScreen('dashboard');
+}
+
+function updateSidebar() {
+  const email = currentUser?.email || '';
+  const initial = email.charAt(0).toUpperCase();
+  document.getElementById('sidebar-avatar').textContent = initial;
+  document.getElementById('sidebar-user-name').textContent = email.split('@')[0];
+  document.getElementById('sidebar-user-email').textContent = email;
+  document.getElementById('sidebar-lang-dropdown').value = currentLang;
+}
+
+function toggleSidebar() {
   document.getElementById('app-sidebar').classList.toggle('open');
   document.getElementById('sidebar-overlay').classList.toggle('visible');
 }
-function closeSidebar(){
+
+function closeSidebar() {
   document.getElementById('app-sidebar').classList.remove('open');
   document.getElementById('sidebar-overlay').classList.remove('visible');
 }
 
-// ==================== AUTH ====================
-function doRegister(){
-  const email=document.getElementById('register-email').value.trim();
-  const pass=document.getElementById('register-password').value;
-  const pass2=document.getElementById('register-password2').value;
-  const errEl=document.getElementById('register-error');
-  if(!email||!pass) return showAuthError(errEl,t('err_fill_fields'));
-  if(pass.length<8) return showAuthError(errEl,t('err_password_short'));
-  if(pass!==pass2) return showAuthError(errEl,t('err_password_match'));
-  const users=getUsers();
-  if(users.find(u=>u.email===email)) return showAuthError(errEl,t('err_email_exists'));
-  const user={id:'u_'+Date.now(),email,password:btoa(pass),created_at:new Date().toISOString()};
-  users.push(user); setUsers(users);
-  setSession({userId:user.id,email:user.email});
-  currentUser=user; toast(t('toast_registered'),'success'); navigate('app'); showOnboarding();
-}
-
-function doLogin(){
-  const email=document.getElementById('login-email').value.trim();
-  const pass=document.getElementById('login-password').value;
-  const errEl=document.getElementById('login-error');
-  if(!email||!pass) return showAuthError(errEl,t('err_fill_fields'));
-  const users=getUsers();
-  const user=users.find(u=>u.email===email&&u.password===btoa(pass));
-  if(!user) return showAuthError(errEl,t('err_invalid_login'));
-  setSession({userId:user.id,email:user.email});
-  currentUser=user; toast(t('toast_login_ok'),'success'); navigate('app');
-}
-
-function doForgotPassword(){
-  const email=document.getElementById('forgot-email').value.trim();
-  const errEl=document.getElementById('forgot-error');
-  if(!email) return showAuthError(errEl,t('err_fill_fields'));
-  toast(t('toast_reset_sent'),'info');
-  setTimeout(()=>showAuthPanel('login'),1500);
-}
-
-function doLogout(){
-  setSession(null); currentUser=null; currentCompany=null;
-  toast(t('toast_logout'),'info'); navigate('landing');
-}
-
-function showAuthError(el,msg){el.textContent=msg;el.style.display='block';}
-
-// ==================== ONBOARDING WIZARD ====================
-function showOnboarding(){
-  onboardingStep=1;
-  const overlay=document.getElementById('onboarding-overlay');
-  overlay.classList.add('active');
-  showOnboardingStep(1);
-}
-
-function showOnboardingStep(step){
-  onboardingStep=step;
-  document.querySelectorAll('.onboarding-step').forEach(s=>s.classList.remove('active'));
-  document.querySelector(`.onboarding-step[data-step="${step}"]`).classList.add('active');
-  document.querySelectorAll('.onboarding-dot').forEach((d,i)=>d.classList.toggle('active',i+1===step));
-}
-
-function onboardingNext(){
-  if(onboardingStep<3) showOnboardingStep(onboardingStep+1);
-}
-
-function onboardingPrev(){
-  if(onboardingStep>1) showOnboardingStep(onboardingStep-1);
-}
-
-function dismissOnboarding(){
-  document.getElementById('onboarding-overlay').classList.remove('active');
-  showAppScreen('onboarding');
-}
-
-// ==================== APP INIT ====================
-function initApp(){
-  const session=getSession();
-  if(!session) return navigate('landing');
-  currentUser={id:session.userId,email:session.email};
-  currentCompany=getCompany(session.userId);
-  // Sidebar user info
-  document.getElementById('sidebar-avatar').textContent=session.email.charAt(0).toUpperCase();
-  const compName=currentCompany?currentCompany.company_name:session.email;
-  document.getElementById('sidebar-user-name').textContent=compName;
-  document.getElementById('sidebar-user-email').textContent=session.email;
-  // Sync language dropdown
-  const langDrop=document.getElementById('sidebar-lang-dropdown');
-  if(langDrop) langDrop.value=currentLang;
-  applyI18n();
-  if(!currentCompany) showAppScreen('onboarding');
-  else showAppScreen('dashboard');
-}
-
-// ==================== ONBOARDING + AUTOCOMPLETE ====================
-function prefillOnboarding(){
-  const session=getSession();
-  if(session&&document.getElementById('onb-email')) document.getElementById('onb-email').value=session.email||'';
-  if(currentCompany){
-    document.getElementById('onb-company-name').value=currentCompany.company_name||'';
-    document.getElementById('onb-address').value=currentCompany.address||'';
-    document.getElementById('onb-email').value=currentCompany.email||'';
-    document.getElementById('onb-website').value=currentCompany.website||'';
-    document.getElementById('onb-instagram').value=currentCompany.instagram||'';
-  }
-}
-
-function saveCompany(){
-  const name=document.getElementById('onb-company-name').value.trim();
-  if(!name){toast(t('err_company_name'),'error');return;}
-  const brandInputs=document.querySelectorAll('#onb-brand-list .brand-input');
-  const brands=Array.from(brandInputs).map(i=>i.value.trim()).filter(Boolean);
-  currentCompany={
-    company_name:name,
-    address:document.getElementById('onb-address').value.trim(),
-    email:document.getElementById('onb-email').value.trim(),
-    website:document.getElementById('onb-website').value.trim(),
-    instagram:document.getElementById('onb-instagram').value.trim(),
-    brands:brands.length?brands:['Default'],
-    created_at:new Date().toISOString()
-  };
-  setCompany(currentUser.id,currentCompany);
-  // Update sidebar
-  document.getElementById('sidebar-user-name').textContent=currentCompany.company_name;
-  toast(t('toast_company_saved'),'success');
-  showAppScreen('dashboard');
-}
-
-// Sakagura autocomplete
-(function(){
-  let highlightIdx=-1;
-  const input=document.getElementById('onb-company-name');
-  const dropdown=document.getElementById('sakagura-autocomplete');
-  if(!input||!dropdown) return;
-
-  input.addEventListener('input',function(){
-    const q=this.value.trim().toLowerCase();
-    if(q.length<1){dropdown.classList.remove('visible');return;}
-    const matches=sakaguraDB.filter(s=>s.name.toLowerCase().includes(q)).slice(0,6);
-    if(!matches.length){dropdown.classList.remove('visible');return;}
-    highlightIdx=-1;
-    dropdown.innerHTML=matches.map((s,i)=>`<div class="autocomplete-item" data-idx="${i}"><div class="ac-name">${s.name}</div><div class="ac-detail">${s.address} — ${s.brands.join(', ')}</div></div>`).join('');
-    dropdown.classList.add('visible');
-    dropdown.querySelectorAll('.autocomplete-item').forEach(item=>{
-      item.addEventListener('mousedown',function(e){
-        e.preventDefault();
-        selectSakagura(matches[parseInt(this.dataset.idx)]);
-      });
-    });
-  });
-
-  input.addEventListener('keydown',function(e){
-    const items=dropdown.querySelectorAll('.autocomplete-item');
-    if(!items.length||!dropdown.classList.contains('visible')) return;
-    if(e.key==='ArrowDown'){e.preventDefault();highlightIdx=Math.min(highlightIdx+1,items.length-1);updateHighlight(items);}
-    else if(e.key==='ArrowUp'){e.preventDefault();highlightIdx=Math.max(highlightIdx-1,0);updateHighlight(items);}
-    else if(e.key==='Enter'&&highlightIdx>=0){e.preventDefault();items[highlightIdx].dispatchEvent(new Event('mousedown'));}
-    else if(e.key==='Escape'){dropdown.classList.remove('visible');}
-  });
-
-  input.addEventListener('blur',()=>setTimeout(()=>dropdown.classList.remove('visible'),200));
-
-  function updateHighlight(items){
-    items.forEach((it,i)=>it.classList.toggle('highlighted',i===highlightIdx));
-  }
-
-  function selectSakagura(s){
-    input.value=s.name;
-    document.getElementById('onb-address').value=s.address;
-    dropdown.classList.remove('visible');
-    // Auto-fill brands
-    const brandList=document.getElementById('onb-brand-list');
-    brandList.innerHTML='';
-    s.brands.forEach((b,i)=>{
-      const div=document.createElement('div');
-      div.className='brand-entry';div.dataset.index=i;
-      div.innerHTML=`<div class="brand-top-row"><input class="field-input brand-input" type="text" value="${b}" style="flex:1"><button type="button" class="remove-brand-btn" onclick="removeOnbBrand(this)" style="${s.brands.length<=1?'display:none':''}">×</button></div><div class="brand-logo-area"><label class="brand-logo-upload" onclick="this.querySelector('input[type=file]').click()"><img class="brand-logo-thumb" src="" alt=""><span class="brand-logo-icon">🏷️</span><div><div class="brand-logo-text">${t('upload_brand_logo')}</div><div class="brand-logo-hint">PNG・SVG推奨</div></div><input type="file" accept="image/png,image/svg+xml,image/jpeg,image/webp" style="display:none" onchange="handleBrandLogo(this)"></label></div>`;
-      brandList.appendChild(div);
-    });
-  }
-})();
-
-function addOnbBrand(){
-  const list=document.getElementById('onb-brand-list');
-  const idx=list.querySelectorAll('.brand-entry').length;
-  const div=document.createElement('div');
-  div.className='brand-entry';div.dataset.index=idx;
-  div.innerHTML=`<div class="brand-top-row"><input class="field-input brand-input" type="text" placeholder="例: 匠" style="flex:1"><button type="button" class="remove-brand-btn" onclick="removeOnbBrand(this)">×</button></div><div class="brand-logo-area"><label class="brand-logo-upload" onclick="this.querySelector('input[type=file]').click()"><img class="brand-logo-thumb" src="" alt=""><span class="brand-logo-icon">🏷️</span><div><div class="brand-logo-text">${t('upload_brand_logo')}</div><div class="brand-logo-hint">PNG・SVG推奨</div></div><input type="file" accept="image/png,image/svg+xml,image/jpeg,image/webp" style="display:none" onchange="handleBrandLogo(this)"></label></div>`;
-  list.appendChild(div);
-  div.querySelector('input').focus();
-  updateOnbBrandButtons();
-}
-
-function removeOnbBrand(btn){btn.closest('.brand-entry').remove();updateOnbBrandButtons();}
-
-function updateOnbBrandButtons(){
-  const entries=document.querySelectorAll('#onb-brand-list .brand-entry');
-  entries.forEach((e,i)=>{e.dataset.index=i;const btn=e.querySelector('.remove-brand-btn');btn.style.display=entries.length<=1?'none':'flex';});
-}
-
-function handleBrandLogo(input){
-  if(!input.files||!input.files[0]) return;
-  const file=input.files[0];
-  const label=input.closest('.brand-logo-upload');
-  const thumb=label.querySelector('.brand-logo-thumb');
-  label.classList.add('has-file');
-  label.querySelector('.brand-logo-text').textContent=file.name.length>20?file.name.substring(0,17)+'...':file.name;
-  const reader=new FileReader();
-  reader.onload=e=>{thumb.src=e.target.result;};
-  reader.readAsDataURL(file);
-}
-
 // ==================== DASHBOARD ====================
-function renderDashboard(){
-  if(!currentUser||!currentCompany) return;
-  document.getElementById('dash-greeting').textContent=t('greeting');
-  document.getElementById('dash-company-name').textContent=currentCompany.company_name;
-  const products=getProducts(currentUser.id);
-  document.getElementById('stat-products').textContent=products.length;
-  document.getElementById('stat-published').textContent=products.filter(p=>p.status==='published').length;
-  const list=document.getElementById('product-list');
-  if(!products.length){
-    list.innerHTML=`<div class="empty-state"><div class="empty-state-icon">🍶</div><h3>${t('empty_title')}</h3><p>${t('empty_sub')}</p><button onclick="openProductEditor()">${t('empty_cta')}</button></div>`;
-    return;
+function renderDashboard() {
+  const products = loadUserProducts();
+  document.getElementById('stat-products').textContent = products.length;
+
+  let html = '';
+  if (products.length === 0) {
+    html = '<div class="empty-state"><div class="empty-state-icon">📭</div><h3>' + t('products_title') + '</h3><p>Start by adding your first product</p><button onclick="openProductEditor(null)">' + t('add_product') + '</button></div>';
+  } else {
+    html = '<table class="product-table"><thead><tr><th></th><th>' + t('product_name_en') + '</th><th>Type</th><th>' + t('alcohol') + '</th><th></th></tr></thead><tbody>';
+    products.forEach(p => {
+      const type = p.product_type === 'nihonshu' ? '日本酒' : '焼酎';
+      html += '<tr><td><img src="' + (p.image_data || '') + '" class="product-table-thumb" style="display:' + (p.image_data ? 'block' : 'none') + '"></td><td>' + p.product_name_en + '</td><td><span class="product-badge ' + (p.product_type === 'nihonshu' ? 'badge-nihonshu' : 'badge-shochu') + '">' + type + '</span></td><td>' + (p.alcohol || '—') + '%</td><td class="product-table-actions"><button class="product-table-btn" onclick="openProductEditor(\'' + p.id + '\')">✏️</button></td></tr>';
+    });
+    html += '</tbody></table>';
   }
-  list.innerHTML=products.map(p=>`<div class="product-card" onclick="editProduct('${p.id}')"><div class="product-card-icon">🍶</div><div class="product-card-info"><div class="product-card-name">${p.product_name||'無題'}</div><div class="product-card-brand">${p.brand||''} · ${categoryNames[p.category]||''}</div></div><span class="product-card-status ${p.status==='published'?'status-published':'status-draft'}">${p.status==='published'?t('published'):t('draft')}</span></div>`).join('');
+  document.getElementById('dashboard-content').innerHTML = html;
+}
+
+// ==================== PRODUCTS ====================
+function renderProducts() {
+  const products = loadUserProducts();
+  let html = '';
+  if (products.length === 0) {
+    html = '<div class="empty-state"><div class="empty-state-icon">📦</div><h3>' + t('products_title') + '</h3><p>You have no products yet</p></div>';
+  } else {
+    html = '<table class="product-table"><thead><tr><th></th><th>' + t('product_name_en') + '</th><th>Type</th><th>' + t('notes') + '</th><th></th></tr></thead><tbody>';
+    products.forEach(p => {
+      const type = p.product_type === 'nihonshu' ? '日本酒' : '焼酎';
+      html += '<tr><td><img src="' + (p.image_data || '') + '" class="product-table-thumb" style="display:' + (p.image_data ? 'block' : 'none') + '"></td><td>' + p.product_name_en + '</td><td><span class="product-badge ' + (p.product_type === 'nihonshu' ? 'badge-nihonshu' : 'badge-shochu') + '">' + type + '</span></td><td>' + (p.notes || '—').substring(0, 40) + '</td><td class="product-table-actions"><button class="product-table-btn" onclick="openProductEditor(\'' + p.id + '\')">✏️</button><button class="product-table-btn" onclick="deleteProductConfirm(\'' + p.id + '\')">🗑️</button></td></tr>';
+    });
+    html += '</tbody></table>';
+  }
+  document.getElementById('products-list').innerHTML = html;
 }
 
 // ==================== PRODUCT EDITOR ====================
-function openProductEditor(productId){
-  const brandSelect=document.getElementById('edit-brand');
-  brandSelect.innerHTML=(currentCompany?.brands||[]).map(b=>`<option value="${b}">${b}</option>`).join('');
-  if(productId){
-    const products=getProducts(currentUser.id);
-    const p=products.find(x=>x.id===productId);
-    if(p){
-      document.getElementById('edit-product-id').value=p.id;
-      document.getElementById('edit-product-name').value=p.product_name||'';
-      brandSelect.value=p.brand||'';
-      document.getElementById('edit-rice').value=p.rice||'';
-      document.getElementById('edit-yeast').value=p.yeast||'';
-      document.getElementById('edit-seimai').value=p.seimai||'';
-      document.getElementById('edit-alcohol').value=p.alcohol||'';
-      document.getElementById('edit-smv').value=p.smv||'';
-      document.getElementById('edit-acidity').value=p.acidity||'';
-      document.getElementById('edit-notes').value=p.notes||'';
-      document.querySelectorAll('#edit-category .chip').forEach(c=>c.classList.toggle('selected',c.dataset.val===p.category));
-      setSliderValue('edit-body',p.body||2);
-      setSliderValue('edit-aroma',p.aroma||2);
-      setSliderValue('edit-sweetness',p.sweetness||2);
-      document.querySelectorAll('#edit-temp .chip').forEach(c=>c.classList.toggle('selected',(p.temperatures||[]).includes(c.dataset.val)));
-      document.querySelectorAll('#edit-volume .chip').forEach(c=>c.classList.toggle('selected',c.dataset.val===String(p.volume)));
+let editingProductId = null;
+
+function openProductEditor(productId) {
+  editingProductId = productId;
+  document.getElementById('btn-delete-product').style.display = productId ? 'block' : 'none';
+
+  if (productId) {
+    const products = loadUserProducts();
+    const product = products.find(p => p.id === productId);
+    if (!product) return;
+
+    document.getElementById('form-product-name-en').value = product.product_name_en || '';
+    document.getElementById('form-product-name-ja').value = product.product_name_ja || '';
+    document.getElementById('form-ean-code').value = product.ean_code || '';
+    document.getElementById('form-jan-code').value = product.jan_code || '';
+    document.getElementById('form-price').value = product.price || '';
+    document.getElementById('form-currency').value = product.currency || 'JPY';
+    document.getElementById('form-volume').value = product.volume || '';
+    document.getElementById('form-notes').value = product.notes || '';
+
+    if (product.image_data) {
+      const img = document.getElementById('preview-product-image');
+      img.src = product.image_data;
+      img.style.display = 'block';
+      document.getElementById('upload-product-image').classList.add('has-image');
+      document.getElementById('remove-product-image-btn').style.display = 'block';
+    }
+
+    selectProductType(product.product_type, true);
+
+    if (product.product_type === 'nihonshu') {
+      document.getElementById('form-nihonshu-category').value = product.category || '';
+      document.getElementById('form-nihonshu-rice').value = product.rice || '';
+      document.getElementById('form-nihonshu-yeast').value = product.yeast || '';
+      document.getElementById('form-nihonshu-polish').value = product.polishing_rate || '';
+      document.getElementById('form-nihonshu-smv').value = product.smv || '';
+      document.getElementById('form-nihonshu-alcohol').value = product.alcohol || '';
+      document.getElementById('form-nihonshu-acidity').value = product.acidity || '';
+      renderFinishingChips(product.finishing || []);
+      renderKojiChips('nihonshu', product.koji || []);
+    } else {
+      document.getElementById('form-shochu-category').value = product.category || '';
+      document.getElementById('form-shochu-ingredient').value = product.base_ingredient || '';
+      document.getElementById('form-shochu-aging').value = product.aging_period || '';
+      document.getElementById('form-shochu-alcohol').value = product.alcohol || '';
+      renderDistillationChips(product.distillation_method || []);
+      renderKojiChips('shochu', product.koji || []);
     }
   } else {
-    document.getElementById('edit-product-id').value='';
-    document.getElementById('edit-product-name').value='';
-    document.getElementById('edit-rice').value='';
-    document.getElementById('edit-yeast').value='';
-    document.getElementById('edit-seimai').value='';
-    document.getElementById('edit-alcohol').value='';
-    document.getElementById('edit-smv').value='';
-    document.getElementById('edit-acidity').value='';
-    document.getElementById('edit-notes').value='';
-    document.querySelectorAll('#screen-product-edit .chip').forEach(c=>c.classList.remove('selected'));
-    setSliderValue('edit-body',2);setSliderValue('edit-aroma',2);setSliderValue('edit-sweetness',2);
+    clearProductForm();
+    selectProductType('nihonshu', true);
   }
-  showAppScreen('product-edit');
+
+  showAppScreen('product-editor');
 }
 
-function editProduct(id){openProductEditor(id);}
-
-function saveProduct(status){
-  const id=document.getElementById('edit-product-id').value||'p_'+Date.now();
-  const products=getProducts(currentUser.id);
-  const selectedCategory=document.querySelector('#edit-category .chip.selected');
-  const selectedTemps=Array.from(document.querySelectorAll('#edit-temp .chip.selected')).map(c=>c.dataset.val);
-  const selectedVolume=document.querySelector('#edit-volume .chip.selected');
-  const product={
-    id, brand:document.getElementById('edit-brand').value,
-    product_name:document.getElementById('edit-product-name').value.trim(),
-    category:selectedCategory?selectedCategory.dataset.val:'',
-    rice:document.getElementById('edit-rice').value.trim(),
-    yeast:document.getElementById('edit-yeast').value.trim(),
-    seimai:parseFloat(document.getElementById('edit-seimai').value)||null,
-    alcohol:parseFloat(document.getElementById('edit-alcohol').value)||null,
-    smv:parseFloat(document.getElementById('edit-smv').value)||null,
-    acidity:parseFloat(document.getElementById('edit-acidity').value)||null,
-    body:getSliderValue('edit-body'), aroma:getSliderValue('edit-aroma'), sweetness:getSliderValue('edit-sweetness'),
-    temperatures:selectedTemps, volume:selectedVolume?parseInt(selectedVolume.dataset.val):null,
-    notes:document.getElementById('edit-notes').value.trim(),
-    status:status||'draft', updated_at:new Date().toISOString()
-  };
-  if(!product.product_name){toast(t('err_fill_fields'),'error');return;}
-  const idx=products.findIndex(p=>p.id===id);
-  if(idx>=0) products[idx]=product;
-  else{product.created_at=new Date().toISOString();products.push(product);}
-  setProducts(currentUser.id,products);
-  toast(t('toast_product_saved'),'success');
-  showAppScreen('dashboard');
+function clearProductForm() {
+  document.getElementById('form-product-name-en').value = '';
+  document.getElementById('form-product-name-ja').value = '';
+  document.getElementById('form-ean-code').value = '';
+  document.getElementById('form-jan-code').value = '';
+  document.getElementById('form-price').value = '';
+  document.getElementById('form-currency').value = 'JPY';
+  document.getElementById('form-volume').value = '';
+  document.getElementById('form-notes').value = '';
+  document.getElementById('preview-product-image').style.display = 'none';
+  document.getElementById('upload-product-image').classList.remove('has-image');
+  document.getElementById('remove-product-image-btn').style.display = 'none';
+  document.querySelectorAll('[id*=form-no-]').forEach(c => c.checked = false);
 }
 
-// ==================== CATALOG ====================
-function renderCatalog(){
-  const all=getAllProducts().filter(p=>p.status==='published');
-  const query=(document.getElementById('catalog-search-input')?.value||'').toLowerCase();
-  const filtered=all.filter(p=>{
-    const matchesFilter=catalogFilter==='all'||p.category===catalogFilter;
-    const matchesSearch=!query||(p.product_name||'').toLowerCase().includes(query)||(p.company_name||'').toLowerCase().includes(query)||(p.brand||'').toLowerCase().includes(query)||(p.rice||'').toLowerCase().includes(query);
-    return matchesFilter&&matchesSearch;
+function selectProductType(type, isEditing = false) {
+  if (editingProductId && isEditing === false) return;
+
+  document.querySelectorAll('.product-type-card').forEach(c => c.classList.remove('selected'));
+  document.querySelector('[data-type="' + type + '"]').classList.add('selected');
+
+  document.getElementById('nihonshu-fields').style.display = type === 'nihonshu' ? 'block' : 'none';
+  document.getElementById('shochu-fields').style.display = type === 'shochu' ? 'block' : 'none';
+
+  if (!editingProductId) {
+    if (type === 'nihonshu') {
+      renderFinishingChips([]);
+      renderKojiChips('nihonshu', []);
+    } else {
+      renderDistillationChips([]);
+      renderKojiChips('shochu', []);
+    }
+  }
+}
+
+const nihonshuFinishingOptions = [
+  { id: 'genshu', label: '原酒 - Genshu (Undiluted sake)' },
+  { id: 'kimoto', label: '生酛 - Kimoto' },
+  { id: 'taruzake', label: '樽酒 - Taru-zake (Barrel-aged)' },
+  { id: 'yamahai', label: '山廃 - Yamahai' },
+  { id: 'bodaimoto', label: '菩提酛 - Bodaimoto' },
+  { id: 'aged3y', label: '3年未満の熟成酒 - Aged <3 years' },
+  { id: 'kijoshu', label: '貴醸酒 - Kijoshu' },
+  { id: 'single', label: '一段仕込み - Single-stage' },
+  { id: 'five', label: '5段仕込み以上 - Five+ stage' },
+  { id: 'koji_other', label: '黄麹以外の麹 - Non-yellow koji' },
+  { id: 'low_water', label: '低水分米 - Low water ratio' }
+];
+
+const kojiOptions = [
+  { id: 'white', label: 'White Koji (白麹)' },
+  { id: 'yellow', label: 'Yellow Koji (黄麹)' },
+  { id: 'black', label: 'Black Koji (黒麹)' }
+];
+
+const distillationOptions = [
+  { id: 'pot', label: '単式蒸留 - Pot still' },
+  { id: 'column', label: '連続式蒸留 - Column still' },
+  { id: 'blended', label: '混和 - Blended' }
+];
+
+function renderFinishingChips(selected = []) {
+  let html = '';
+  nihonshuFinishingOptions.forEach(opt => {
+    html += '<div class="chip ' + (selected.includes(opt.id) ? 'selected' : '') + '" onclick="toggleChip(this, \'finishing\', \'' + opt.id + '\')">' + opt.label + '</div>';
   });
-  const results=document.getElementById('catalog-results');
-  if(!filtered.length){
-    results.innerHTML=`<div class="empty-state" style="grid-column:1/-1"><div class="empty-state-icon">🔍</div><h3>${t('catalog_no_results')}</h3><p>${t('catalog_no_results_sub')}</p></div>`;
+  document.getElementById('nihonshu-finishing-chips').innerHTML = html;
+}
+
+function renderDistillationChips(selected = []) {
+  let html = '';
+  distillationOptions.forEach(opt => {
+    html += '<div class="chip ' + (selected.includes(opt.id) ? 'selected' : '') + '" onclick="toggleChip(this, \'distillation\', \'' + opt.id + '\')">' + opt.label + '</div>';
+  });
+  document.getElementById('shochu-distillation-chips').innerHTML = html;
+}
+
+function renderKojiChips(type, selected = []) {
+  let html = '';
+  kojiOptions.forEach(opt => {
+    html += '<div class="chip ' + (selected.includes(opt.id) ? 'selected' : '') + '" onclick="toggleChip(this, \'' + type + '_koji\', \'' + opt.id + '\')">' + opt.label + '</div>';
+  });
+  const containerId = type === 'nihonshu' ? 'nihonshu-koji-chips' : 'shochu-koji-chips';
+  document.getElementById(containerId).innerHTML = html;
+}
+
+function toggleChip(el, group, value) {
+  el.classList.toggle('selected');
+}
+
+function getSelectedChips(selector) {
+  const chips = [];
+  document.querySelectorAll(selector + ' .chip.selected').forEach(c => {
+    chips.push(c.getAttribute('onclick').match(/'([^']+)'/)[1]);
+  });
+  return chips;
+}
+
+function saveProduct() {
+  const type = document.querySelector('.product-type-card.selected').getAttribute('data-type');
+  const nameEn = document.getElementById('form-product-name-en').value.trim();
+
+  if (!nameEn) {
+    showToast('Please enter product name', 'error');
     return;
   }
-  results.innerHTML=filtered.map(p=>`<div class="catalog-item"><div class="catalog-item-top"><div><div class="catalog-item-name">${p.product_name}</div><div class="catalog-item-brewery">${p.company_name}${p.prefecture?' · '+p.prefecture:''}</div></div><span class="catalog-item-badge">${categoryNames[p.category]||p.category||''}</span></div><div class="catalog-item-specs">${p.rice?'<div class="catalog-item-spec">🌾 <strong>'+p.rice+'</strong></div>':''}${p.seimai?'<div class="catalog-item-spec">精米 <strong>'+p.seimai+'%</strong></div>':''}${p.alcohol?'<div class="catalog-item-spec">Alc <strong>'+p.alcohol+'%</strong></div>':''}${p.smv!==null&&p.smv!==undefined?'<div class="catalog-item-spec">SMV <strong>'+(p.smv>0?'+':'')+p.smv+'</strong></div>':''}</div></div>`).join('')+`<div class="catalog-count">${filtered.length} 件</div>`;
+
+  if (type === 'nihonshu') {
+    const polish = parseFloat(document.getElementById('form-nihonshu-polish').value);
+    const smv = parseFloat(document.getElementById('form-nihonshu-smv').value);
+    const alcohol = parseFloat(document.getElementById('form-nihonshu-alcohol').value);
+    if (isNaN(polish) || isNaN(smv) || isNaN(alcohol)) {
+      showToast('Please fill all required fields', 'error');
+      return;
+    }
+  } else {
+    const alcohol = parseFloat(document.getElementById('form-shochu-alcohol').value);
+    if (isNaN(alcohol)) {
+      showToast('Please fill all required fields', 'error');
+      return;
+    }
+  }
+
+  const product = {
+    id: editingProductId || 'prod_' + Date.now(),
+    product_type: type,
+    product_name_en: nameEn,
+    product_name_ja: document.getElementById('form-product-name-ja').value.trim(),
+    ean_code: document.getElementById('form-ean-code').value.trim(),
+    jan_code: document.getElementById('form-jan-code').value.trim(),
+    image_data: document.getElementById('preview-product-image').src || '',
+    price: document.getElementById('form-price').value ? parseFloat(document.getElementById('form-price').value) : null,
+    currency: document.getElementById('form-currency').value,
+    volume: document.getElementById('form-volume').value ? parseFloat(document.getElementById('form-volume').value) : null,
+    notes: document.getElementById('form-notes').value.trim(),
+    created_at: editingProductId ? null : new Date().toISOString(),
+    updated_at: new Date().toISOString()
+  };
+
+  if (type === 'nihonshu') {
+    product.category = document.getElementById('form-nihonshu-category').value;
+    product.finishing = getSelectedChips('#nihonshu-finishing-chips');
+    product.koji = getSelectedChips('#nihonshu-koji-chips');
+    product.rice = document.getElementById('form-nihonshu-rice').value.trim();
+    product.yeast = document.getElementById('form-nihonshu-yeast').value.trim();
+    product.polishing_rate = parseFloat(document.getElementById('form-nihonshu-polish').value);
+    product.smv = parseFloat(document.getElementById('form-nihonshu-smv').value);
+    product.alcohol = parseFloat(document.getElementById('form-nihonshu-alcohol').value);
+    product.acidity = document.getElementById('form-nihonshu-acidity').value ? parseFloat(document.getElementById('form-nihonshu-acidity').value) : null;
+  } else {
+    product.category = document.getElementById('form-shochu-category').value;
+    product.distillation_method = getSelectedChips('#shochu-distillation-chips');
+    product.koji = getSelectedChips('#shochu-koji-chips');
+    product.base_ingredient = document.getElementById('form-shochu-ingredient').value.trim();
+    product.aging_period = document.getElementById('form-shochu-aging').value.trim();
+    product.alcohol = parseFloat(document.getElementById('form-shochu-alcohol').value);
+  }
+
+  let products = loadUserProducts();
+  if (editingProductId) {
+    const idx = products.findIndex(p => p.id === editingProductId);
+    if (idx >= 0) products[idx] = product;
+  } else {
+    products.push(product);
+  }
+
+  saveUserProducts(products);
+  showToast('Product saved', 'success');
+  editingProductId = null;
+  showAppScreen('products');
 }
 
-function filterCatalog(){renderCatalog();}
-
-function setCatalogFilter(val,btn){
-  catalogFilter=val;
-  document.querySelectorAll('.filter-chip').forEach(c=>c.classList.toggle('active',c.dataset.val===val));
-  renderCatalog();
+function deleteProduct() {
+  if (!confirm('Delete this product?')) return;
+  let products = loadUserProducts();
+  products = products.filter(p => p.id !== editingProductId);
+  saveUserProducts(products);
+  showToast('Product deleted', 'success');
+  editingProductId = null;
+  showAppScreen('products');
 }
 
-// ==================== UI HELPERS ====================
-function selectSlider(dot,idx){
-  const container=dot.parentElement;
-  Array.from(container.children).forEach((d,i)=>d.classList.toggle('active',i<=idx));
-}
-function setSliderValue(containerId,val){
-  document.getElementById(containerId).querySelectorAll('.slider-dot').forEach((d,i)=>d.classList.toggle('active',i<=val));
-}
-function getSliderValue(containerId){return document.getElementById(containerId).querySelectorAll('.slider-dot.active').length-1;}
-function toggleChip(chip){chip.classList.toggle('selected');}
-function selectChip(chip){chip.parentElement.querySelectorAll('.chip').forEach(c=>c.classList.remove('selected'));chip.classList.add('selected');}
-
-function toast(msg,type){
-  const container=document.getElementById('toast-container');
-  const el=document.createElement('div');
-  el.className='toast toast-'+(type||'info');
-  el.textContent=msg;
-  container.appendChild(el);
-  setTimeout(()=>el.remove(),3000);
-}
-
-function setLandingLang(lang){
-  currentLang=lang;
-  localStorage.setItem('landingLang',lang);
-  applyI18n();
-  const toggleBtns=document.querySelectorAll('.landing-lang-toggle button');
-  toggleBtns.forEach(btn=>btn.classList.remove('active'));
-  if(lang==='en'){
-    toggleBtns[0].classList.add('active');
-  }else{
-    toggleBtns[1].classList.add('active');
+function deleteProductConfirm(productId) {
+  if (confirm('Delete this product?')) {
+    let products = loadUserProducts();
+    products = products.filter(p => p.id !== productId);
+    saveUserProducts(products);
+    showToast('Product deleted', 'success');
+    renderProducts();
   }
 }
 
-function exportData(){
-  if(!currentUser) return;
-  const data={company:getCompany(currentUser.id),products:getProducts(currentUser.id)};
-  const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
-  const url=URL.createObjectURL(blob);
-  const a=document.createElement('a');
-  a.href=url;a.download='sake-platform-export.json';
-  a.click();URL.revokeObjectURL(url);
+function handleImageUpload(event, type) {
+  const file = event.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    const dataUrl = e.target.result;
+    if (type === 'product-image') {
+      document.getElementById('preview-product-image').src = dataUrl;
+      document.getElementById('upload-product-image').classList.add('has-image');
+      document.getElementById('remove-product-image-btn').style.display = 'block';
+    }
+  };
+  reader.readAsDataURL(file);
 }
 
-function showLanguageModal(){
-  const overlay=document.createElement('div');
-  overlay.className='modal-overlay';
-  overlay.onclick=e=>{if(e.target===overlay) overlay.remove();};
-  overlay.innerHTML=`<div class="modal"><h3>言語 / Language</h3><div style="display:flex;flex-direction:column;gap:8px;"><button class="modal-btn" onclick="setAppLang('ja',this)" style="${currentLang==='ja'?'border-color:var(--accent);background:var(--accent-light)':''}">🇯🇵 日本語</button><button class="modal-btn" onclick="setAppLang('en',this)" style="${currentLang==='en'?'border-color:var(--accent);background:var(--accent-light)':''}">🇬🇧 English</button></div></div>`;
-  document.body.appendChild(overlay);
-}
-
-function setAppLang(lang){
-  currentLang=lang;
-  localStorage.setItem('landingLang',lang);
-  applyI18n();
-  document.querySelector('.modal-overlay')?.remove();
-  const langNames={ja:'日本語',en:'English'};
-  const settingsLangEl=document.getElementById('settings-current-lang');
-  if(settingsLangEl) settingsLangEl.textContent=(langNames[lang]||lang)+' ›';
-  const dropdown=document.getElementById('sidebar-lang-dropdown');
-  if(dropdown) dropdown.value=lang;
-  // Re-render current screen
-  const activeScreen=document.querySelector('.app-screen.active');
-  if(activeScreen){
-    if(activeScreen.id==='screen-dashboard') renderDashboard();
-    if(activeScreen.id==='screen-catalog') renderCatalog();
+function removeImage(type) {
+  if (type === 'product-image') {
+    document.getElementById('preview-product-image').src = '';
+    document.getElementById('preview-product-image').style.display = 'none';
+    document.getElementById('upload-product-image').classList.remove('has-image');
+    document.getElementById('remove-product-image-btn').style.display = 'none';
+    document.getElementById('input-product-image').value = '';
   }
+}
+
+function toggleCheckbox(id) {
+  const isChecked = document.getElementById('form-' + id).checked;
+  if (id === 'no-ean') document.getElementById('form-ean-code').disabled = isChecked;
+  else if (id === 'no-jan') document.getElementById('form-jan-code').disabled = isChecked;
+  else if (id === 'no-price') document.getElementById('form-price').disabled = isChecked;
+}
+
+// ==================== DATA STORAGE ====================
+function loadUserProducts() {
+  const key = 'products_' + currentUser.email;
+  return JSON.parse(localStorage.getItem(key) || '[]');
+}
+
+function saveUserProducts(products) {
+  const key = 'products_' + currentUser.email;
+  localStorage.setItem(key, JSON.stringify(products));
+}
+
+// ==================== NOTIFICATIONS ====================
+function showToast(msg, type = 'success') {
+  const container = document.getElementById('toast-container');
+  const toast = document.createElement('div');
+  toast.className = 'toast toast-' + type;
+  toast.textContent = msg;
+  container.appendChild(toast);
+  setTimeout(() => toast.remove(), 3000);
 }
 
 // ==================== INIT ====================
-function init(){
-  const session=getSession();
-  const savedLang=localStorage.getItem('landingLang')||'en';
-  currentLang=savedLang;
-  if(session){navigate('app');}
-  else{
-    applyI18n();
-    setLandingLang(savedLang);
-  }
-  document.querySelectorAll('#view-auth input').forEach(input=>{
-    input.addEventListener('keydown',e=>{
-      if(e.key==='Enter'){
-        const panel=input.closest('.auth-card-inner');
-        if(panel.id==='auth-login') doLogin();
-        else if(panel.id==='auth-register') doRegister();
-        else if(panel.id==='auth-forgot') doForgotPassword();
-      }
-    });
-  });
-}
-
-init();
+applyI18n();
 </script>
+
 </body>
 </html>
