@@ -605,6 +605,57 @@ body {
 .fade-in { animation: fadeIn 0.5s ease; }
 .slide-up { animation: slideUp 0.5s ease; }
 @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: none; } }
+
+/* ─── DEMO NOT FOUND MODAL ─── */
+.demo-modal-overlay {
+  position: fixed; inset: 0; z-index: 300;
+  background: rgba(0,0,0,0.55);
+  backdrop-filter: blur(6px);
+  display: flex; align-items: center; justify-content: center;
+  padding: 24px;
+  animation: fadeIn 0.3s ease;
+}
+.demo-modal {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  width: 100%; max-width: 520px;
+  padding: 32px;
+  box-shadow: var(--shadow-lg);
+  animation: modalIn 0.3s ease;
+  text-align: center;
+}
+.demo-modal-icon { font-size: 48px; margin-bottom: 12px; }
+.demo-modal h3 {
+  font-size: 20px; font-weight: 600;
+  color: var(--navy); margin-bottom: 8px;
+}
+.demo-modal p { font-size: 14px; color: var(--text2); line-height: 1.6; margin-bottom: 16px; }
+.demo-modal-section { margin: 20px 0; text-align: left; }
+.demo-modal-label {
+  font-size: 11px; font-weight: 600; color: var(--text3);
+  text-transform: uppercase; letter-spacing: 1px;
+  margin-bottom: 10px;
+}
+.demo-tags { display: flex; flex-wrap: wrap; gap: 8px; }
+.demo-tag {
+  background: var(--bg2); border: 1px solid var(--border);
+  border-radius: 20px; padding: 6px 14px;
+  font: 400 13px var(--font); color: var(--text2);
+  cursor: pointer; transition: var(--transition);
+}
+.demo-tag:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-glow); }
+.demo-modal-divider {
+  height: 1px; background: var(--border);
+  margin: 20px 0;
+}
+.demo-modal-hint {
+  font-size: 13px; color: var(--accent); font-weight: 500;
+}
+.demo-modal-actions {
+  display: flex; justify-content: center; gap: 12px;
+  margin-top: 20px;
+}
 </style>
 </head>
 <body>
@@ -726,7 +777,8 @@ const I18N = {
     hero_title: '酒蔵を探す',
     hero_sub: 'TROVA LA TUA SAKAGURA',
     search_placeholder: 'Nome della sakagura...',
-    search_hint: 'Scrivi il nome e la piattaforma troverà <strong>azienda, prodotti e specifiche tecniche</strong> automaticamente.',
+    search_hint: 'Demo: <strong>Tatenokawa, Koikawa, Amabuki, Dassai, Kubota</strong> — oppure aggiungi API key per qualsiasi sakagura.',
+    search_hint_ai: 'Scrivi il nome e la piattaforma troverà <strong>azienda, prodotti e specifiche tecniche</strong> automaticamente.',
     // Discovery
     disc_subtitle: 'Analisi in corso',
     step_0: 'Cerco il sito ufficiale',
@@ -795,6 +847,11 @@ const I18N = {
     settings_email_label: 'Email (per salvare i dati)',
     save: 'Salva',
     settings_tooltip: 'Impostazioni',
+    demo_notfound_title: 'Sakagura non trovata nella demo',
+    demo_notfound_desc: '"{name}" non è disponibile nella modalità demo. Puoi provare una delle sakagura demo oppure aggiungere la tua API key per cercare qualsiasi sakagura.',
+    demo_available: 'Sakagura disponibili nella demo:',
+    demo_unlock: 'Aggiungi la tua API key Anthropic per sbloccare la ricerca intelligente su qualsiasi sakagura',
+    demo_add_key: 'Aggiungi API Key',
   },
   en: {
     nav_discover: 'Discover',
@@ -803,7 +860,8 @@ const I18N = {
     hero_title: '酒蔵を探す',
     hero_sub: 'FIND YOUR SAKAGURA',
     search_placeholder: 'Brewery name...',
-    search_hint: 'Type the name and the platform will find <strong>company, products and technical specs</strong> automatically.',
+    search_hint: 'Demo: <strong>Tatenokawa, Koikawa, Amabuki, Dassai, Kubota</strong> — or add API key to search any brewery.',
+    search_hint_ai: 'Type any brewery name and the platform will find <strong>company, products and specs</strong> automatically.',
     disc_subtitle: 'Analysis in progress',
     step_0: 'Searching for official website',
     step_1: 'Analyzing product pages',
@@ -867,6 +925,11 @@ const I18N = {
     settings_email_label: 'Email (to save data)',
     save: 'Save',
     settings_tooltip: 'Settings',
+    demo_notfound_title: 'Brewery not found in demo',
+    demo_notfound_desc: '"{name}" is not available in demo mode. Try one of the demo breweries below or add your API key to search any brewery.',
+    demo_available: 'Available in demo:',
+    demo_unlock: 'Add your Anthropic API key to unlock intelligent search for any brewery',
+    demo_add_key: 'Add API Key',
   },
   ja: {
     nav_discover: '検索',
@@ -875,7 +938,8 @@ const I18N = {
     hero_title: '酒蔵を探す',
     hero_sub: 'あなたの酒蔵を見つける',
     search_placeholder: '酒蔵の名前...',
-    search_hint: '酒蔵名を入力すると、<strong>会社情報、商品、技術仕様</strong>を自動で取得します。',
+    search_hint: 'デモ: <strong>楯の川、鯉川、天吹、獺祭、久保田</strong> — APIキーを追加すると全酒蔵を検索可能。',
+    search_hint_ai: '酒蔵名を入力すると、<strong>会社情報、商品、技術仕様</strong>を自動で取得します。',
     disc_subtitle: '分析中',
     step_0: '公式サイトを検索中',
     step_1: '商品ページを分析中',
@@ -939,6 +1003,11 @@ const I18N = {
     settings_email_label: 'メール（データ保存用）',
     save: '保存',
     settings_tooltip: '設定',
+    demo_notfound_title: 'デモに酒蔵が見つかりません',
+    demo_notfound_desc: '「{name}」はデモモードでは利用できません。デモ酒蔵を試すか、APIキーを追加してすべての酒蔵を検索できます。',
+    demo_available: 'デモで利用可能:',
+    demo_unlock: 'Anthropic APIキーを追加して、すべての酒蔵のインテリジェント検索を有効にしてください',
+    demo_add_key: 'APIキーを追加',
   }
 };
 
@@ -982,7 +1051,7 @@ function applyLang() {
   document.getElementById('hero-kanji').textContent = t('hero_title');
   document.getElementById('hero-sub').textContent = t('hero_sub');
   document.getElementById('brewery-input').placeholder = t('search_placeholder');
-  document.getElementById('search-hint').innerHTML = t('search_hint');
+  document.getElementById('search-hint').innerHTML = state.apiKey ? t('search_hint_ai') : t('search_hint');
   // Discovery
   document.getElementById('disc-subtitle').textContent = t('disc_subtitle');
   for (let i = 0; i < 5; i++) {
@@ -1124,6 +1193,15 @@ async function simulateDiscovery(name) {
   await delay(1500);
   if (state.discoveryAborted) return;
   const brewery = getDemoBrewery(name);
+
+  // Not found in demo mode — show prompt to add API key
+  if (!brewery) {
+    stopTimer();
+    showScreen('search');
+    showDemoNotFound(name);
+    return;
+  }
+
   const site = brewery.company.website;
   const prodCount = brewery.products.length;
   setStep(0, 'done', t('sim_found') + ' ' + site);
@@ -1149,6 +1227,30 @@ async function simulateDiscovery(name) {
   state.currentBrewery = brewery;
   renderResults(brewery);
   showScreen('results');
+}
+
+function showDemoNotFound(name) {
+  const demoNames = ['楯の川 (Tatenokawa)', '鯉川 (Koikawa)', '天吹 (Amabuki)', '獺祭 / 旭酒造 (Dassai)', '久保田 / 朝日酒造 (Kubota)'];
+  const modal = document.createElement('div');
+  modal.className = 'demo-modal-overlay';
+  modal.innerHTML = `
+    <div class="demo-modal">
+      <div class="demo-modal-icon">🔑</div>
+      <h3>${esc(t('demo_notfound_title'))}</h3>
+      <p>${t('demo_notfound_desc').replace('{name}', esc(name))}</p>
+      <div class="demo-modal-section">
+        <div class="demo-modal-label">${esc(t('demo_available'))}</div>
+        <div class="demo-tags">${demoNames.map(n => `<span class="demo-tag" onclick="this.closest('.demo-modal-overlay').remove(); document.getElementById('brewery-input').value='${n.split(' (')[0]}'; startDiscovery();">${n}</span>`).join('')}</div>
+      </div>
+      <div class="demo-modal-divider"></div>
+      <p class="demo-modal-hint">${esc(t('demo_unlock'))}</p>
+      <div class="demo-modal-actions">
+        <button class="btn btn-secondary" onclick="this.closest('.demo-modal-overlay').remove()">${esc(t('cancel'))}</button>
+        <button class="btn btn-primary" onclick="this.closest('.demo-modal-overlay').remove(); openSettings();">🔑 ${esc(t('demo_add_key'))}</button>
+      </div>
+    </div>
+  `;
+  document.body.appendChild(modal);
 }
 
 // ─────────────────────────────────────────
@@ -1235,7 +1337,19 @@ function getDemoBrewery(name) {
   if (q.includes('楯') || q.includes('tatenokawa') || q.includes('tateno')) {
     return getTatenokawaDemo();
   }
-  return getKoikawaDemo();
+  if (q.includes('鯉') || q.includes('koikawa') || q.includes('koika')) {
+    return getKoikawaDemo();
+  }
+  if (q.includes('天吹') || q.includes('amabuki')) {
+    return getAmabukiDemo();
+  }
+  if (q.includes('獺祭') || q.includes('dassai') || q.includes('旭酒造') || q.includes('asahi')) {
+    return getDassaiDemo();
+  }
+  if (q.includes('久保田') || q.includes('kubota') || q.includes('朝日酒造') || q.includes('asahi shuzo')) {
+    return getKubotaDemo();
+  }
+  return null; // Not found in demo
 }
 
 function getTatenokawaDemo() {
@@ -1305,6 +1419,84 @@ function getKoikawaDemo() {
       { name_jp: '純米吟醸 亀の尾', name_en: 'Kamenoo Ginjo', type: 'Junmai Ginjo', type_detail: '純米吟醸', rice: '亀の尾 100%', polishing_rate: '55%', alcohol: '17.3%', smv: '+6', acidity: '1.5', yeast: 'NF-KA', volumes: [{size:'720ml', price:'¥2,750'}, {size:'1800ml', price:'¥5,170'}], tasting_notes: 'Dolcezza aromatica del riso, piena. Rapporto qualità-prezzo raro per un genshu.', awards: '' },
       { name_jp: '琥珀酒 純米にごり', name_en: 'Kohakushu Nigori', type: 'Junmai', type_detail: '純米にごり', rice: '—', polishing_rate: '—', alcohol: '—', smv: '', acidity: '', yeast: '', volumes: [{size:'720ml', price:'¥1,100'}, {size:'1800ml', price:'¥2,200'}], tasting_notes: '', awards: '' },
       { name_jp: '純米大吟醸 若き鯉ヶ龍', name_en: 'Wakaki Koigaryuu Daiginjo', type: 'Junmai Daiginjo', type_detail: '純米大吟醸', rice: '—', polishing_rate: '—', alcohol: '—', smv: '', acidity: '', yeast: '', volumes: [{size:'720ml', price:'¥2,420'}], tasting_notes: '', awards: '' }
+    ]
+  };
+}
+
+function getAmabukiDemo() {
+  return {
+    company: {
+      name_jp: '天吹酒造 合資会社',
+      name_en: 'Amabuki Sake Brewery Co., Ltd.',
+      prefecture: '佐賀県 (Saga)',
+      address: '〒849-0124 佐賀県三養基郡みやき町東尾2894',
+      phone: '0942-89-2001',
+      fax: '0942-89-2002',
+      founded: '1688 (元禄元年)',
+      website: 'amabuki.co.jp',
+      philosophy: '花酵母仕込み — 自然の花から分離した酵母で醸す、花と酒の融合',
+      speciality: '花酵母の先駆者。すべての酒を花酵母で醸造。',
+      rice_types: ['山田錦', '雄町', '佐賀の華', '壽限無']
+    },
+    products: [
+      { name_jp: '天吹 大吟醸 りんごの花酵母', name_en: 'Amabuki Daiginjo Apple Blossom', type: 'Daiginjo', type_detail: '大吟醸', rice: '山田錦 100%', polishing_rate: '35%', alcohol: '16%', smv: '+2', acidity: '1.3', yeast: 'りんごの花酵母', volumes: [{size:'720ml', price:'¥5,500'}], tasting_notes: 'りんごの花酵母による華やかなアロマ。上品で繊細な味わい。', awards: 'IWC Gold 2008' },
+      { name_jp: '天吹 純米大吟醸 いちごの花酵母', name_en: 'Amabuki J. Daiginjo Strawberry Blossom', type: 'Junmai Daiginjo', type_detail: '純米大吟醸', rice: '山田錦 100%', polishing_rate: '45%', alcohol: '16%', smv: '-1', acidity: '1.5', yeast: 'いちごの花酵母', volumes: [{size:'720ml', price:'¥3,300'}, {size:'1800ml', price:'¥6,050'}], tasting_notes: 'いちごの花酵母由来のフルーティーな香り。柔らかく優しい口当たり。', awards: '' },
+      { name_jp: '天吹 純米大吟醸 バラの花酵母', name_en: 'Amabuki J. Daiginjo Rose', type: 'Junmai Daiginjo', type_detail: '純米大吟醸', rice: '雄町 100%', polishing_rate: '50%', alcohol: '16%', smv: '+1', acidity: '1.4', yeast: 'バラの花酵母', volumes: [{size:'720ml', price:'¥2,750'}, {size:'1800ml', price:'¥5,500'}], tasting_notes: 'バラの花酵母が織りなす芳醇な香り。雄町のコクとのバランスが秀逸。', awards: '' },
+      { name_jp: '天吹 純米吟醸 コスモスの花酵母', name_en: 'Amabuki J. Ginjo Cosmos', type: 'Junmai Ginjo', type_detail: '純米吟醸', rice: '佐賀の華', polishing_rate: '55%', alcohol: '15%', smv: '+2', acidity: '1.5', yeast: 'コスモスの花酵母', volumes: [{size:'720ml', price:'¥1,650'}, {size:'1800ml', price:'¥3,300'}], tasting_notes: 'コスモスの花酵母による清楚な香り。さっぱりとした飲み口。', awards: '' },
+      { name_jp: '天吹 純米吟醸 ひまわりの花酵母', name_en: 'Amabuki J. Ginjo Sunflower', type: 'Junmai Ginjo', type_detail: '純米吟醸', rice: '山田錦', polishing_rate: '55%', alcohol: '15%', smv: '+3', acidity: '1.4', yeast: 'ひまわりの花酵母', volumes: [{size:'720ml', price:'¥1,760'}, {size:'1800ml', price:'¥3,520'}], tasting_notes: 'ひまわりのような明るく力強い香り。爽やかな酸味とキレ。', awards: '' },
+      { name_jp: '天吹 純米 雄町 月下美人の花酵母', name_en: 'Amabuki Junmai Omachi Dutchman\'s Pipe', type: 'Junmai', type_detail: '純米', rice: '雄町 100%', polishing_rate: '65%', alcohol: '15%', smv: '+3', acidity: '1.8', yeast: '月下美人の花酵母', volumes: [{size:'720ml', price:'¥1,540'}, {size:'1800ml', price:'¥2,970'}], tasting_notes: '雄町の濃醇な味わいと月下美人酵母の妖艶な香り。燗でも冷やでも。', awards: '' },
+      { name_jp: '天吹 特別純米 辛口 マリーゴールドの花酵母', name_en: 'Amabuki Tokubetsu Junmai Dry Marigold', type: 'Tokubetsu Junmai', type_detail: '特別純米', rice: '壽限無', polishing_rate: '60%', alcohol: '15%', smv: '+7', acidity: '1.6', yeast: 'マリーゴールドの花酵母', volumes: [{size:'720ml', price:'¥1,430'}, {size:'1800ml', price:'¥2,640'}], tasting_notes: '佐賀県オリジナル酒米「壽限無」使用。キレのある辛口。食中酒に最適。', awards: '' },
+    ]
+  };
+}
+
+function getDassaiDemo() {
+  return {
+    company: {
+      name_jp: '旭酒造 株式会社',
+      name_en: 'Asahi Shuzo Co., Ltd.',
+      prefecture: '山口県 (Yamaguchi)',
+      address: '〒742-0422 山口県岩国市周東町獺越2167-4',
+      phone: '0827-86-0120',
+      fax: '0827-86-0071',
+      founded: '1948',
+      website: 'asahishuzo.ne.jp',
+      philosophy: '酔うため、売るための酒ではなく、味わう酒を求めて',
+      speciality: '山田錦100%、純米大吟醸のみに特化。データ駆動型の品質管理。',
+      rice_types: ['山田錦']
+    },
+    products: [
+      { name_jp: '獺祭 磨き その先へ', name_en: 'Dassai Beyond', type: 'Junmai Daiginjo', type_detail: '純米大吟醸', rice: '山田錦 100%', polishing_rate: '非公開', alcohol: '16%', smv: '', acidity: '', yeast: '非公開', volumes: [{size:'720ml', price:'¥38,500'}], tasting_notes: '獺祭の最高峰。精米歩合の数字を超えた、究極の味わいを追求。', awards: '' },
+      { name_jp: '獺祭 純米大吟醸 磨き二割三分', name_en: 'Dassai 23', type: 'Junmai Daiginjo', type_detail: '純米大吟醸', rice: '山田錦 100%', polishing_rate: '23%', alcohol: '16%', smv: '+4', acidity: '1.1', yeast: '自社酵母', volumes: [{size:'300ml', price:'¥2,860'}, {size:'720ml', price:'¥5,830'}, {size:'1800ml', price:'¥11,550'}], tasting_notes: '華やかな上立ち香と蜂蜜のような甘み。繊細で綿のように柔らかな飲み口。', awards: '' },
+      { name_jp: '獺祭 純米大吟醸 磨き三割九分', name_en: 'Dassai 39', type: 'Junmai Daiginjo', type_detail: '純米大吟醸', rice: '山田錦 100%', polishing_rate: '39%', alcohol: '16%', smv: '+5', acidity: '1.1', yeast: '自社酵母', volumes: [{size:'300ml', price:'¥1,265'}, {size:'720ml', price:'¥2,640'}, {size:'1800ml', price:'¥5,170'}], tasting_notes: '華やかでフルーティーな香り。口当たりは軽く、飲みやすい仕上がり。', awards: '' },
+      { name_jp: '獺祭 純米大吟醸 45', name_en: 'Dassai 45', type: 'Junmai Daiginjo', type_detail: '純米大吟醸', rice: '山田錦 100%', polishing_rate: '45%', alcohol: '16%', smv: '+3', acidity: '1.5', yeast: '自社酵母', volumes: [{size:'300ml', price:'¥825'}, {size:'720ml', price:'¥1,650'}, {size:'1800ml', price:'¥3,300'}], tasting_notes: '米の甘みと爽やかな酸味の調和。獺祭の入門編として最適。', awards: '' },
+      { name_jp: '獺祭 純米大吟醸 スパークリング45', name_en: 'Dassai 45 Sparkling', type: 'Junmai Daiginjo', type_detail: '純米大吟醸 発泡にごり酒', rice: '山田錦 100%', polishing_rate: '45%', alcohol: '14%', smv: '', acidity: '', yeast: '自社酵母', volumes: [{size:'360ml', price:'¥935'}, {size:'720ml', price:'¥1,870'}], tasting_notes: '瓶内二次発酵の自然な泡。りんごやメロンの香り、爽やかな甘みと微炭酸。', awards: '' },
+    ]
+  };
+}
+
+function getKubotaDemo() {
+  return {
+    company: {
+      name_jp: '朝日酒造 株式会社',
+      name_en: 'Asahi-Shuzo Sake Brewing Co., Ltd.',
+      prefecture: '新潟県 (Niigata)',
+      address: '〒949-5494 新潟県長岡市朝日880-1',
+      phone: '0258-92-3181',
+      fax: '0258-92-4373',
+      founded: '1830 (天保元年)',
+      website: 'asahi-shuzo.co.jp',
+      philosophy: '品質を追求した「久保田」で新潟清酒の品格を築く',
+      speciality: '「久保田」ブランドで知られる。淡麗辛口の先駆者。',
+      rice_types: ['五百万石', '千秋楽', '越淡麗', '越路早生']
+    },
+    products: [
+      { name_jp: '久保田 萬寿', name_en: 'Kubota Manju', type: 'Junmai Daiginjo', type_detail: '純米大吟醸', rice: '五百万石', polishing_rate: '33%', alcohol: '15%', smv: '+2', acidity: '1.2', yeast: '自社酵母', volumes: [{size:'720ml', price:'¥4,004'}, {size:'1800ml', price:'¥8,800'}], tasting_notes: '久保田の最高峰。華やかな香りと柔らかな口当たり。余韻は上品で長い。', awards: '' },
+      { name_jp: '久保田 碧寿', name_en: 'Kubota Hekiju', type: 'Junmai Daiginjo', type_detail: '純米大吟醸 山廃', rice: '五百万石', polishing_rate: '50%', alcohol: '15%', smv: '+2', acidity: '1.2', yeast: '自社酵母', volumes: [{size:'720ml', price:'¥2,640'}, {size:'1800ml', price:'¥5,720'}], tasting_notes: '山廃仕込みによる深みのある味わい。どっしりとしたコク。燗で一段と旨い。', awards: '' },
+      { name_jp: '久保田 千寿', name_en: 'Kubota Senju', type: 'Ginjo', type_detail: '吟醸', rice: '五百万石', polishing_rate: '55%', alcohol: '15%', smv: '+5', acidity: '1.0', yeast: '自社酵母', volumes: [{size:'300ml', price:'¥572'}, {size:'720ml', price:'¥1,166'}, {size:'1800ml', price:'¥2,530'}], tasting_notes: '淡麗辛口の代名詞。穏やかな香り、すっきりとした切れ味。食中酒の定番。', awards: '' },
+      { name_jp: '久保田 紅寿', name_en: 'Kubota Kouju', type: 'Junmai Ginjo', type_detail: '純米吟醸', rice: '五百万石', polishing_rate: '55%', alcohol: '15%', smv: '+2', acidity: '1.1', yeast: '自社酵母', volumes: [{size:'720ml', price:'¥1,551'}, {size:'1800ml', price:'¥3,388'}], tasting_notes: '口当たりが柔らかく、上品な甘みとコクが広がる。バランスの良い味わい。', awards: '' },
+      { name_jp: '久保田 百寿', name_en: 'Kubota Hyakuju', type: 'Tokubetsu Honjozo', type_detail: '特別本醸造', rice: '五百万石', polishing_rate: '60%', alcohol: '15%', smv: '+5', acidity: '1.0', yeast: '自社酵母', volumes: [{size:'720ml', price:'¥990'}, {size:'1800ml', price:'¥2,145'}], tasting_notes: '久保田の原点。辛口ながらほのかな旨味。日常の食中酒として愛される。', awards: '' },
+      { name_jp: '久保田 スパークリング', name_en: 'Kubota Sparkling', type: 'Junmai Daiginjo', type_detail: '純米大吟醸 スパークリング', rice: '五百万石', polishing_rate: '50%', alcohol: '13%', smv: '-15', acidity: '1.6', yeast: '自社酵母', volumes: [{size:'720ml', price:'¥2,200'}], tasting_notes: '瓶内二次発酵の自然な泡。甘酸っぱくフルーティーな味わい。乾杯にぴったり。', awards: '' },
     ]
   };
 }
