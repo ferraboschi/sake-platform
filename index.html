@@ -695,6 +695,216 @@ body {
   font-size: 14px; font-weight: 700;
   vertical-align: middle; margin-left: 8px;
 }
+
+/* ─── CONFIRM SCREEN ─── */
+.confirm-container {
+  display: flex; align-items: center; justify-content: center;
+  min-height: calc(100vh - 56px); padding: 40px 24px;
+}
+.confirm-card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius-lg); padding: 40px;
+  max-width: 560px; width: 100%;
+  text-align: center; box-shadow: var(--shadow-lg);
+}
+.confirm-icon { font-size: 56px; margin-bottom: 16px; }
+.confirm-title { font-size: 16px; color: var(--text3); text-transform: uppercase; letter-spacing: 2px; margin-bottom: 20px; }
+.confirm-brewery-name { font-family: var(--font-serif); font-size: 32px; font-weight: 600; color: var(--navy); margin-bottom: 4px; }
+.confirm-brewery-en { font-size: 14px; color: var(--text3); margin-bottom: 20px; }
+.confirm-details { font-size: 13px; color: var(--text2); line-height: 1.8; margin-bottom: 16px; text-align: left; padding: 16px; background: var(--surface2); border-radius: var(--radius-sm); }
+.confirm-map { margin: 16px 0; border-radius: var(--radius); overflow: hidden; }
+.confirm-question { font-size: 18px; font-weight: 600; color: var(--navy); margin: 24px 0 20px; }
+.confirm-actions { display: flex; gap: 12px; justify-content: center; }
+.btn-lg { padding: 14px 32px; font-size: 15px; border-radius: 12px; }
+
+/* ─── REGISTER SCREEN ─── */
+.register-container {
+  display: flex; align-items: center; justify-content: center;
+  min-height: calc(100vh - 56px); padding: 40px 24px;
+}
+.register-card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius-lg); padding: 36px;
+  max-width: 480px; width: 100%; box-shadow: var(--shadow-lg);
+}
+.register-header { text-align: center; margin-bottom: 24px; }
+.register-icon { font-size: 40px; margin-bottom: 8px; }
+.register-header h2 { font-size: 22px; font-weight: 600; margin-bottom: 6px; }
+.register-header p { font-size: 13px; color: var(--text3); }
+.register-brewery-badge {
+  display: flex; align-items: center; gap: 10px;
+  padding: 12px 16px; background: var(--accent-glow);
+  border: 1px solid rgba(58,110,165,0.2);
+  border-radius: var(--radius-sm); margin-bottom: 24px;
+  font-size: 14px; font-weight: 500; color: var(--accent);
+}
+.register-form label {
+  display: block; font-size: 12px; font-weight: 600;
+  color: var(--text2); margin-bottom: 6px; margin-top: 16px;
+  text-transform: uppercase; letter-spacing: 0.5px;
+}
+.register-form label:first-child { margin-top: 0; }
+.register-form input, .register-form select {
+  width: 100%; height: 44px;
+  background: var(--surface2); border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 0 14px; font: 400 14px var(--font);
+  color: var(--text); outline: none; transition: var(--transition);
+}
+.register-form select { cursor: pointer; }
+.register-form input:focus, .register-form select:focus { border-color: var(--accent); }
+.register-domain-hint {
+  margin-top: 8px; padding: 10px 14px;
+  background: rgba(52,168,83,0.08); border: 1px solid rgba(52,168,83,0.2);
+  border-radius: var(--radius-sm);
+  font-size: 12px; color: #34a853; display: none;
+}
+.btn-full { width: 100%; margin-top: 24px; }
+
+/* ─── DASHBOARD ─── */
+.dashboard {
+  max-width: 1100px; margin: 0 auto;
+  padding: 80px 24px 40px;
+}
+.dash-header {
+  display: flex; align-items: flex-start; justify-content: space-between;
+  margin-bottom: 28px; flex-wrap: wrap; gap: 16px;
+}
+.dash-brewery-name {
+  font-family: var(--font-serif);
+  font-size: 28px; font-weight: 600;
+  display: flex; align-items: center; gap: 8px;
+}
+.dash-brewery-en { font-size: 13px; color: var(--text3); margin-top: 2px; }
+.dash-verified {
+  display: inline-flex; align-items: center; gap: 6px;
+  margin-top: 6px; font-size: 12px; font-weight: 500;
+  padding: 3px 10px; border-radius: 20px;
+}
+.dash-verified.verified { background: rgba(52,168,83,0.1); color: #34a853; }
+.dash-verified.unverified { background: var(--bg3); color: var(--text3); }
+.dash-header-right { display: flex; gap: 8px; }
+.btn-sm { padding: 8px 16px; font-size: 12px; }
+
+/* Dashboard tabs */
+.dash-tabs {
+  display: flex; gap: 4px; margin-bottom: 24px;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 0;
+}
+.dash-tab {
+  background: none; border: none;
+  padding: 10px 20px; font: 500 13px var(--font);
+  color: var(--text3); cursor: pointer;
+  border-bottom: 2px solid transparent;
+  transition: var(--transition); margin-bottom: -1px;
+}
+.dash-tab:hover { color: var(--text); }
+.dash-tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+
+/* Dashboard panels */
+.dash-panel { display: none; }
+.dash-panel.active { display: block; }
+.panel-toolbar {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 20px; flex-wrap: wrap; gap: 12px;
+}
+.panel-toolbar-right { display: flex; align-items: center; gap: 8px; }
+.panel-title { font-size: 16px; font-weight: 600; }
+
+/* Dashboard product cards */
+.dash-products-grid {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 16px;
+}
+.dash-product-card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 20px;
+  transition: var(--transition); position: relative;
+}
+.dash-product-card:hover { border-color: var(--accent); box-shadow: var(--shadow); }
+.dash-product-actions {
+  position: absolute; top: 12px; right: 12px;
+  display: flex; gap: 4px;
+}
+.dash-product-actions button {
+  width: 32px; height: 32px; border-radius: 8px;
+  border: 1px solid var(--border); background: var(--surface);
+  color: var(--text3); cursor: pointer; font-size: 14px;
+  display: flex; align-items: center; justify-content: center;
+  transition: var(--transition);
+}
+.dash-product-actions button:hover { border-color: var(--accent); color: var(--accent); }
+.dpc-name { font-family: var(--font-serif); font-size: 16px; font-weight: 500; padding-right: 70px; }
+.dpc-name-en { font-size: 11px; color: var(--text3); margin: 2px 0 12px; }
+.dpc-badge {
+  display: inline-block; padding: 2px 10px;
+  border-radius: 12px; font-size: 11px; font-weight: 500;
+  margin-bottom: 12px;
+}
+.dpc-specs { display: grid; grid-template-columns: repeat(3,1fr); gap: 8px; }
+.dpc-spec-label { font-size: 9px; color: var(--text3); text-transform: uppercase; letter-spacing: 0.5px; }
+.dpc-spec-value { font-size: 13px; font-weight: 500; }
+
+/* Sheets grid */
+.sheets-grid {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 16px;
+}
+.sheet-card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 20px;
+  text-align: center; transition: var(--transition);
+}
+.sheet-card:hover { border-color: var(--accent); box-shadow: var(--shadow); }
+.sheet-card-name { font-family: var(--font-serif); font-size: 15px; font-weight: 500; margin-bottom: 4px; }
+.sheet-card-type { font-size: 11px; color: var(--text3); margin-bottom: 16px; }
+.sheet-card-actions { display: flex; gap: 8px; justify-content: center; }
+
+/* Commercial view */
+.commercial-preview {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 32px;
+}
+.commercial-hero { text-align: center; margin-bottom: 32px; }
+.commercial-hero h2 { font-family: var(--font-serif); font-size: 28px; margin-bottom: 4px; }
+.commercial-hero p { font-size: 13px; color: var(--text3); }
+.commercial-products { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 20px; }
+.commercial-product { text-align: center; padding: 20px; }
+.commercial-product-name { font-family: var(--font-serif); font-size: 15px; font-weight: 500; margin-bottom: 4px; }
+.commercial-product-type { font-size: 11px; color: var(--gold); margin-bottom: 8px; }
+.commercial-product-desc { font-size: 12px; color: var(--text3); font-style: italic; line-height: 1.5; }
+
+/* Exporters */
+.exporters-list { display: flex; flex-direction: column; gap: 12px; }
+.exporter-card {
+  display: flex; align-items: center; justify-content: space-between;
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius-sm); padding: 16px 20px;
+}
+.exporter-info { display: flex; flex-direction: column; gap: 2px; }
+.exporter-name { font-weight: 500; font-size: 14px; }
+.exporter-detail { font-size: 12px; color: var(--text3); }
+
+/* Modal large */
+.modal-lg { max-width: 640px; max-height: 85vh; overflow-y: auto; }
+.sake-form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.sake-form-grid .form-group { display: flex; flex-direction: column; }
+.sake-form-grid .form-group.full { grid-column: 1 / -1; }
+.sake-form-grid label { font-size: 11px; font-weight: 500; color: var(--text3); margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.5px; }
+.sake-form-grid input, .sake-form-grid select, .sake-form-grid textarea {
+  width: 100%; padding: 8px 12px; border: 1px solid var(--border);
+  border-radius: var(--radius-sm); font: 400 13px var(--font);
+  background: var(--surface2); color: var(--text); outline: none;
+}
+.sake-form-grid textarea { resize: vertical; }
+.sake-form-grid input:focus, .sake-form-grid select:focus, .sake-form-grid textarea:focus { border-color: var(--accent); }
+
+#sheet-lang-select {
+  padding: 6px 12px; border: 1px solid var(--border);
+  border-radius: var(--radius-sm); font: 400 12px var(--font);
+  background: var(--surface); cursor: pointer;
+}
 </style>
 </head>
 <body>
@@ -714,6 +924,7 @@ body {
       <button class="lang-btn" data-lang="ja" onclick="switchLang('ja')">JA</button>
     </div>
     <button class="settings-btn" onclick="openSettings()" id="settings-btn-top">⚙</button>
+    <button class="settings-btn" onclick="logoutUser()" id="logout-btn" style="display:none;font-size:12px" title="Logout">↪</button>
   </div>
 </div>
 
@@ -784,6 +995,232 @@ body {
 <!-- ─── SCREEN: RESULTS ─── -->
 <div class="screen" id="screen-results">
   <div class="results" id="results-container"></div>
+</div>
+
+<!-- ─── SCREEN: CONFIRM BREWERY ─── -->
+<div class="screen" id="screen-confirm">
+  <div class="confirm-container">
+    <div class="confirm-card">
+      <div class="confirm-icon">🏯</div>
+      <h2 class="confirm-title" id="confirm-title"></h2>
+      <div class="confirm-brewery-name" id="confirm-brewery-name"></div>
+      <div class="confirm-brewery-en" id="confirm-brewery-en"></div>
+      <div class="confirm-details" id="confirm-details"></div>
+      <div class="confirm-map" id="confirm-map"></div>
+      <p class="confirm-question" id="confirm-question"></p>
+      <div class="confirm-actions">
+        <button class="btn btn-secondary btn-lg" onclick="showScreen('search')" id="confirm-no-btn"></button>
+        <button class="btn btn-primary btn-lg" onclick="showClaimFlow()" id="confirm-yes-btn"></button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ─── SCREEN: REGISTER / CLAIM ─── -->
+<div class="screen" id="screen-register">
+  <div class="register-container">
+    <div class="register-card">
+      <div class="register-header">
+        <div class="register-icon">🔐</div>
+        <h2 id="register-title"></h2>
+        <p id="register-desc"></p>
+      </div>
+      <div class="register-brewery-badge" id="register-brewery-badge"></div>
+      <div class="register-form">
+        <label id="reg-name-label"></label>
+        <input type="text" id="reg-name" placeholder="">
+        <label id="reg-role-label"></label>
+        <select id="reg-role">
+          <option value="owner" id="reg-role-owner"></option>
+          <option value="manager" id="reg-role-manager"></option>
+          <option value="exporter" id="reg-role-exporter"></option>
+          <option value="staff" id="reg-role-staff"></option>
+        </select>
+        <label id="reg-email-label"></label>
+        <input type="email" id="reg-email" placeholder="">
+        <label id="reg-pass-label"></label>
+        <input type="password" id="reg-pass" placeholder="">
+        <div class="register-domain-hint" id="reg-domain-hint"></div>
+        <button class="btn btn-primary btn-lg btn-full" onclick="completeRegistration()" id="reg-submit-btn"></button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ─── SCREEN: DASHBOARD ─── -->
+<div class="screen" id="screen-dashboard">
+  <div class="dashboard">
+    <div class="dash-header" id="dash-header">
+      <div class="dash-header-left">
+        <div class="dash-brewery-name" id="dash-brewery-name"></div>
+        <div class="dash-brewery-en" id="dash-brewery-en"></div>
+        <div class="dash-verified" id="dash-verified"></div>
+      </div>
+      <div class="dash-header-right">
+        <button class="btn btn-secondary btn-sm" onclick="openDomainVerify()" id="dash-verify-btn"></button>
+        <button class="btn btn-secondary btn-sm" onclick="openInviteStaff()" id="dash-invite-btn"></button>
+      </div>
+    </div>
+
+    <!-- Tab navigation -->
+    <div class="dash-tabs" id="dash-tabs">
+      <button class="dash-tab active" data-tab="products" onclick="switchDashTab('products')"></button>
+      <button class="dash-tab" data-tab="sheets" onclick="switchDashTab('sheets')"></button>
+      <button class="dash-tab" data-tab="commercial" onclick="switchDashTab('commercial')"></button>
+      <button class="dash-tab" data-tab="exporters" onclick="switchDashTab('exporters')"></button>
+    </div>
+
+    <!-- Tab: Products -->
+    <div class="dash-panel active" id="panel-products">
+      <div class="panel-toolbar">
+        <div class="panel-title" id="panel-products-title"></div>
+        <button class="btn btn-primary btn-sm" onclick="openAddSake()" id="dash-add-btn">+ </button>
+      </div>
+      <div class="dash-products-grid" id="dash-products-grid"></div>
+    </div>
+
+    <!-- Tab: Technical Sheets -->
+    <div class="dash-panel" id="panel-sheets">
+      <div class="panel-toolbar">
+        <div class="panel-title" id="panel-sheets-title"></div>
+        <div class="panel-toolbar-right">
+          <select id="sheet-lang-select" onchange="updateSheetPreview()">
+            <option value="it">Italiano</option>
+            <option value="en">English</option>
+            <option value="ja">日本語</option>
+          </select>
+          <button class="btn btn-primary btn-sm" onclick="printAllSheets()" id="dash-print-all-btn"></button>
+        </div>
+      </div>
+      <div class="sheets-grid" id="dash-sheets-grid"></div>
+    </div>
+
+    <!-- Tab: Commercial View -->
+    <div class="dash-panel" id="panel-commercial">
+      <div class="panel-toolbar">
+        <div class="panel-title" id="panel-commercial-title"></div>
+      </div>
+      <div class="commercial-preview" id="dash-commercial-preview"></div>
+    </div>
+
+    <!-- Tab: Exporters -->
+    <div class="dash-panel" id="panel-exporters">
+      <div class="panel-toolbar">
+        <div class="panel-title" id="panel-exporters-title"></div>
+        <button class="btn btn-primary btn-sm" onclick="openAddExporter()" id="dash-add-exporter-btn">+ </button>
+      </div>
+      <div class="exporters-list" id="dash-exporters-list"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ─── MODAL: ADD/EDIT SAKE ─── -->
+<div class="modal-overlay" id="sake-modal">
+  <div class="modal modal-lg">
+    <h2 id="sake-modal-title"></h2>
+    <div class="sake-form" id="sake-form">
+      <div class="sake-form-grid">
+        <div class="form-group full">
+          <label>Name (JP)</label>
+          <input type="text" id="sf-name-jp" placeholder="純米大吟醸 ...">
+        </div>
+        <div class="form-group full">
+          <label>Name (EN)</label>
+          <input type="text" id="sf-name-en" placeholder="Junmai Daiginjo ...">
+        </div>
+        <div class="form-group">
+          <label>Type</label>
+          <select id="sf-type">
+            <option value="Junmai Daiginjo">Junmai Daiginjo</option>
+            <option value="Junmai Ginjo">Junmai Ginjo</option>
+            <option value="Daiginjo">Daiginjo</option>
+            <option value="Ginjo">Ginjo</option>
+            <option value="Tokubetsu Junmai">Tokubetsu Junmai</option>
+            <option value="Junmai">Junmai</option>
+            <option value="Honjozo">Honjozo</option>
+            <option value="Futsu-shu">Futsu-shu</option>
+            <option value="Nigori">Nigori</option>
+            <option value="Sparkling">Sparkling</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Type Detail (JP)</label>
+          <input type="text" id="sf-type-detail" placeholder="純米大吟醸">
+        </div>
+        <div class="form-group">
+          <label>Rice</label>
+          <input type="text" id="sf-rice" placeholder="山田錦 100%">
+        </div>
+        <div class="form-group">
+          <label>Polishing Rate</label>
+          <input type="text" id="sf-polish" placeholder="50%">
+        </div>
+        <div class="form-group">
+          <label>Alcohol %</label>
+          <input type="text" id="sf-alcohol" placeholder="15%">
+        </div>
+        <div class="form-group">
+          <label>SMV</label>
+          <input type="text" id="sf-smv" placeholder="+3">
+        </div>
+        <div class="form-group">
+          <label>Acidity</label>
+          <input type="text" id="sf-acidity" placeholder="1.4">
+        </div>
+        <div class="form-group">
+          <label>Yeast</label>
+          <input type="text" id="sf-yeast" placeholder="協会9号">
+        </div>
+        <div class="form-group full">
+          <label>Volumes (size:price, comma separated)</label>
+          <input type="text" id="sf-volumes" placeholder="720ml:¥3,300, 1800ml:¥6,600">
+        </div>
+        <div class="form-group full">
+          <label>Tasting Notes</label>
+          <textarea id="sf-notes" rows="3" placeholder="..."></textarea>
+        </div>
+        <div class="form-group full">
+          <label>Awards</label>
+          <input type="text" id="sf-awards" placeholder="IWC Gold 2023">
+        </div>
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-secondary" onclick="closeSakeModal()">Cancel</button>
+      <button class="btn btn-primary" onclick="saveSake()" id="sake-save-btn">Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- ─── MODAL: DOMAIN VERIFICATION ─── -->
+<div class="modal-overlay" id="domain-modal">
+  <div class="modal">
+    <h2 id="domain-modal-title">Domain Verification</h2>
+    <div class="domain-verify-flow" id="domain-verify-flow"></div>
+    <div class="modal-actions">
+      <button class="btn btn-secondary" onclick="closeDomainModal()">Close</button>
+    </div>
+  </div>
+</div>
+
+<!-- ─── MODAL: INVITE STAFF ─── -->
+<div class="modal-overlay" id="invite-modal">
+  <div class="modal">
+    <h2 id="invite-modal-title">Invite Staff</h2>
+    <div class="invite-flow" id="invite-flow">
+      <label>Email</label>
+      <input type="email" id="invite-email" placeholder="colleague@brewery.com">
+      <label>Role</label>
+      <select id="invite-role">
+        <option value="staff">Staff</option>
+        <option value="manager">Manager</option>
+      </select>
+      <button class="btn btn-primary btn-full" style="margin-top:16px" onclick="sendInvite()">Send Invite</button>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-secondary" onclick="closeInviteModal()">Close</button>
+    </div>
+  </div>
 </div>
 
 <!-- ─── SETTINGS MODAL ─── -->
@@ -898,6 +1335,51 @@ const I18N = {
     gmaps_rating: 'Valutazione Google',
     gmaps_view_map: 'Vedi su Google Maps',
     gmaps_verified_badge: 'Verificato Google Maps',
+    // Confirm
+    confirm_title: 'Abbiamo trovato questa sakagura',
+    confirm_question: 'È la tua sakagura?',
+    confirm_no: 'No, cerca di nuovo',
+    confirm_yes: 'Sì, è la mia!',
+    // Register
+    register_title: 'Registrati come referente',
+    register_desc: 'Crea il tuo account per gestire la sakagura e le schede tecniche.',
+    reg_name: 'Nome e cognome',
+    reg_role: 'Ruolo',
+    reg_role_owner: 'Proprietario / Kuramoto',
+    reg_role_manager: 'Manager',
+    reg_role_exporter: 'Esportatore / Importatore',
+    reg_role_staff: 'Staff',
+    reg_email: 'Email aziendale',
+    reg_pass: 'Password',
+    reg_domain_match: 'Il dominio email corrisponde alla sakagura — otterrai la spunta verificata!',
+    reg_submit: 'Crea Account e Accedi',
+    // Dashboard
+    dash_tab_products: 'Prodotti',
+    dash_tab_sheets: 'Schede Tecniche',
+    dash_tab_commercial: 'Vista Commerciale',
+    dash_tab_exporters: 'Esportatori',
+    dash_add: 'Aggiungi Sake',
+    dash_edit: 'Modifica',
+    dash_delete: 'Elimina',
+    dash_verify: 'Verifica Dominio',
+    dash_invite: 'Invita Staff',
+    dash_verified_owner: '✓ Owner Verificato',
+    dash_unverified: 'Non verificato — verifica il dominio',
+    dash_print_all: 'Stampa Tutte',
+    dash_print_sheet: 'Scheda Tecnica',
+    dash_print_commercial: 'Scheda Commerciale',
+    dash_no_exporters: 'Nessun esportatore collegato. Aggiungi il tuo primo esportatore.',
+    dash_add_exporter: 'Aggiungi Esportatore',
+    commercial_tagline: 'Tradizione e Innovazione',
+    sake_modal_add: 'Aggiungi Nuovo Sake',
+    sake_modal_edit: 'Modifica Sake',
+    domain_title: 'Verifica Dominio',
+    domain_desc: 'Per ottenere il badge "Owner Verificato", invia una email di conferma dal dominio della tua sakagura.',
+    domain_step1: 'Il dominio del tuo sito è:',
+    domain_step2: 'Invia una email a verify@sakeplatform.com da un indirizzo @',
+    domain_step3: 'Riceverai la spunta verde entro 24 ore.',
+    domain_alt: 'Metodo alternativo: inserisci il codice TXT nel DNS del tuo dominio.',
+    invite_title: 'Invita Staff',
   },
   en: {
     nav_discover: 'Discover',
@@ -983,6 +1465,48 @@ const I18N = {
     gmaps_rating: 'Google Rating',
     gmaps_view_map: 'View on Google Maps',
     gmaps_verified_badge: 'Google Maps Verified',
+    confirm_title: 'We found this brewery',
+    confirm_question: 'Is this your brewery?',
+    confirm_no: 'No, search again',
+    confirm_yes: 'Yes, it\'s mine!',
+    register_title: 'Register as representative',
+    register_desc: 'Create your account to manage the brewery and technical sheets.',
+    reg_name: 'Full name',
+    reg_role: 'Role',
+    reg_role_owner: 'Owner / Kuramoto',
+    reg_role_manager: 'Manager',
+    reg_role_exporter: 'Exporter / Importer',
+    reg_role_staff: 'Staff',
+    reg_email: 'Business email',
+    reg_pass: 'Password',
+    reg_domain_match: 'Your email domain matches the brewery — you\'ll get the verified badge!',
+    reg_submit: 'Create Account & Enter',
+    dash_tab_products: 'Products',
+    dash_tab_sheets: 'Technical Sheets',
+    dash_tab_commercial: 'Commercial View',
+    dash_tab_exporters: 'Exporters',
+    dash_add: 'Add Sake',
+    dash_edit: 'Edit',
+    dash_delete: 'Delete',
+    dash_verify: 'Verify Domain',
+    dash_invite: 'Invite Staff',
+    dash_verified_owner: '✓ Verified Owner',
+    dash_unverified: 'Unverified — verify your domain',
+    dash_print_all: 'Print All',
+    dash_print_sheet: 'Technical Sheet',
+    dash_print_commercial: 'Commercial Sheet',
+    dash_no_exporters: 'No exporters connected. Add your first exporter.',
+    dash_add_exporter: 'Add Exporter',
+    commercial_tagline: 'Tradition & Innovation',
+    sake_modal_add: 'Add New Sake',
+    sake_modal_edit: 'Edit Sake',
+    domain_title: 'Domain Verification',
+    domain_desc: 'To get the "Verified Owner" badge, send a confirmation email from your brewery\'s domain.',
+    domain_step1: 'Your website domain is:',
+    domain_step2: 'Send an email to verify@sakeplatform.com from an @',
+    domain_step3: 'You\'ll receive the green badge within 24 hours.',
+    domain_alt: 'Alternative: add a TXT record to your domain\'s DNS.',
+    invite_title: 'Invite Staff',
   },
   ja: {
     nav_discover: '検索',
@@ -1068,6 +1592,48 @@ const I18N = {
     gmaps_rating: 'Google評価',
     gmaps_view_map: 'Googleマップで見る',
     gmaps_verified_badge: 'Googleマップ確認済み',
+    confirm_title: 'この酒蔵を見つけました',
+    confirm_question: 'あなたの酒蔵ですか？',
+    confirm_no: 'いいえ、再検索',
+    confirm_yes: 'はい、私の酒蔵です！',
+    register_title: '担当者として登録',
+    register_desc: '酒蔵と技術シートを管理するアカウントを作成してください。',
+    reg_name: '氏名',
+    reg_role: '役割',
+    reg_role_owner: 'オーナー / 蔵元',
+    reg_role_manager: 'マネージャー',
+    reg_role_exporter: '輸出業者 / 輸入業者',
+    reg_role_staff: 'スタッフ',
+    reg_email: 'ビジネスメール',
+    reg_pass: 'パスワード',
+    reg_domain_match: 'メールドメインが酒蔵と一致 — 認証バッジが取得できます！',
+    reg_submit: 'アカウント作成してログイン',
+    dash_tab_products: '商品',
+    dash_tab_sheets: '技術シート',
+    dash_tab_commercial: '商用ビュー',
+    dash_tab_exporters: '輸出業者',
+    dash_add: '日本酒を追加',
+    dash_edit: '編集',
+    dash_delete: '削除',
+    dash_verify: 'ドメイン認証',
+    dash_invite: 'スタッフ招待',
+    dash_verified_owner: '✓ 認証済みオーナー',
+    dash_unverified: '未認証 — ドメインを認証してください',
+    dash_print_all: '全て印刷',
+    dash_print_sheet: '技術シート',
+    dash_print_commercial: '商用シート',
+    dash_no_exporters: '輸出業者が接続されていません。最初の輸出業者を追加してください。',
+    dash_add_exporter: '輸出業者を追加',
+    commercial_tagline: '伝統と革新',
+    sake_modal_add: '新しい日本酒を追加',
+    sake_modal_edit: '日本酒を編集',
+    domain_title: 'ドメイン認証',
+    domain_desc: '「認証済みオーナー」バッジを取得するには、酒蔵のドメインから確認メールを送信してください。',
+    domain_step1: 'ウェブサイトのドメイン:',
+    domain_step2: 'verify@sakeplatform.com にメールを送信（@',
+    domain_step3: '24時間以内に緑のバッジが付与されます。',
+    domain_alt: '代替方法：ドメインのDNSにTXTレコードを追加。',
+    invite_title: 'スタッフ招待',
   }
 };
 
@@ -1143,7 +1709,7 @@ function showScreen(name) {
   const el = document.getElementById('screen-' + name);
   if (el) el.classList.add('active');
   // Highlight nav
-  const navScreenMap = { search: 0, results: 0, 'products-list': 1, sheets: 2 };
+  const navScreenMap = { search: 0, results: 0, confirm: 0, register: 0, discovery: 0, dashboard: -1, 'products-list': 1, sheets: 2 };
   const idx = navScreenMap[name] ?? -1;
   document.querySelectorAll('.topbar-nav button').forEach((b, i) => {
     b.classList.toggle('active', i === idx);
@@ -1343,8 +1909,7 @@ async function simulateDiscovery(name) {
   await delay(500);
 
   state.currentBrewery = brewery;
-  renderResults(brewery);
-  showScreen('results');
+  showConfirmScreen(brewery);
 }
 
 function showDemoNotFound(name) {
@@ -1434,8 +1999,7 @@ Return ONLY valid JSON:
     await delay(500);
 
     state.currentBrewery = brewery;
-    renderResults(brewery);
-    showScreen('results');
+    showConfirmScreen(brewery);
 
   } catch (err) {
     stopTimer();
@@ -1850,10 +2414,519 @@ function getBadgeClass(cat) {
 }
 
 // ─────────────────────────────────────────
+//  CONFIRM FLOW
+// ─────────────────────────────────────────
+function showConfirmScreen(data) {
+  const c = data.company;
+  const gp = state.googlePlace;
+  document.getElementById('confirm-title').textContent = t('confirm_title');
+  document.getElementById('confirm-brewery-name').textContent = c.name_jp;
+  document.getElementById('confirm-brewery-en').textContent = c.name_en || '';
+  document.getElementById('confirm-question').textContent = t('confirm_question');
+  document.getElementById('confirm-no-btn').textContent = t('confirm_no');
+  document.getElementById('confirm-yes-btn').textContent = t('confirm_yes');
+
+  // Details
+  let details = '';
+  if (c.prefecture) details += `📍 ${c.prefecture}\n`;
+  if (c.address) details += `🏠 ${c.address}\n`;
+  if (c.phone) details += `📞 ${c.phone}\n`;
+  if (c.website) details += `🌐 ${c.website}\n`;
+  if (c.founded) details += `📅 ${c.founded}\n`;
+  if (data.products) details += `🍶 ${data.products.length} ${t('found')}`;
+  document.getElementById('confirm-details').innerText = details;
+
+  // Map
+  const mapEl = document.getElementById('confirm-map');
+  if (gp && gp.lat && gp.lng) {
+    mapEl.innerHTML = `<iframe src="https://www.openstreetmap.org/export/embed.html?bbox=${gp.lng-0.008},${gp.lat-0.005},${gp.lng+0.008},${gp.lat+0.005}&layer=mapnik&marker=${gp.lat},${gp.lng}" width="100%" height="200" style="border:0;border-radius:12px" loading="lazy"></iframe>`;
+  } else {
+    mapEl.innerHTML = '';
+  }
+
+  state.currentBrewery = data;
+  showScreen('confirm');
+}
+
+// ─────────────────────────────────────────
+//  CLAIM / REGISTER FLOW
+// ─────────────────────────────────────────
+function showClaimFlow() {
+  const c = state.currentBrewery.company;
+  document.getElementById('register-title').textContent = t('register_title');
+  document.getElementById('register-desc').textContent = t('register_desc');
+  document.getElementById('register-brewery-badge').textContent = '🏯 ' + c.name_jp;
+  document.getElementById('reg-name-label').textContent = t('reg_name');
+  document.getElementById('reg-role-label').textContent = t('reg_role');
+  document.getElementById('reg-role-owner').textContent = t('reg_role_owner');
+  document.getElementById('reg-role-manager').textContent = t('reg_role_manager');
+  document.getElementById('reg-role-exporter').textContent = t('reg_role_exporter');
+  document.getElementById('reg-role-staff').textContent = t('reg_role_staff');
+  document.getElementById('reg-email-label').textContent = t('reg_email');
+  document.getElementById('reg-pass-label').textContent = t('reg_pass');
+  document.getElementById('reg-submit-btn').textContent = t('reg_submit');
+  document.getElementById('reg-name').placeholder = 'Tanaka Taro';
+  document.getElementById('reg-email').placeholder = 'you@' + (c.website || 'brewery.co.jp');
+  document.getElementById('reg-pass').placeholder = '••••••••';
+
+  // Domain match hint
+  const emailInput = document.getElementById('reg-email');
+  const hintEl = document.getElementById('reg-domain-hint');
+  hintEl.textContent = t('reg_domain_match');
+  emailInput.oninput = () => {
+    const email = emailInput.value;
+    const domain = email.split('@')[1] || '';
+    const breweryDomain = (c.website || '').replace(/^https?:\/\//, '').replace(/^www\./, '').split('/')[0];
+    if (domain && breweryDomain && domain.toLowerCase() === breweryDomain.toLowerCase()) {
+      hintEl.style.display = 'block';
+    } else {
+      hintEl.style.display = 'none';
+    }
+  };
+  hintEl.style.display = 'none';
+  showScreen('register');
+}
+
+function completeRegistration() {
+  const name = document.getElementById('reg-name').value.trim();
+  const email = document.getElementById('reg-email').value.trim();
+  const pass = document.getElementById('reg-pass').value.trim();
+  const role = document.getElementById('reg-role').value;
+  if (!name || !email || !pass) {
+    alert(state.lang === 'ja' ? '全項目を入力してください' : state.lang === 'en' ? 'Please fill all fields' : 'Compila tutti i campi');
+    return;
+  }
+
+  // Check domain match for verified status
+  const c = state.currentBrewery.company;
+  const domain = email.split('@')[1] || '';
+  const breweryDomain = (c.website || '').replace(/^https?:\/\//, '').replace(/^www\./, '').split('/')[0];
+  const domainMatch = domain && breweryDomain && domain.toLowerCase() === breweryDomain.toLowerCase();
+
+  // Save user session
+  state.user = { name, email, role, domainMatch };
+  state.email = email;
+  localStorage.setItem('sp_email', email);
+  localStorage.setItem('sp_user', JSON.stringify(state.user));
+  localStorage.setItem('sp_brewery_data', JSON.stringify(state.currentBrewery));
+
+  // Enter dashboard
+  enterDashboard();
+}
+
+// ─────────────────────────────────────────
+//  DASHBOARD
+// ─────────────────────────────────────────
+let editingSakeIndex = -1;
+
+function enterDashboard() {
+  const c = state.currentBrewery.company;
+  const user = state.user || {};
+  document.getElementById('logout-btn').style.display = 'flex';
+
+  // Header
+  document.getElementById('dash-brewery-name').innerHTML = esc(c.name_jp) + (user.domainMatch ? ' <span class="verified-check" title="Verified">✓</span>' : '');
+  document.getElementById('dash-brewery-en').textContent = c.name_en || '';
+  const verEl = document.getElementById('dash-verified');
+  if (user.domainMatch) {
+    verEl.className = 'dash-verified verified';
+    verEl.textContent = t('dash_verified_owner');
+  } else {
+    verEl.className = 'dash-verified unverified';
+    verEl.textContent = t('dash_unverified');
+  }
+  document.getElementById('dash-verify-btn').textContent = t('dash_verify');
+  document.getElementById('dash-invite-btn').textContent = t('dash_invite');
+
+  // Tabs
+  const tabKeys = ['products', 'sheets', 'commercial', 'exporters'];
+  document.querySelectorAll('.dash-tab').forEach((tab, i) => {
+    tab.textContent = t('dash_tab_' + tabKeys[i]);
+  });
+  document.getElementById('dash-add-btn').textContent = '+ ' + t('dash_add');
+  document.getElementById('panel-products-title').textContent = t('dash_tab_products');
+  document.getElementById('panel-sheets-title').textContent = t('dash_tab_sheets');
+  document.getElementById('panel-commercial-title').textContent = t('dash_tab_commercial');
+  document.getElementById('panel-exporters-title').textContent = t('dash_tab_exporters');
+  document.getElementById('dash-print-all-btn').textContent = t('dash_print_all');
+  document.getElementById('dash-add-exporter-btn').textContent = '+ ' + t('dash_add_exporter');
+
+  renderDashProducts();
+  renderDashSheets();
+  renderCommercialView();
+  renderExporters();
+  switchDashTab('products');
+  showScreen('dashboard');
+}
+
+function switchDashTab(tab) {
+  document.querySelectorAll('.dash-tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.dash-panel').forEach(p => p.classList.remove('active'));
+  document.querySelector(`.dash-tab[data-tab="${tab}"]`).classList.add('active');
+  document.getElementById('panel-' + tab).classList.add('active');
+}
+
+function renderDashProducts() {
+  const products = state.currentBrewery.products || [];
+  const grid = document.getElementById('dash-products-grid');
+  grid.innerHTML = '';
+  products.forEach((p, i) => {
+    const cat = getTypeCategory(p.type);
+    const badge = getBadgeClass(cat);
+    const card = document.createElement('div');
+    card.className = 'dash-product-card';
+    card.innerHTML = `
+      <div class="dash-product-actions">
+        <button onclick="event.stopPropagation();openEditSake(${i})" title="${esc(t('dash_edit'))}">✎</button>
+        <button onclick="event.stopPropagation();deleteSake(${i})" title="${esc(t('dash_delete'))}">✕</button>
+      </div>
+      <div class="dpc-badge ${badge}">${esc(p.type_detail || p.type)}</div>
+      <div class="dpc-name">${esc(p.name_jp)}</div>
+      <div class="dpc-name-en">${esc(p.name_en || '')}</div>
+      <div class="dpc-specs">
+        <div><div class="dpc-spec-label">${esc(t('spec_polishing'))}</div><div class="dpc-spec-value">${esc(p.polishing_rate || '—')}</div></div>
+        <div><div class="dpc-spec-label">${esc(t('spec_alc'))}</div><div class="dpc-spec-value">${esc(p.alcohol || '—')}</div></div>
+        <div><div class="dpc-spec-label">${esc(t('spec_smv'))}</div><div class="dpc-spec-value">${esc(p.smv || '—')}</div></div>
+      </div>
+    `;
+    grid.appendChild(card);
+  });
+}
+
+// ─────────────────────────────────────────
+//  ADD / EDIT SAKE
+// ─────────────────────────────────────────
+function openAddSake() {
+  editingSakeIndex = -1;
+  document.getElementById('sake-modal-title').textContent = t('sake_modal_add');
+  clearSakeForm();
+  document.getElementById('sake-modal').classList.add('active');
+}
+
+function openEditSake(index) {
+  editingSakeIndex = index;
+  const p = state.currentBrewery.products[index];
+  document.getElementById('sake-modal-title').textContent = t('sake_modal_edit');
+  document.getElementById('sf-name-jp').value = p.name_jp || '';
+  document.getElementById('sf-name-en').value = p.name_en || '';
+  document.getElementById('sf-type').value = p.type || 'Junmai';
+  document.getElementById('sf-type-detail').value = p.type_detail || '';
+  document.getElementById('sf-rice').value = p.rice || '';
+  document.getElementById('sf-polish').value = p.polishing_rate || '';
+  document.getElementById('sf-alcohol').value = p.alcohol || '';
+  document.getElementById('sf-smv').value = p.smv || '';
+  document.getElementById('sf-acidity').value = p.acidity || '';
+  document.getElementById('sf-yeast').value = p.yeast || '';
+  document.getElementById('sf-volumes').value = (p.volumes || []).map(v => v.size + ':' + v.price).join(', ');
+  document.getElementById('sf-notes').value = p.tasting_notes || '';
+  document.getElementById('sf-awards').value = p.awards || '';
+  document.getElementById('sake-modal').classList.add('active');
+}
+
+function clearSakeForm() {
+  ['sf-name-jp','sf-name-en','sf-type-detail','sf-rice','sf-polish','sf-alcohol','sf-smv','sf-acidity','sf-yeast','sf-volumes','sf-notes','sf-awards'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el.tagName === 'SELECT') el.selectedIndex = 0;
+    else el.value = '';
+  });
+}
+
+function closeSakeModal() {
+  document.getElementById('sake-modal').classList.remove('active');
+}
+
+function saveSake() {
+  const product = {
+    name_jp: document.getElementById('sf-name-jp').value.trim(),
+    name_en: document.getElementById('sf-name-en').value.trim(),
+    type: document.getElementById('sf-type').value,
+    type_detail: document.getElementById('sf-type-detail').value.trim(),
+    rice: document.getElementById('sf-rice').value.trim(),
+    polishing_rate: document.getElementById('sf-polish').value.trim(),
+    alcohol: document.getElementById('sf-alcohol').value.trim(),
+    smv: document.getElementById('sf-smv').value.trim(),
+    acidity: document.getElementById('sf-acidity').value.trim(),
+    yeast: document.getElementById('sf-yeast').value.trim(),
+    volumes: document.getElementById('sf-volumes').value.split(',').map(v => {
+      const parts = v.trim().split(':');
+      return { size: parts[0]?.trim() || '', price: parts[1]?.trim() || '' };
+    }).filter(v => v.size),
+    tasting_notes: document.getElementById('sf-notes').value.trim(),
+    awards: document.getElementById('sf-awards').value.trim()
+  };
+  if (!product.name_jp) return;
+
+  if (editingSakeIndex >= 0) {
+    state.currentBrewery.products[editingSakeIndex] = product;
+  } else {
+    state.currentBrewery.products.push(product);
+  }
+  localStorage.setItem('sp_brewery_data', JSON.stringify(state.currentBrewery));
+  closeSakeModal();
+  renderDashProducts();
+  renderDashSheets();
+  renderCommercialView();
+}
+
+function deleteSake(index) {
+  const name = state.currentBrewery.products[index]?.name_jp || '';
+  if (!confirm(`${t('dash_delete')}: ${name}?`)) return;
+  state.currentBrewery.products.splice(index, 1);
+  localStorage.setItem('sp_brewery_data', JSON.stringify(state.currentBrewery));
+  renderDashProducts();
+  renderDashSheets();
+  renderCommercialView();
+}
+
+// ─────────────────────────────────────────
+//  TECHNICAL SHEETS
+// ─────────────────────────────────────────
+function renderDashSheets() {
+  const products = state.currentBrewery.products || [];
+  const grid = document.getElementById('dash-sheets-grid');
+  grid.innerHTML = '';
+  products.forEach((p, i) => {
+    const card = document.createElement('div');
+    card.className = 'sheet-card';
+    card.innerHTML = `
+      <div class="sheet-card-name">${esc(p.name_jp)}</div>
+      <div class="sheet-card-type">${esc(p.type_detail || p.type)}</div>
+      <div class="sheet-card-actions">
+        <button class="btn btn-primary btn-sm" onclick="generateSheet(${i},'technical')">${esc(t('dash_print_sheet'))}</button>
+        <button class="btn btn-secondary btn-sm" onclick="generateSheet(${i},'commercial')">${esc(t('dash_print_commercial'))}</button>
+      </div>
+    `;
+    grid.appendChild(card);
+  });
+}
+
+function generateSheet(index, type) {
+  const p = state.currentBrewery.products[index];
+  const c = state.currentBrewery.company;
+  const lang = document.getElementById('sheet-lang-select').value;
+
+  // Generate printable HTML sheet
+  const w = window.open('', '_blank');
+  if (!w) { alert('Please allow popups'); return; }
+
+  const isCommercial = type === 'commercial';
+  const title = isCommercial ? (p.name_en || p.name_jp) : p.name_jp;
+  const specs = isCommercial ? '' : `
+    <table class="specs-table">
+      <tr><td>Rice</td><td>${esc(p.rice || '—')}</td><td>Polishing</td><td>${esc(p.polishing_rate || '—')}</td></tr>
+      <tr><td>Alcohol</td><td>${esc(p.alcohol || '—')}</td><td>SMV</td><td>${esc(p.smv || '—')}</td></tr>
+      <tr><td>Acidity</td><td>${esc(p.acidity || '—')}</td><td>Yeast</td><td>${esc(p.yeast || '—')}</td></tr>
+    </table>
+    <p class="volumes">${(p.volumes||[]).map(v=>`${v.size} ${v.price}`).join(' · ')}</p>`;
+
+  w.document.write(`<!DOCTYPE html><html><head><meta charset="UTF-8">
+    <title>${esc(title)} — Technical Sheet</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;600&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+      @page { size: A4; margin: 0; }
+      * { margin:0; padding:0; box-sizing:border-box; }
+      body { font-family:'Inter',sans-serif; color:#1a2a44; width:210mm; min-height:297mm; margin:0 auto; position:relative; }
+      .header { background:#1a2a44; color:#fff; padding:24px 32px; display:flex; justify-content:space-between; align-items:center; }
+      .header h1 { font-family:'Noto Serif JP',serif; font-size:18px; }
+      .header .sub { color:#c8a45e; font-size:11px; }
+      .body { padding:32px; }
+      .product-title { font-family:'Noto Serif JP',serif; font-size:${isCommercial?'28px':'24px'}; margin-bottom:4px; ${isCommercial?'text-align:center;':''} }
+      .product-en { font-size:13px; color:#666; margin-bottom:${isCommercial?'20px':'16px'}; ${isCommercial?'text-align:center;':''} }
+      .type-badge { display:inline-block; background:rgba(58,110,165,0.1); color:#3a6ea5; padding:4px 12px; border-radius:12px; font-size:12px; font-weight:500; margin-bottom:20px; ${isCommercial?'text-align:center;display:block;width:fit-content;margin:0 auto 20px;':''} }
+      .specs-table { width:100%; border-collapse:collapse; margin:20px 0; }
+      .specs-table td { padding:10px 16px; border:1px solid #e0d9cc; font-size:13px; }
+      .specs-table td:nth-child(odd) { background:#f5f0e8; font-weight:500; width:25%; }
+      .volumes { font-size:12px; color:#666; margin:12px 0; }
+      .notes { margin:20px 0; padding:16px; background:#faf7f2; border-radius:8px; font-size:13px; line-height:1.7; ${isCommercial?'font-style:italic;text-align:center;font-size:15px;':''} }
+      .awards { color:#c8a45e; font-size:13px; margin:12px 0; }
+      .footer { position:absolute; bottom:0; left:0; right:0; background:#1a2a44; color:rgba(255,255,255,0.6); padding:16px 32px; font-size:10px; display:flex; justify-content:space-between; }
+      ${isCommercial ? '.commercial-desc { text-align:center; font-size:14px; color:#666; line-height:1.8; margin:20px 40px; } .commercial-highlight { font-family:"Noto Serif JP",serif; font-size:20px; color:#c8a45e; text-align:center; margin:32px 0; }' : ''}
+      @media print { body { width:210mm; height:297mm; } }
+    </style></head><body>
+    <div class="header">
+      <div><h1>${esc(c.name_jp)}</h1><div class="sub">${esc(c.name_en || '')}</div></div>
+      <div style="text-align:right"><div class="sub">${esc(c.prefecture || '')}</div><div class="sub">${esc(c.website || '')}</div></div>
+    </div>
+    <div class="body">
+      <div class="type-badge">${esc(p.type_detail || p.type)}</div>
+      <div class="product-title">${esc(p.name_jp)}</div>
+      <div class="product-en">${esc(p.name_en || '')}</div>
+      ${isCommercial && p.tasting_notes ? `<div class="commercial-highlight">"</div><div class="commercial-desc">${esc(p.tasting_notes)}</div>` : ''}
+      ${specs}
+      ${!isCommercial && p.tasting_notes ? `<div class="notes">${esc(p.tasting_notes)}</div>` : ''}
+      ${p.awards ? `<div class="awards">★ ${esc(p.awards)}</div>` : ''}
+    </div>
+    <div class="footer">
+      <div>${esc(c.name_jp)} — ${esc(c.address || '')}</div>
+      <div>sakeplatform.com</div>
+    </div>
+  </body></html>`);
+  w.document.close();
+  setTimeout(() => w.print(), 500);
+}
+
+function printAllSheets() {
+  const products = state.currentBrewery.products || [];
+  products.forEach((_, i) => generateSheet(i, 'technical'));
+}
+
+// ─────────────────────────────────────────
+//  COMMERCIAL VIEW
+// ─────────────────────────────────────────
+function renderCommercialView() {
+  const c = state.currentBrewery.company;
+  const products = state.currentBrewery.products || [];
+  const el = document.getElementById('dash-commercial-preview');
+  el.innerHTML = `
+    <div class="commercial-hero">
+      <h2>${esc(c.name_jp)}</h2>
+      <p>${esc(c.name_en || '')} — ${esc(t('commercial_tagline'))}</p>
+      ${c.philosophy ? `<p style="margin-top:12px;font-style:italic;color:var(--text3);font-size:13px">${esc(c.philosophy)}</p>` : ''}
+    </div>
+    <div class="commercial-products">
+      ${products.map(p => `
+        <div class="commercial-product">
+          <div class="commercial-product-type">${esc(p.type_detail || p.type)}</div>
+          <div class="commercial-product-name">${esc(p.name_jp)}</div>
+          ${p.tasting_notes ? `<div class="commercial-product-desc">${esc(p.tasting_notes)}</div>` : ''}
+        </div>
+      `).join('')}
+    </div>
+  `;
+}
+
+// ─────────────────────────────────────────
+//  EXPORTERS
+// ─────────────────────────────────────────
+function renderExporters() {
+  const exporters = state.currentBrewery.exporters || [];
+  const el = document.getElementById('dash-exporters-list');
+  if (exporters.length === 0) {
+    el.innerHTML = `<div style="text-align:center;padding:40px;color:var(--text3)">${esc(t('dash_no_exporters'))}</div>`;
+    return;
+  }
+  el.innerHTML = exporters.map((exp, i) => `
+    <div class="exporter-card">
+      <div class="exporter-info">
+        <div class="exporter-name">${esc(exp.name)}</div>
+        <div class="exporter-detail">${esc(exp.country || '')} · ${esc(exp.email || '')}</div>
+      </div>
+      <button class="btn btn-secondary btn-sm" onclick="removeExporter(${i})">✕</button>
+    </div>
+  `).join('');
+}
+
+function openAddExporter() {
+  const name = prompt(state.lang === 'it' ? 'Nome esportatore:' : state.lang === 'ja' ? '輸出業者名:' : 'Exporter name:');
+  if (!name) return;
+  const country = prompt(state.lang === 'it' ? 'Paese:' : state.lang === 'ja' ? '国:' : 'Country:') || '';
+  const email = prompt('Email:') || '';
+  if (!state.currentBrewery.exporters) state.currentBrewery.exporters = [];
+  state.currentBrewery.exporters.push({ name, country, email });
+  localStorage.setItem('sp_brewery_data', JSON.stringify(state.currentBrewery));
+  renderExporters();
+}
+
+function removeExporter(index) {
+  state.currentBrewery.exporters.splice(index, 1);
+  localStorage.setItem('sp_brewery_data', JSON.stringify(state.currentBrewery));
+  renderExporters();
+}
+
+// ─────────────────────────────────────────
+//  DOMAIN VERIFICATION
+// ─────────────────────────────────────────
+function openDomainVerify() {
+  const c = state.currentBrewery.company;
+  const domain = (c.website || '').replace(/^https?:\/\//, '').replace(/^www\./, '').split('/')[0];
+  document.getElementById('domain-modal-title').textContent = t('domain_title');
+  document.getElementById('domain-verify-flow').innerHTML = `
+    <p style="margin-bottom:16px;font-size:14px;color:var(--text2)">${esc(t('domain_desc'))}</p>
+    <div style="background:var(--surface2);padding:16px;border-radius:8px;margin-bottom:16px">
+      <div style="font-size:12px;color:var(--text3);margin-bottom:4px">${esc(t('domain_step1'))}</div>
+      <div style="font-size:18px;font-weight:600;color:var(--accent)">${esc(domain || '—')}</div>
+    </div>
+    <ol style="padding-left:20px;font-size:13px;color:var(--text2);line-height:2">
+      <li>${esc(t('domain_step2'))}${esc(domain)}</li>
+      <li>${esc(t('domain_step3'))}</li>
+    </ol>
+    <p style="margin-top:16px;font-size:11px;color:var(--text3)">${esc(t('domain_alt'))}</p>
+  `;
+  document.getElementById('domain-modal').classList.add('active');
+}
+
+function closeDomainModal() {
+  document.getElementById('domain-modal').classList.remove('active');
+}
+
+// ─────────────────────────────────────────
+//  INVITE STAFF
+// ─────────────────────────────────────────
+function openInviteStaff() {
+  document.getElementById('invite-modal-title').textContent = t('invite_title');
+  document.getElementById('invite-modal').classList.add('active');
+}
+
+function closeInviteModal() {
+  document.getElementById('invite-modal').classList.remove('active');
+}
+
+function sendInvite() {
+  const email = document.getElementById('invite-email').value.trim();
+  if (!email) return;
+  alert(state.lang === 'it' ? `Invito inviato a ${email}!` : state.lang === 'ja' ? `${email}に招待を送信しました！` : `Invitation sent to ${email}!`);
+  closeInviteModal();
+}
+
+// ─────────────────────────────────────────
+//  LOGOUT
+// ─────────────────────────────────────────
+function logoutUser() {
+  state.user = null;
+  state.currentBrewery = null;
+  localStorage.removeItem('sp_user');
+  localStorage.removeItem('sp_brewery_data');
+  document.getElementById('logout-btn').style.display = 'none';
+  showScreen('search');
+}
+
+// ─────────────────────────────────────────
+//  MODIFY RESULT FLOW — go to confirm instead of old results
+// ─────────────────────────────────────────
+// Override the screen-results display to route to confirm
+function showDiscoveryResults(data) {
+  state.currentBrewery = data;
+  showConfirmScreen(data);
+}
+
+// ─────────────────────────────────────────
+//  NAVIGATION UPDATE
+// ─────────────────────────────────────────
+function updateNavForDashboard() {
+  // Once logged in, highlight dashboard-related tabs
+}
+
+// ─────────────────────────────────────────
 //  INIT
 // ─────────────────────────────────────────
-applyLang();
-renderRecent();
+// Check if user has saved session
+(function initSession() {
+  const savedUser = localStorage.getItem('sp_user');
+  const savedBrewery = localStorage.getItem('sp_brewery_data');
+  if (savedUser && savedBrewery) {
+    try {
+      state.user = JSON.parse(savedUser);
+      state.currentBrewery = JSON.parse(savedBrewery);
+      // Auto-enter dashboard
+      applyLang();
+      renderRecent();
+      enterDashboard();
+      return;
+    } catch(e) {}
+  }
+  applyLang();
+  renderRecent();
+})();
 </script>
 </body>
 </html>
