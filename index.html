@@ -82,7 +82,30 @@ body {
   content: ''; position: absolute; bottom: -1px; left: 16px; right: 16px;
   height: 2px; background: var(--accent); border-radius: 2px;
 }
-.topbar-right { display: flex; align-items: center; gap: 12px; }
+.topbar-right { display: flex; align-items: center; gap: 8px; }
+
+/* Language switcher */
+.lang-switcher {
+  display: flex; gap: 2px;
+  background: var(--bg3);
+  border-radius: 8px;
+  padding: 2px;
+  border: 1px solid var(--border);
+}
+.lang-btn {
+  background: none; border: none;
+  color: var(--text3);
+  font: 500 11px var(--font);
+  padding: 4px 10px; border-radius: 6px;
+  cursor: pointer; transition: var(--transition);
+  letter-spacing: 0.5px;
+}
+.lang-btn:hover { color: var(--text2); }
+.lang-btn.active {
+  background: var(--accent);
+  color: #fff;
+}
+
 .topbar-right .settings-btn {
   width: 36px; height: 36px; border-radius: 50%;
   background: var(--bg3); border: 1px solid var(--border);
@@ -558,12 +581,13 @@ body {
   .product-specs { grid-template-columns: 1fr 1fr; }
 }
 @media (max-width: 480px) {
-  .topbar { padding: 0 16px; }
+  .topbar { padding: 0 12px; }
   .topbar-nav button { padding: 8px 10px; font-size: 12px; }
   .hero { padding: 40px 16px; }
   .search-box input { height: 54px; font-size: 15px; padding: 0 54px 0 18px; }
   .results { padding: 72px 16px 40px; }
   .results-brewery { font-size: 24px; }
+  .lang-btn { padding: 4px 7px; font-size: 10px; }
 }
 
 /* ─── UTILITY ─── */
@@ -588,28 +612,31 @@ body {
 <div class="topbar" id="topbar">
   <div class="topbar-logo">酒蔵 <span>PLATFORM</span></div>
   <nav class="topbar-nav">
-    <button class="active" onclick="showScreen('search')">Scopri</button>
-    <button onclick="showScreen('products-list')">Prodotti</button>
-    <button onclick="showScreen('sheets')">Schede</button>
+    <button class="active" data-nav="search" onclick="showScreen('search')"></button>
+    <button data-nav="products-list" onclick="showScreen('products-list')"></button>
+    <button data-nav="sheets" onclick="showScreen('sheets')"></button>
   </nav>
   <div class="topbar-right">
-    <button class="settings-btn" onclick="openSettings()" title="Impostazioni">⚙</button>
+    <div class="lang-switcher">
+      <button class="lang-btn" data-lang="it" onclick="switchLang('it')">IT</button>
+      <button class="lang-btn" data-lang="en" onclick="switchLang('en')">EN</button>
+      <button class="lang-btn" data-lang="ja" onclick="switchLang('ja')">JA</button>
+    </div>
+    <button class="settings-btn" onclick="openSettings()" id="settings-btn-top">⚙</button>
   </div>
 </div>
 
 <!-- ─── SCREEN: SEARCH ─── -->
 <div class="screen active" id="screen-search">
   <div class="hero">
-    <div class="hero-kanji">酒蔵を探す</div>
-    <div class="hero-sub">TROVA LA TUA SAKAGURA</div>
+    <div class="hero-kanji" id="hero-kanji"></div>
+    <div class="hero-sub" id="hero-sub"></div>
     <div class="search-box">
-      <input type="text" id="brewery-input" placeholder="Nome della sakagura..." autocomplete="off"
+      <input type="text" id="brewery-input" autocomplete="off"
              onkeydown="if(event.key==='Enter')startDiscovery()">
       <button class="search-btn" onclick="startDiscovery()" id="search-go">→</button>
     </div>
-    <div class="search-hint">
-      Scrivi il nome e la piattaforma troverà <strong>azienda, prodotti e specifiche tecniche</strong> automaticamente.
-    </div>
+    <div class="search-hint" id="search-hint"></div>
     <div class="recent-searches" id="recent-searches"></div>
   </div>
 </div>
@@ -619,46 +646,46 @@ body {
   <div class="discovery">
     <div class="discovery-container">
       <div class="discovery-brewery-name" id="disc-name"></div>
-      <div class="discovery-subtitle">Analisi in corso</div>
+      <div class="discovery-subtitle" id="disc-subtitle"></div>
       <div class="discovery-timer" id="disc-timer">00:00</div>
       <div class="progress-steps" id="progress-steps">
         <div class="progress-step" data-step="0">
           <div class="step-icon">1</div>
           <div class="step-content">
-            <div class="step-label">Cerco il sito ufficiale</div>
-            <div class="step-detail" id="step-detail-0">Ricerca web in corso...</div>
+            <div class="step-label" id="step-label-0"></div>
+            <div class="step-detail" id="step-detail-0"></div>
           </div>
         </div>
         <div class="progress-step" data-step="1">
           <div class="step-icon">2</div>
           <div class="step-content">
-            <div class="step-label">Analizzo le pagine prodotto</div>
+            <div class="step-label" id="step-label-1"></div>
             <div class="step-detail" id="step-detail-1"></div>
           </div>
         </div>
         <div class="progress-step" data-step="2">
           <div class="step-icon">3</div>
           <div class="step-content">
-            <div class="step-label">Estraggo le specifiche tecniche</div>
+            <div class="step-label" id="step-label-2"></div>
             <div class="step-detail" id="step-detail-2"></div>
           </div>
         </div>
         <div class="progress-step" data-step="3">
           <div class="step-icon">4</div>
           <div class="step-content">
-            <div class="step-label">Cerco informazioni aggiuntive</div>
+            <div class="step-label" id="step-label-3"></div>
             <div class="step-detail" id="step-detail-3"></div>
           </div>
         </div>
         <div class="progress-step" data-step="4">
           <div class="step-icon">5</div>
           <div class="step-content">
-            <div class="step-label">Preparo i risultati</div>
-            <div class="step-detail" id="step-detail-4">Organizzazione dati...</div>
+            <div class="step-label" id="step-label-4"></div>
+            <div class="step-detail" id="step-detail-4"></div>
           </div>
         </div>
       </div>
-      <button class="discovery-cancel" onclick="cancelDiscovery()">Annulla</button>
+      <button class="discovery-cancel" id="disc-cancel" onclick="cancelDiscovery()"></button>
     </div>
   </div>
 </div>
@@ -671,24 +698,254 @@ body {
 <!-- ─── SETTINGS MODAL ─── -->
 <div class="modal-overlay" id="settings-modal">
   <div class="modal">
-    <h2>Impostazioni</h2>
-    <p>Configura la tua API key per abilitare la scoperta intelligente.</p>
-    <label>Anthropic API Key</label>
+    <h2 id="settings-title"></h2>
+    <p id="settings-desc"></p>
+    <label id="settings-api-label"></label>
     <input type="password" id="api-key-input" placeholder="sk-ant-...">
-    <label>Email (per salvare i dati)</label>
-    <input type="text" id="user-email-input" placeholder="nome@azienda.com">
+    <label id="settings-email-label"></label>
+    <input type="text" id="user-email-input" placeholder="name@company.com">
     <div class="modal-actions">
-      <button class="btn btn-secondary" onclick="closeSettings()">Annulla</button>
-      <button class="btn btn-primary" onclick="saveSettings()">Salva</button>
+      <button class="btn btn-secondary" id="settings-cancel-btn" onclick="closeSettings()"></button>
+      <button class="btn btn-primary" id="settings-save-btn" onclick="saveSettings()"></button>
     </div>
   </div>
 </div>
 
 <script>
 // ─────────────────────────────────────────
+//  i18n TRANSLATIONS
+// ─────────────────────────────────────────
+const I18N = {
+  it: {
+    // Nav
+    nav_discover: 'Scopri',
+    nav_products: 'Prodotti',
+    nav_sheets: 'Schede',
+    // Hero
+    hero_title: '酒蔵を探す',
+    hero_sub: 'TROVA LA TUA SAKAGURA',
+    search_placeholder: 'Nome della sakagura...',
+    search_hint: 'Scrivi il nome e la piattaforma troverà <strong>azienda, prodotti e specifiche tecniche</strong> automaticamente.',
+    // Discovery
+    disc_subtitle: 'Analisi in corso',
+    step_0: 'Cerco il sito ufficiale',
+    step_1: 'Analizzo le pagine prodotto',
+    step_2: 'Estraggo le specifiche tecniche',
+    step_3: 'Cerco informazioni aggiuntive',
+    step_4: 'Preparo i risultati',
+    step_detail_0: 'Ricerca web in corso...',
+    step_detail_4: 'Organizzazione dati...',
+    cancel: 'Annulla',
+    // Discovery sim details
+    sim_found: 'Trovato:',
+    sim_pages: 'pagine analizzate',
+    sim_products: 'prodotti trovati',
+    sim_extra: 'Rating e note aggiunte',
+    sim_ready: 'Pronto!',
+    sim_reading: 'Lettura pagine prodotto...',
+    sim_parsing: 'Parsing delle specifiche...',
+    sim_searching: 'Saketime, rivenditori...',
+    sim_organizing: 'Organizzazione dati...',
+    ai_asking: 'Chiedo a Claude di cercare...',
+    ai_found: 'Informazioni base trovate',
+    ai_analyzing: 'Analisi prodotti in corso...',
+    ai_extracted: 'Specifiche estratte',
+    ai_integrating: 'Integrazione dati...',
+    ai_integrated: 'Dati integrati',
+    ai_preparing: 'Preparazione risultati...',
+    ai_error: 'Errore:',
+    ai_error_msg: 'Errore nella ricerca:',
+    ai_error_check: 'Controlla la API key nelle impostazioni.',
+    // Results
+    new_search: '← Nuova ricerca',
+    import_selected: 'Importa selezionati',
+    profile_title: 'Profilo Sakagura',
+    auto_filled: 'Auto-compilato',
+    label_name: 'Nome',
+    label_name_en: 'Nome (EN)',
+    label_prefecture: 'Prefettura',
+    label_address: 'Indirizzo',
+    label_phone: 'Telefono',
+    label_fax: 'Fax',
+    label_website: 'Sito web',
+    label_philosophy: 'Filosofia',
+    label_speciality: 'Specialità',
+    label_rice_types: 'Varietà di riso',
+    products: 'Prodotti',
+    found: 'trovati',
+    all_filter: 'Tutti',
+    other_type: 'Altro',
+    products_selected: 'prodotti selezionati',
+    deselect_all: 'Deseleziona tutti',
+    import_btn: 'Importa →',
+    import_n: 'Importa {n} prodotti',
+    import_success: '{n} prodotti importati con successo!',
+    // Spec labels
+    spec_polishing: '精米歩合',
+    spec_alc: 'ALC',
+    spec_smv: '日本酒度',
+    spec_acidity: '酸度',
+    spec_yeast: '酵母',
+    spec_volumes: 'Formati',
+    // Settings
+    settings_title: 'Impostazioni',
+    settings_desc: 'Configura la tua API key per abilitare la scoperta intelligente.',
+    settings_api_label: 'Anthropic API Key',
+    settings_email_label: 'Email (per salvare i dati)',
+    save: 'Salva',
+    settings_tooltip: 'Impostazioni',
+  },
+  en: {
+    nav_discover: 'Discover',
+    nav_products: 'Products',
+    nav_sheets: 'Sheets',
+    hero_title: '酒蔵を探す',
+    hero_sub: 'FIND YOUR SAKAGURA',
+    search_placeholder: 'Brewery name...',
+    search_hint: 'Type the name and the platform will find <strong>company, products and technical specs</strong> automatically.',
+    disc_subtitle: 'Analysis in progress',
+    step_0: 'Searching for official website',
+    step_1: 'Analyzing product pages',
+    step_2: 'Extracting technical specs',
+    step_3: 'Searching for additional info',
+    step_4: 'Preparing results',
+    step_detail_0: 'Web search in progress...',
+    step_detail_4: 'Organizing data...',
+    cancel: 'Cancel',
+    sim_found: 'Found:',
+    sim_pages: 'pages analyzed',
+    sim_products: 'products found',
+    sim_extra: 'Ratings and notes added',
+    sim_ready: 'Ready!',
+    sim_reading: 'Reading product pages...',
+    sim_parsing: 'Parsing specs...',
+    sim_searching: 'Saketime, retailers...',
+    sim_organizing: 'Organizing data...',
+    ai_asking: 'Asking Claude to search...',
+    ai_found: 'Basic info found',
+    ai_analyzing: 'Analyzing products...',
+    ai_extracted: 'Specs extracted',
+    ai_integrating: 'Integrating data...',
+    ai_integrated: 'Data integrated',
+    ai_preparing: 'Preparing results...',
+    ai_error: 'Error:',
+    ai_error_msg: 'Search error:',
+    ai_error_check: 'Check your API key in settings.',
+    new_search: '← New search',
+    import_selected: 'Import selected',
+    profile_title: 'Sakagura Profile',
+    auto_filled: 'Auto-filled',
+    label_name: 'Name',
+    label_name_en: 'Name (EN)',
+    label_prefecture: 'Prefecture',
+    label_address: 'Address',
+    label_phone: 'Phone',
+    label_fax: 'Fax',
+    label_website: 'Website',
+    label_philosophy: 'Philosophy',
+    label_speciality: 'Speciality',
+    label_rice_types: 'Rice varieties',
+    products: 'Products',
+    found: 'found',
+    all_filter: 'All',
+    other_type: 'Other',
+    products_selected: 'products selected',
+    deselect_all: 'Deselect all',
+    import_btn: 'Import →',
+    import_n: 'Import {n} products',
+    import_success: '{n} products imported successfully!',
+    spec_polishing: 'Polish',
+    spec_alc: 'ALC',
+    spec_smv: 'SMV',
+    spec_acidity: 'Acidity',
+    spec_yeast: 'Yeast',
+    spec_volumes: 'Sizes',
+    settings_title: 'Settings',
+    settings_desc: 'Set your API key to enable intelligent discovery.',
+    settings_api_label: 'Anthropic API Key',
+    settings_email_label: 'Email (to save data)',
+    save: 'Save',
+    settings_tooltip: 'Settings',
+  },
+  ja: {
+    nav_discover: '検索',
+    nav_products: '商品',
+    nav_sheets: '技術シート',
+    hero_title: '酒蔵を探す',
+    hero_sub: 'あなたの酒蔵を見つける',
+    search_placeholder: '酒蔵の名前...',
+    search_hint: '酒蔵名を入力すると、<strong>会社情報、商品、技術仕様</strong>を自動で取得します。',
+    disc_subtitle: '分析中',
+    step_0: '公式サイトを検索中',
+    step_1: '商品ページを分析中',
+    step_2: '技術仕様を抽出中',
+    step_3: '追加情報を検索中',
+    step_4: '結果を準備中',
+    step_detail_0: 'ウェブ検索中...',
+    step_detail_4: 'データ整理中...',
+    cancel: 'キャンセル',
+    sim_found: '発見:',
+    sim_pages: 'ページ分析済み',
+    sim_products: '商品発見',
+    sim_extra: '評価とメモ追加済み',
+    sim_ready: '完了！',
+    sim_reading: '商品ページ読み込み中...',
+    sim_parsing: '仕様解析中...',
+    sim_searching: 'Saketime、販売店...',
+    sim_organizing: 'データ整理中...',
+    ai_asking: 'Claudeに検索を依頼中...',
+    ai_found: '基本情報取得済み',
+    ai_analyzing: '商品分析中...',
+    ai_extracted: '仕様抽出済み',
+    ai_integrating: 'データ統合中...',
+    ai_integrated: 'データ統合済み',
+    ai_preparing: '結果準備中...',
+    ai_error: 'エラー:',
+    ai_error_msg: '検索エラー:',
+    ai_error_check: '設定でAPIキーを確認してください。',
+    new_search: '← 新しい検索',
+    import_selected: '選択をインポート',
+    profile_title: '酒蔵プロフィール',
+    auto_filled: '自動入力',
+    label_name: '名前',
+    label_name_en: '名前（英語）',
+    label_prefecture: '都道府県',
+    label_address: '住所',
+    label_phone: '電話番号',
+    label_fax: 'FAX',
+    label_website: 'ウェブサイト',
+    label_philosophy: '理念',
+    label_speciality: '特徴',
+    label_rice_types: '使用米品種',
+    products: '商品',
+    found: '件',
+    all_filter: '全て',
+    other_type: 'その他',
+    products_selected: '商品選択済み',
+    deselect_all: '全て解除',
+    import_btn: 'インポート →',
+    import_n: '{n}商品をインポート',
+    import_success: '{n}商品をインポートしました！',
+    spec_polishing: '精米歩合',
+    spec_alc: 'ALC',
+    spec_smv: '日本酒度',
+    spec_acidity: '酸度',
+    spec_yeast: '酵母',
+    spec_volumes: '容量',
+    settings_title: '設定',
+    settings_desc: 'インテリジェント検索を有効にするAPIキーを設定してください。',
+    settings_api_label: 'Anthropic APIキー',
+    settings_email_label: 'メール（データ保存用）',
+    save: '保存',
+    settings_tooltip: '設定',
+  }
+};
+
+// ─────────────────────────────────────────
 //  STATE
 // ─────────────────────────────────────────
 let state = {
+  lang: localStorage.getItem('sp_lang') || 'it',
   apiKey: localStorage.getItem('sp_api_key') || '',
   email: localStorage.getItem('sp_email') || '',
   breweries: JSON.parse(localStorage.getItem('sp_breweries') || '[]'),
@@ -698,6 +955,55 @@ let state = {
   recentSearches: JSON.parse(localStorage.getItem('sp_recent') || '[]'),
 };
 
+function t(key) { return (I18N[state.lang] || I18N.it)[key] || key; }
+
+// ─────────────────────────────────────────
+//  LANGUAGE SWITCH
+// ─────────────────────────────────────────
+function switchLang(lang) {
+  state.lang = lang;
+  localStorage.setItem('sp_lang', lang);
+  applyLang();
+}
+
+function applyLang() {
+  // Active button
+  document.querySelectorAll('.lang-btn').forEach(b => {
+    b.classList.toggle('active', b.dataset.lang === state.lang);
+  });
+  // Nav buttons
+  const navMap = ['search', 'products-list', 'sheets'];
+  const navLabels = [t('nav_discover'), t('nav_products'), t('nav_sheets')];
+  document.querySelectorAll('.topbar-nav button').forEach((b, i) => {
+    b.textContent = navLabels[i];
+  });
+  // Hero
+  document.getElementById('hero-kanji').textContent = t('hero_title');
+  document.getElementById('hero-sub').textContent = t('hero_sub');
+  document.getElementById('brewery-input').placeholder = t('search_placeholder');
+  document.getElementById('search-hint').innerHTML = t('search_hint');
+  // Discovery
+  document.getElementById('disc-subtitle').textContent = t('disc_subtitle');
+  for (let i = 0; i < 5; i++) {
+    document.getElementById('step-label-' + i).textContent = t('step_' + i);
+  }
+  document.getElementById('step-detail-0').textContent = t('step_detail_0');
+  document.getElementById('step-detail-4').textContent = t('step_detail_4');
+  document.getElementById('disc-cancel').textContent = t('cancel');
+  // Settings
+  document.getElementById('settings-title').textContent = t('settings_title');
+  document.getElementById('settings-desc').textContent = t('settings_desc');
+  document.getElementById('settings-api-label').textContent = t('settings_api_label');
+  document.getElementById('settings-email-label').textContent = t('settings_email_label');
+  document.getElementById('settings-cancel-btn').textContent = t('cancel');
+  document.getElementById('settings-save-btn').textContent = t('save');
+  document.getElementById('settings-btn-top').title = t('settings_tooltip');
+  // Re-render results if visible
+  if (state.currentBrewery && document.getElementById('screen-results').classList.contains('active')) {
+    renderResults(state.currentBrewery);
+  }
+}
+
 // ─────────────────────────────────────────
 //  NAVIGATION
 // ─────────────────────────────────────────
@@ -705,10 +1011,11 @@ function showScreen(name) {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   const el = document.getElementById('screen-' + name);
   if (el) el.classList.add('active');
-  document.querySelectorAll('.topbar-nav button').forEach(b => b.classList.remove('active'));
-  const labels = { search: 'Scopri', 'products-list': 'Prodotti', sheets: 'Schede', results: 'Scopri' };
-  document.querySelectorAll('.topbar-nav button').forEach(b => {
-    if (b.textContent === labels[name]) b.classList.add('active');
+  // Highlight nav
+  const navScreenMap = { search: 0, results: 0, 'products-list': 1, sheets: 2 };
+  const idx = navScreenMap[name] ?? -1;
+  document.querySelectorAll('.topbar-nav button').forEach((b, i) => {
+    b.classList.toggle('active', i === idx);
   });
 }
 
@@ -792,11 +1099,9 @@ async function startDiscovery() {
   const name = document.getElementById('brewery-input').value.trim();
   if (!name) return;
 
-  // Save to recent
   state.recentSearches = [name, ...state.recentSearches.filter(n => n !== name)].slice(0, 8);
   localStorage.setItem('sp_recent', JSON.stringify(state.recentSearches));
 
-  // Setup discovery screen
   state.discoveryAborted = false;
   document.getElementById('disc-name').textContent = name;
   document.querySelectorAll('.progress-step').forEach(s => s.classList.remove('active', 'done'));
@@ -805,42 +1110,38 @@ async function startDiscovery() {
   startTimer();
 
   if (!state.apiKey) {
-    // Demo mode — simulate discovery with sample data
     await simulateDiscovery(name);
     return;
   }
-
-  // Real AI discovery
   await aiDiscovery(name);
 }
 
 async function simulateDiscovery(name) {
   const delay = ms => new Promise(r => setTimeout(r, ms));
   if (state.discoveryAborted) return;
-  setStep(0, 'active', 'Ricerca web in corso...');
+  setStep(0, 'active', t('step_detail_0'));
   await delay(1500);
   if (state.discoveryAborted) return;
-  setStep(0, 'done', 'Trovato: sake-koikawa.jp');
-  setStep(1, 'active', 'Lettura pagine prodotto...');
+  setStep(0, 'done', t('sim_found') + ' sake-koikawa.jp');
+  setStep(1, 'active', t('sim_reading'));
   await delay(2000);
   if (state.discoveryAborted) return;
-  setStep(1, 'done', 'Analizzate 3 pagine');
-  setStep(2, 'active', 'Parsing delle specifiche...');
+  setStep(1, 'done', '3 ' + t('sim_pages'));
+  setStep(2, 'active', t('sim_parsing'));
   await delay(2500);
   if (state.discoveryAborted) return;
-  setStep(2, 'done', '19 prodotti trovati');
-  setStep(3, 'active', 'Saketime, rivenditori...');
+  setStep(2, 'done', '19 ' + t('sim_products'));
+  setStep(3, 'active', t('sim_searching'));
   await delay(1500);
   if (state.discoveryAborted) return;
-  setStep(3, 'done', 'Rating e note aggiunte');
-  setStep(4, 'active', 'Organizzazione dati...');
+  setStep(3, 'done', t('sim_extra'));
+  setStep(4, 'active', t('sim_organizing'));
   await delay(1000);
   if (state.discoveryAborted) return;
-  setStep(4, 'done', 'Pronto!');
+  setStep(4, 'done', t('sim_ready'));
   stopTimer();
   await delay(500);
 
-  // Show results with demo data
   const brewery = getDemoBrewery(name);
   state.currentBrewery = brewery;
   renderResults(brewery);
@@ -848,12 +1149,11 @@ async function simulateDiscovery(name) {
 }
 
 // ─────────────────────────────────────────
-//  AI DISCOVERY (real Claude API)
+//  AI DISCOVERY
 // ─────────────────────────────────────────
 async function aiDiscovery(name) {
   const delay = ms => new Promise(r => setTimeout(r, ms));
-
-  setStep(0, 'active', 'Chiedo a Claude di cercare...');
+  setStep(0, 'active', t('ai_asking'));
 
   try {
     const searchPrompt = `Search for the Japanese sake brewery "${name}". Find:
@@ -888,8 +1188,8 @@ Return ONLY valid JSON:
       throw new Error(err.error?.message || 'API error');
     }
 
-    setStep(0, 'done', 'Informazioni base trovate');
-    setStep(1, 'active', 'Analisi prodotti in corso...');
+    setStep(0, 'done', t('ai_found'));
+    setStep(1, 'active', t('ai_analyzing'));
     await delay(500);
 
     const data = await resp.json();
@@ -899,16 +1199,16 @@ Return ONLY valid JSON:
 
     const brewery = JSON.parse(jsonMatch[0]);
 
-    setStep(1, 'done', `${brewery.products?.length || 0} prodotti trovati`);
-    setStep(2, 'active', 'Estrazione specifiche...');
+    setStep(1, 'done', `${brewery.products?.length || 0} ${t('sim_products')}`);
+    setStep(2, 'active', t('ai_extracted'));
     await delay(800);
-    setStep(2, 'done', 'Specifiche estratte');
-    setStep(3, 'active', 'Integrazione dati...');
+    setStep(2, 'done', t('ai_extracted'));
+    setStep(3, 'active', t('ai_integrating'));
     await delay(600);
-    setStep(3, 'done', 'Dati integrati');
-    setStep(4, 'active', 'Preparazione risultati...');
+    setStep(3, 'done', t('ai_integrated'));
+    setStep(4, 'active', t('ai_preparing'));
     await delay(400);
-    setStep(4, 'done', 'Pronto!');
+    setStep(4, 'done', t('sim_ready'));
     stopTimer();
     await delay(500);
 
@@ -918,8 +1218,8 @@ Return ONLY valid JSON:
 
   } catch (err) {
     stopTimer();
-    setStep(0, 'done', 'Errore: ' + err.message);
-    alert('Errore nella ricerca: ' + err.message + '\n\nControlla la API key nelle impostazioni.');
+    setStep(0, 'done', t('ai_error') + ' ' + err.message);
+    alert(t('ai_error_msg') + ' ' + err.message + '\n\n' + t('ai_error_check'));
     showScreen('search');
   }
 }
@@ -928,7 +1228,6 @@ Return ONLY valid JSON:
 //  DEMO DATA
 // ─────────────────────────────────────────
 function getDemoBrewery(name) {
-  // Koikawa data from our actual scraping
   return {
     company: {
       name_jp: '鯉川酒造 株式会社',
@@ -974,7 +1273,7 @@ function renderResults(data) {
   const c = data.company;
   const p = data.products || [];
   const types = [...new Set(p.map(x => getTypeCategory(x.type)))];
-  let selectedIds = new Set(p.map((_, i) => i)); // all selected by default
+  let selectedIds = new Set(p.map((_, i) => i));
 
   const container = document.getElementById('results-container');
   container.innerHTML = `
@@ -989,62 +1288,59 @@ function renderResults(data) {
         </div>
       </div>
       <div class="results-header-actions">
-        <button class="btn btn-secondary" onclick="showScreen('search')">← Nuova ricerca</button>
-        <button class="btn btn-primary" id="import-btn" onclick="importSelected()">Importa selezionati</button>
+        <button class="btn btn-secondary" onclick="showScreen('search')">${esc(t('new_search'))}</button>
+        <button class="btn btn-primary" id="import-btn" onclick="importSelected()">${esc(t('import_selected'))}</button>
       </div>
     </div>
 
     <div class="company-card slide-up">
-      <h3>Profilo Sakagura <span class="badge">Auto-compilato</span></h3>
-      <div class="detail-row"><div class="detail-label">Nome</div><div class="detail-value serif" contenteditable="true">${esc(c.name_jp)}</div></div>
-      <div class="detail-row"><div class="detail-label">Nome (EN)</div><div class="detail-value" contenteditable="true">${esc(c.name_en)}</div></div>
-      <div class="detail-row"><div class="detail-label">Prefettura</div><div class="detail-value" contenteditable="true">${esc(c.prefecture)}</div></div>
-      <div class="detail-row"><div class="detail-label">Indirizzo</div><div class="detail-value" contenteditable="true">${esc(c.address)}</div></div>
-      <div class="detail-row"><div class="detail-label">Telefono</div><div class="detail-value" contenteditable="true">${esc(c.phone)}</div></div>
-      <div class="detail-row"><div class="detail-label">Fax</div><div class="detail-value" contenteditable="true">${esc(c.fax || '')}</div></div>
-      <div class="detail-row"><div class="detail-label">Sito web</div><div class="detail-value highlight" contenteditable="true">${esc(c.website)}</div></div>
-      <div class="detail-row"><div class="detail-label">Filosofia</div><div class="detail-value" contenteditable="true">${esc(c.philosophy)}</div></div>
-      <div class="detail-row"><div class="detail-label">Specialità</div><div class="detail-value" contenteditable="true">${esc(c.speciality || '')}</div></div>
-      <div class="detail-row"><div class="detail-label">Varietà di riso</div><div class="detail-value" contenteditable="true">${esc((c.rice_types || []).join(', '))}</div></div>
+      <h3>${esc(t('profile_title'))} <span class="badge">${esc(t('auto_filled'))}</span></h3>
+      <div class="detail-row"><div class="detail-label">${esc(t('label_name'))}</div><div class="detail-value serif" contenteditable="true">${esc(c.name_jp)}</div></div>
+      <div class="detail-row"><div class="detail-label">${esc(t('label_name_en'))}</div><div class="detail-value" contenteditable="true">${esc(c.name_en)}</div></div>
+      <div class="detail-row"><div class="detail-label">${esc(t('label_prefecture'))}</div><div class="detail-value" contenteditable="true">${esc(c.prefecture)}</div></div>
+      <div class="detail-row"><div class="detail-label">${esc(t('label_address'))}</div><div class="detail-value" contenteditable="true">${esc(c.address)}</div></div>
+      <div class="detail-row"><div class="detail-label">${esc(t('label_phone'))}</div><div class="detail-value" contenteditable="true">${esc(c.phone)}</div></div>
+      <div class="detail-row"><div class="detail-label">${esc(t('label_fax'))}</div><div class="detail-value" contenteditable="true">${esc(c.fax || '')}</div></div>
+      <div class="detail-row"><div class="detail-label">${esc(t('label_website'))}</div><div class="detail-value highlight" contenteditable="true">${esc(c.website)}</div></div>
+      <div class="detail-row"><div class="detail-label">${esc(t('label_philosophy'))}</div><div class="detail-value" contenteditable="true">${esc(c.philosophy)}</div></div>
+      <div class="detail-row"><div class="detail-label">${esc(t('label_speciality'))}</div><div class="detail-value" contenteditable="true">${esc(c.speciality || '')}</div></div>
+      <div class="detail-row"><div class="detail-label">${esc(t('label_rice_types'))}</div><div class="detail-value" contenteditable="true">${esc((c.rice_types || []).join(', '))}</div></div>
     </div>
 
     <div class="products-header slide-up">
       <div style="display:flex;align-items:center;gap:12px">
-        <div class="products-title">Prodotti</div>
-        <div class="products-count">${p.length} trovati</div>
+        <div class="products-title">${esc(t('products'))}</div>
+        <div class="products-count">${p.length} ${esc(t('found'))}</div>
       </div>
       <div class="products-filters" id="type-filters"></div>
     </div>
     <div class="products-grid slide-up" id="products-grid"></div>
     <div class="select-bar visible" id="select-bar">
-      <div class="select-bar-left"><strong id="selected-count">${p.length}</strong> prodotti selezionati</div>
+      <div class="select-bar-left"><strong id="selected-count">${p.length}</strong> ${esc(t('products_selected'))}</div>
       <div class="select-bar-right">
-        <button class="btn btn-secondary" onclick="toggleSelectAll()">Deseleziona tutti</button>
-        <button class="btn btn-primary" onclick="importSelected()">Importa →</button>
+        <button class="btn btn-secondary" onclick="toggleSelectAll()">${esc(t('deselect_all'))}</button>
+        <button class="btn btn-primary" onclick="importSelected()">${esc(t('import_btn'))}</button>
       </div>
     </div>
   `;
 
-  // Render filters
   const filtersEl = document.getElementById('type-filters');
   const allPill = document.createElement('div');
   allPill.className = 'filter-pill active';
-  allPill.textContent = 'Tutti';
+  allPill.textContent = t('all_filter');
   allPill.onclick = () => filterProducts('all');
   filtersEl.appendChild(allPill);
-  types.forEach(t => {
+  types.forEach(tp => {
     const pill = document.createElement('div');
     pill.className = 'filter-pill';
-    pill.textContent = t;
-    pill.dataset.type = t;
-    pill.onclick = () => filterProducts(t);
+    pill.textContent = tp;
+    pill.dataset.type = tp;
+    pill.onclick = () => filterProducts(tp);
     filtersEl.appendChild(pill);
   });
 
-  // Render product cards
   renderProductCards(p, selectedIds);
 
-  // Wire up selection
   window._selectedIds = selectedIds;
   window._products = p;
   window._brewery = data;
@@ -1068,18 +1364,18 @@ function renderProductCards(products, selectedIds) {
       <div class="product-name">${esc(prod.name_jp)}</div>
       <div class="product-name-en">${esc(prod.name_en || '')}</div>
       <div class="product-specs">
-        <div class="spec"><div class="spec-label">精米歩合</div><div class="spec-value ${!prod.polishing_rate || prod.polishing_rate === '—' ? 'na' : ''}">${esc(prod.polishing_rate || '—')}</div></div>
-        <div class="spec"><div class="spec-label">ALC</div><div class="spec-value ${!prod.alcohol || prod.alcohol === '—' ? 'na' : ''}">${esc(prod.alcohol || '—')}</div></div>
-        <div class="spec"><div class="spec-label">日本酒度</div><div class="spec-value ${!prod.smv || prod.smv === '—' ? 'na' : ''}">${esc(prod.smv || '—')}</div></div>
-        <div class="spec"><div class="spec-label">酸度</div><div class="spec-value ${!prod.acidity || prod.acidity === '—' ? 'na' : ''}">${esc(prod.acidity || '—')}</div></div>
-        <div class="spec"><div class="spec-label">酵母</div><div class="spec-value ${!prod.yeast || prod.yeast === '—' ? 'na' : ''}">${esc(prod.yeast || '—')}</div></div>
-        <div class="spec"><div class="spec-label">Formati</div><div class="spec-value" style="font-size:11px">${esc(vols || '—')}</div></div>
+        <div class="spec"><div class="spec-label">${esc(t('spec_polishing'))}</div><div class="spec-value ${!prod.polishing_rate || prod.polishing_rate === '—' ? 'na' : ''}">${esc(prod.polishing_rate || '—')}</div></div>
+        <div class="spec"><div class="spec-label">${esc(t('spec_alc'))}</div><div class="spec-value ${!prod.alcohol || prod.alcohol === '—' ? 'na' : ''}">${esc(prod.alcohol || '—')}</div></div>
+        <div class="spec"><div class="spec-label">${esc(t('spec_smv'))}</div><div class="spec-value ${!prod.smv || prod.smv === '—' ? 'na' : ''}">${esc(prod.smv || '—')}</div></div>
+        <div class="spec"><div class="spec-label">${esc(t('spec_acidity'))}</div><div class="spec-value ${!prod.acidity || prod.acidity === '—' ? 'na' : ''}">${esc(prod.acidity || '—')}</div></div>
+        <div class="spec"><div class="spec-label">${esc(t('spec_yeast'))}</div><div class="spec-value ${!prod.yeast || prod.yeast === '—' ? 'na' : ''}">${esc(prod.yeast || '—')}</div></div>
+        <div class="spec"><div class="spec-label">${esc(t('spec_volumes'))}</div><div class="spec-value" style="font-size:11px">${esc(vols || '—')}</div></div>
       </div>
       ${prod.rice ? `<div class="product-rice"><span class="rice-icon">⬡</span> ${esc(prod.rice)}</div>` : ''}
       ${prod.tasting_notes ? `<div class="product-notes">${esc(prod.tasting_notes)}</div>` : ''}
       ${prod.awards ? `<div class="product-rice" style="color:var(--gold)"><span>★</span> ${esc(prod.awards)}</div>` : ''}
     `;
-    card.onclick = (e) => {
+    card.onclick = () => {
       if (selectedIds.has(i)) selectedIds.delete(i);
       else selectedIds.add(i);
       card.classList.toggle('selected');
@@ -1110,7 +1406,7 @@ function updateSelectBar() {
   const bar = document.getElementById('select-bar');
   if (bar) bar.classList.toggle('visible', count > 0);
   const btn = document.getElementById('import-btn');
-  if (btn) btn.textContent = `Importa ${count} prodotti`;
+  if (btn) btn.textContent = t('import_n').replace('{n}', count);
 }
 
 function toggleSelectAll() {
@@ -1132,7 +1428,6 @@ function toggleSelectAll() {
 function importSelected() {
   const count = window._selectedIds?.size || 0;
   if (count === 0) return;
-  // Save brewery and selected products to localStorage
   const brewery = window._brewery;
   const selectedProducts = [...window._selectedIds].map(i => window._products[i]);
   const saved = {
@@ -1142,7 +1437,7 @@ function importSelected() {
   };
   state.breweries.push(saved);
   localStorage.setItem('sp_breweries', JSON.stringify(state.breweries));
-  alert(`${count} prodotti importati con successo!`);
+  alert(t('import_success').replace('{n}', count));
 }
 
 // ─────────────────────────────────────────
@@ -1156,13 +1451,13 @@ function esc(s) {
 }
 
 function getTypeCategory(type) {
-  if (!type) return 'Altro';
-  const t = type.toLowerCase();
-  if (t.includes('daiginjo')) return 'Daiginjo';
-  if (t.includes('ginjo')) return 'Ginjo';
-  if (t.includes('tokubetsu')) return 'Tokubetsu';
-  if (t.includes('junmai')) return 'Junmai';
-  return 'Altro';
+  if (!type) return t('other_type');
+  const tp = type.toLowerCase();
+  if (tp.includes('daiginjo')) return 'Daiginjo';
+  if (tp.includes('ginjo')) return 'Ginjo';
+  if (tp.includes('tokubetsu')) return 'Tokubetsu';
+  if (tp.includes('junmai')) return 'Junmai';
+  return t('other_type');
 }
 
 function getBadgeClass(cat) {
@@ -1173,6 +1468,7 @@ function getBadgeClass(cat) {
 // ─────────────────────────────────────────
 //  INIT
 // ─────────────────────────────────────────
+applyLang();
 renderRecent();
 </script>
 </body>
