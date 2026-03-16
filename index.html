@@ -656,6 +656,44 @@ body {
   display: flex; justify-content: center; gap: 12px;
   margin-top: 20px;
 }
+
+/* ─── GOOGLE MAPS CARD ─── */
+.gmaps-card {
+  background: var(--surface);
+  border: 2px solid #34a853;
+  border-radius: var(--radius);
+  padding: 20px;
+  margin: 0 auto 20px;
+  max-width: 900px;
+}
+.gmaps-header {
+  display: flex; align-items: center; justify-content: space-between;
+  flex-wrap: wrap; gap: 10px; margin-bottom: 12px;
+}
+.gmaps-badge {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: rgba(52,168,83,0.1);
+  color: #34a853; font-weight: 600; font-size: 13px;
+  padding: 4px 12px; border-radius: 20px;
+}
+.gmaps-rating { font-size: 14px; color: var(--text2); display: flex; align-items: center; gap: 6px; }
+.gmaps-stars { color: #f9ab00; letter-spacing: 1px; }
+.gmaps-count { color: var(--text3); font-size: 12px; }
+.gmaps-address { font-size: 13px; color: var(--text2); margin-bottom: 12px; }
+.gmaps-map { margin: 12px 0; border-radius: 12px; overflow: hidden; }
+.gmaps-link {
+  display: inline-block; margin-top: 8px;
+  font-size: 13px; color: var(--accent); text-decoration: none;
+  font-weight: 500;
+}
+.gmaps-link:hover { text-decoration: underline; }
+.verified-check {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 24px; height: 24px; border-radius: 50%;
+  background: #34a853; color: #fff;
+  font-size: 14px; font-weight: 700;
+  vertical-align: middle; margin-left: 8px;
+}
 </style>
 </head>
 <body>
@@ -754,6 +792,8 @@ body {
     <p id="settings-desc"></p>
     <label id="settings-api-label"></label>
     <input type="password" id="api-key-input" placeholder="sk-ant-...">
+    <label id="settings-gmaps-label"></label>
+    <input type="password" id="gmaps-key-input" placeholder="AIza...">
     <label id="settings-email-label"></label>
     <input type="text" id="user-email-input" placeholder="name@company.com">
     <div class="modal-actions">
@@ -844,6 +884,7 @@ const I18N = {
     settings_title: 'Impostazioni',
     settings_desc: 'Configura la tua API key per abilitare la scoperta intelligente.',
     settings_api_label: 'Anthropic API Key',
+    settings_gmaps_label: 'Google Maps API Key',
     settings_email_label: 'Email (per salvare i dati)',
     save: 'Salva',
     settings_tooltip: 'Impostazioni',
@@ -852,6 +893,12 @@ const I18N = {
     demo_available: 'Sakagura disponibili nella demo:',
     demo_unlock: 'Aggiungi la tua API key Anthropic per sbloccare la ricerca intelligente su qualsiasi sakagura',
     demo_add_key: 'Aggiungi API Key',
+    gmaps_searching: 'Verifica su Google Maps...',
+    gmaps_verified: 'Verificato',
+    gmaps_not_found: 'Non trovato su Google Maps',
+    gmaps_rating: 'Valutazione Google',
+    gmaps_view_map: 'Vedi su Google Maps',
+    gmaps_verified_badge: 'Verificato Google Maps',
   },
   en: {
     nav_discover: 'Discover',
@@ -922,6 +969,7 @@ const I18N = {
     settings_title: 'Settings',
     settings_desc: 'Set your API key to enable intelligent discovery.',
     settings_api_label: 'Anthropic API Key',
+    settings_gmaps_label: 'Google Maps API Key',
     settings_email_label: 'Email (to save data)',
     save: 'Save',
     settings_tooltip: 'Settings',
@@ -930,6 +978,12 @@ const I18N = {
     demo_available: 'Available in demo:',
     demo_unlock: 'Add your Anthropic API key to unlock intelligent search for any brewery',
     demo_add_key: 'Add API Key',
+    gmaps_searching: 'Verifying on Google Maps...',
+    gmaps_verified: 'Verified',
+    gmaps_not_found: 'Not found on Google Maps',
+    gmaps_rating: 'Google Rating',
+    gmaps_view_map: 'View on Google Maps',
+    gmaps_verified_badge: 'Google Maps Verified',
   },
   ja: {
     nav_discover: '検索',
@@ -1000,6 +1054,7 @@ const I18N = {
     settings_title: '設定',
     settings_desc: 'インテリジェント検索を有効にするAPIキーを設定してください。',
     settings_api_label: 'Anthropic APIキー',
+    settings_gmaps_label: 'Google Maps APIキー',
     settings_email_label: 'メール（データ保存用）',
     save: '保存',
     settings_tooltip: '設定',
@@ -1008,6 +1063,12 @@ const I18N = {
     demo_available: 'デモで利用可能:',
     demo_unlock: 'Anthropic APIキーを追加して、すべての酒蔵のインテリジェント検索を有効にしてください',
     demo_add_key: 'APIキーを追加',
+    gmaps_searching: 'Googleマップで確認中...',
+    gmaps_verified: '確認済み',
+    gmaps_not_found: 'Googleマップで見つかりません',
+    gmaps_rating: 'Google評価',
+    gmaps_view_map: 'Googleマップで見る',
+    gmaps_verified_badge: 'Googleマップ確認済み',
   }
 };
 
@@ -1017,6 +1078,7 @@ const I18N = {
 let state = {
   lang: localStorage.getItem('sp_lang') || 'it',
   apiKey: localStorage.getItem('sp_api_key') || '',
+  gmapsKey: localStorage.getItem('sp_gmaps_key') || '',
   email: localStorage.getItem('sp_email') || '',
   breweries: JSON.parse(localStorage.getItem('sp_breweries') || '[]'),
   currentBrewery: null,
@@ -1064,6 +1126,7 @@ function applyLang() {
   document.getElementById('settings-title').textContent = t('settings_title');
   document.getElementById('settings-desc').textContent = t('settings_desc');
   document.getElementById('settings-api-label').textContent = t('settings_api_label');
+  document.getElementById('settings-gmaps-label').textContent = t('settings_gmaps_label');
   document.getElementById('settings-email-label').textContent = t('settings_email_label');
   document.getElementById('settings-cancel-btn').textContent = t('cancel');
   document.getElementById('settings-save-btn').textContent = t('save');
@@ -1094,6 +1157,7 @@ function showScreen(name) {
 // ─────────────────────────────────────────
 function openSettings() {
   document.getElementById('api-key-input').value = state.apiKey;
+  document.getElementById('gmaps-key-input').value = state.gmapsKey;
   document.getElementById('user-email-input').value = state.email;
   document.getElementById('settings-modal').classList.add('active');
 }
@@ -1102,10 +1166,13 @@ function closeSettings() {
 }
 function saveSettings() {
   state.apiKey = document.getElementById('api-key-input').value.trim();
+  state.gmapsKey = document.getElementById('gmaps-key-input').value.trim();
   state.email = document.getElementById('user-email-input').value.trim();
   localStorage.setItem('sp_api_key', state.apiKey);
+  localStorage.setItem('sp_gmaps_key', state.gmapsKey);
   localStorage.setItem('sp_email', state.email);
   closeSettings();
+  applyLang(); // refresh hint
 }
 
 // ─────────────────────────────────────────
@@ -1173,17 +1240,82 @@ async function startDiscovery() {
   localStorage.setItem('sp_recent', JSON.stringify(state.recentSearches));
 
   state.discoveryAborted = false;
+  state.googlePlace = null;
   document.getElementById('disc-name').textContent = name;
   document.querySelectorAll('.progress-step').forEach(s => s.classList.remove('active', 'done'));
   document.getElementById('disc-timer').textContent = '00:00';
   showScreen('discovery');
   startTimer();
 
+  // If Google Maps key available, validate via Places API first
+  if (state.gmapsKey) {
+    setStep(0, 'active', t('gmaps_searching'));
+    const place = await googlePlacesLookup(name);
+    if (state.discoveryAborted) return;
+    if (place) {
+      state.googlePlace = place;
+      setStep(0, 'done', '✓ ' + t('gmaps_verified') + ': ' + (place.displayName || place.name));
+      // Update display name with verified name
+      document.getElementById('disc-name').textContent = place.displayName || name;
+    } else {
+      setStep(0, 'done', t('gmaps_not_found'));
+    }
+  }
+
   if (!state.apiKey) {
     await simulateDiscovery(name);
     return;
   }
   await aiDiscovery(name);
+}
+
+// ─────────────────────────────────────────
+//  GOOGLE PLACES API
+// ─────────────────────────────────────────
+async function googlePlacesLookup(name) {
+  if (!state.gmapsKey) return null;
+  try {
+    // Use Places API (New) Text Search
+    const query = name + ' 酒造 sake brewery';
+    const resp = await fetch('https://places.googleapis.com/v1/places:searchText', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Goog-Api-Key': state.gmapsKey,
+        'X-Goog-FieldMask': 'places.id,places.displayName,places.formattedAddress,places.location,places.nationalPhoneNumber,places.internationalPhoneNumber,places.websiteUri,places.googleMapsUri,places.businessStatus,places.rating,places.userRatingCount,places.types'
+      },
+      body: JSON.stringify({
+        textQuery: query,
+        languageCode: 'ja',
+        maxResultCount: 3
+      })
+    });
+    if (!resp.ok) {
+      console.warn('Google Places API error:', resp.status);
+      return null;
+    }
+    const data = await resp.json();
+    if (!data.places || data.places.length === 0) return null;
+    // Pick the best match (first result)
+    const p = data.places[0];
+    return {
+      placeId: p.id,
+      displayName: p.displayName?.text || '',
+      address: p.formattedAddress || '',
+      lat: p.location?.latitude,
+      lng: p.location?.longitude,
+      phone: p.nationalPhoneNumber || p.internationalPhoneNumber || '',
+      website: p.websiteUri || '',
+      mapsUrl: p.googleMapsUri || '',
+      rating: p.rating,
+      ratingCount: p.userRatingCount,
+      businessStatus: p.businessStatus,
+      types: p.types || []
+    };
+  } catch (err) {
+    console.warn('Google Places lookup failed:', err);
+    return null;
+  }
 }
 
 async function simulateDiscovery(name) {
@@ -1507,14 +1639,42 @@ function getKubotaDemo() {
 function renderResults(data) {
   const c = data.company;
   const p = data.products || [];
+  const gp = state.googlePlace;
   const types = [...new Set(p.map(x => getTypeCategory(x.type)))];
   let selectedIds = new Set(p.map((_, i) => i));
+
+  // If Google Place data available, enrich company data
+  if (gp) {
+    if (gp.address && !c.address) c.address = gp.address;
+    if (gp.phone && !c.phone) c.phone = gp.phone;
+    if (gp.website && !c.website) c.website = gp.website;
+  }
+
+  // Google Maps section
+  let gmapsHtml = '';
+  if (gp) {
+    const stars = gp.rating ? '★'.repeat(Math.round(gp.rating)) + '☆'.repeat(5 - Math.round(gp.rating)) : '';
+    const mapEmbedUrl = state.gmapsKey && gp.placeId
+      ? `https://www.google.com/maps/embed/v1/place?key=${encodeURIComponent(state.gmapsKey)}&q=place_id:${encodeURIComponent(gp.placeId)}&language=ja`
+      : '';
+    gmapsHtml = `
+      <div class="gmaps-card slide-up">
+        <div class="gmaps-header">
+          <div class="gmaps-badge">✓ ${esc(t('gmaps_verified_badge'))}</div>
+          ${gp.rating ? `<div class="gmaps-rating"><span class="gmaps-stars">${stars}</span> <strong>${gp.rating}</strong> <span class="gmaps-count">(${gp.ratingCount || 0})</span></div>` : ''}
+        </div>
+        ${gp.address ? `<div class="gmaps-address">${esc(gp.address)}</div>` : ''}
+        ${mapEmbedUrl ? `<div class="gmaps-map"><iframe src="${mapEmbedUrl}" width="100%" height="250" style="border:0;border-radius:12px" allowfullscreen loading="lazy"></iframe></div>` : ''}
+        ${gp.mapsUrl ? `<a href="${esc(gp.mapsUrl)}" target="_blank" class="gmaps-link">${esc(t('gmaps_view_map'))} →</a>` : ''}
+      </div>
+    `;
+  }
 
   const container = document.getElementById('results-container');
   container.innerHTML = `
     <div class="results-header fade-in">
       <div class="results-header-left">
-        <div class="results-brewery">${esc(c.name_jp)}</div>
+        <div class="results-brewery">${esc(c.name_jp)}${gp ? ' <span class="verified-check" title="' + esc(t('gmaps_verified_badge')) + '">✓</span>' : ''}</div>
         <div class="results-brewery-en">${esc(c.name_en)}</div>
         <div class="results-meta">
           <div class="results-meta-item"><span class="icon">◉</span> ${esc(c.prefecture)}</div>
@@ -1527,6 +1687,8 @@ function renderResults(data) {
         <button class="btn btn-primary" id="import-btn" onclick="importSelected()">${esc(t('import_selected'))}</button>
       </div>
     </div>
+
+    ${gmapsHtml}
 
     <div class="company-card slide-up">
       <h3>${esc(t('profile_title'))} <span class="badge">${esc(t('auto_filled'))}</span></h3>
