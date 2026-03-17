@@ -716,15 +716,16 @@ const I18N = {
     logout:'Esci',
     founded_label:'Fondata', address_label:'Indirizzo', phone_label:'Telefono', prefecture_label:'Prefettura', country_label:'Paese',
     settings_title:'Impostazioni',
-    settings_api_label:'API Key Anthropic',
-    settings_api_desc:'Inserisci la tua API key di Anthropic per attivare la ricerca AI avanzata con scoperta multi-risultato e verifica dei siti web.',
-    settings_api_placeholder:'sk-ant-api03-...',
+    settings_api_label:'Ricerca AI',
+    settings_api_desc:'La ricerca AI avanzata è alimentata dal nostro server. Per utenti avanzati, puoi inserire una API key personale.',
+    settings_api_placeholder:'sk-ant-api03-... (opzionale)',
     settings_get_key:'Ottieni una API key su console.anthropic.com →',
     settings_btn_cancel:'Annulla',
     settings_btn_save:'Salva',
-    settings_status_ok:'✓ API key configurata — ricerca AI attiva',
-    settings_status_empty:'Nessuna API key — ricerca base attiva (Nominatim + Wikipedia)',
-    settings_saved:'API key salvata con successo!',
+    settings_status_ok:'✓ Ricerca AI attiva — powered by Sake Platform',
+    settings_status_custom:'✓ Ricerca AI attiva — API key personale',
+    settings_status_empty:'⚠ Ricerca AI non disponibile — server non raggiungibile',
+    settings_saved:'Impostazioni salvate!',
   },
   en: {
     hero_title:'酒蔵を探す', hero_sub:'FIND YOUR SAKAGURA',
@@ -791,15 +792,16 @@ const I18N = {
     logout:'Logout',
     founded_label:'Founded', address_label:'Address', phone_label:'Phone', prefecture_label:'Prefecture', country_label:'Country',
     settings_title:'Settings',
-    settings_api_label:'Anthropic API Key',
-    settings_api_desc:'Enter your Anthropic API key to enable advanced AI search with multi-result discovery and website verification.',
-    settings_api_placeholder:'sk-ant-api03-...',
+    settings_api_label:'AI Search',
+    settings_api_desc:'Advanced AI search is powered by our server. Advanced users can enter a personal API key.',
+    settings_api_placeholder:'sk-ant-api03-... (optional)',
     settings_get_key:'Get an API key at console.anthropic.com →',
     settings_btn_cancel:'Cancel',
     settings_btn_save:'Save',
-    settings_status_ok:'✓ API key configured — AI search active',
-    settings_status_empty:'No API key — basic search active (Nominatim + Wikipedia)',
-    settings_saved:'API key saved successfully!',
+    settings_status_ok:'✓ AI search active — powered by Sake Platform',
+    settings_status_custom:'✓ AI search active — personal API key',
+    settings_status_empty:'⚠ AI search unavailable — server unreachable',
+    settings_saved:'Settings saved!',
   },
   ja: {
     hero_title:'酒蔵を探す', hero_sub:'あなたの酒蔵を見つける',
@@ -866,20 +868,25 @@ const I18N = {
     logout:'ログアウト',
     founded_label:'創業', address_label:'住所', phone_label:'電話', prefecture_label:'都道府県', country_label:'国',
     settings_title:'設定',
-    settings_api_label:'Anthropic APIキー',
-    settings_api_desc:'Anthropic APIキーを入力して、高度なAI検索（マルチ結果発見・ウェブサイト検証）を有効にします。',
-    settings_api_placeholder:'sk-ant-api03-...',
+    settings_api_label:'AI検索',
+    settings_api_desc:'高度なAI検索はサーバーで動作します。上級ユーザーは個人APIキーを入力できます。',
+    settings_api_placeholder:'sk-ant-api03-...（オプション）',
     settings_get_key:'console.anthropic.comでAPIキーを取得 →',
     settings_btn_cancel:'キャンセル',
     settings_btn_save:'保存',
-    settings_status_ok:'✓ APIキー設定済み — AI検索アクティブ',
-    settings_status_empty:'APIキーなし — 基本検索アクティブ（Nominatim + Wikipedia）',
-    settings_saved:'APIキーが正常に保存されました！',
+    settings_status_ok:'✓ AI検索アクティブ — Sake Platform提供',
+    settings_status_custom:'✓ AI検索アクティブ — 個人APIキー',
+    settings_status_empty:'⚠ AI検索利用不可 — サーバー接続不可',
+    settings_saved:'設定が保存されました！',
   }
 };
 
+// Supabase Edge Function proxy URL — replace with your project URL after deploy
+const PROXY_URL = 'https://sakeplatform.supabase.co/functions/v1/sake-search';
+
 let state = {
   lang: localStorage.getItem('sp_lang')||'it',
+  proxyUrl: PROXY_URL,
   apiKey: localStorage.getItem('sp_api_key')||'',
   user: JSON.parse(localStorage.getItem('sp_user')||'null'),
   brewery: JSON.parse(localStorage.getItem('sp_brewery')||'null'),
@@ -981,8 +988,8 @@ async function startSearch(){
       </div>`).join('')}</div>`;
   }
 
-  // ---- PATH A: With API key → AI-first discovery ----
-  if(state.apiKey){
+  // ---- PATH A: With proxy or API key → AI-first discovery ----
+  if(state.proxyUrl||state.apiKey){
     const steps=[
       {label:t('ps_discover'),detail:t('ps_discover_detail'),state:'active'},
       {label:t('ps_verify'),detail:t('ps_verify_detail'),state:'waiting'},
@@ -1314,64 +1321,17 @@ function enterDashboard(){
 
 // ==================== WEB APIS ====================
 
-// ---- AI DISCOVERY: Find ALL breweries with this name worldwide ----
+// ---- AI DISCOVERY: Find ALL breweries via backend proxy ----
 async function aiDiscoverAll(name,signal){
   try{
-    const prompt=`You are an expert sake industry database. I'm searching for "${name}".
-
-CRITICAL: There may be MULTIPLE different breweries/producers with this name or very similar names.
-For example, "otokoyama" has multiple distinct sakagura in different prefectures (Hokkaido, Yamagata, etc.).
-"riso sake" could be an Italian producer AND "risosake" could be Japanese.
-"inaba" could match 稲葉酒造 in multiple locations.
-
-Your task: Find ALL distinct sake breweries or producers that match or closely match "${name}".
-Search worldwide: Japan, Italy, USA, Europe, Asia, everywhere.
-Also consider name variations: with/without spaces, different romanizations, different kanji.
-
-For EACH distinct brewery you find, provide:
-- name_jp: Japanese name (kanji if available)
-- name_en: English/romanized name
-- website: Official website URL (MUST be a real domain that actually exists — do NOT guess or fabricate)
-- prefecture: Prefecture or region
-- country: Country
-- address: Full address if known
-- phone: Phone number if known
-- founded: Year founded
-- description: 1-2 sentence description distinguishing this brewery from others with same name
-- product_count: Approximate number of sake products
-- sources: Array of source domains where info was found
-
-Return ONLY a valid JSON array. Even if there's just one brewery, return it inside an array:
-[{"name_jp":"","name_en":"","website":"","prefecture":"","country":"","address":"","phone":"","founded":"","description":"","product_count":0,"sources":[]}]
-
-CRITICAL RULES:
-1. Return EVERY distinct brewery you know that matches "${name}" — not just one
-2. Website URLs must be REAL existing domains. If you're not sure a URL is correct, set website to ""
-3. Do NOT fabricate or guess website URLs — only include URLs you are confident exist
-4. Distinguish each brewery clearly by location and website
-5. Sort by relevance/prominence (most well-known first)
-6. Include name variations: "${name}" with different spacing, "${name}酒造", "${name} sake" etc.`;
-
-    const r=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',signal,headers:{
-      'Content-Type':'application/json',
-      'x-api-key':state.apiKey,
-      'anthropic-version':'2023-06-01',
-      'anthropic-dangerous-direct-browser-access':'true'
-    },body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:8000,messages:[{role:'user',content:prompt}]})});
+    const proxyUrl=state.proxyUrl;
+    if(!proxyUrl)return [];
+    const r=await fetch(proxyUrl,{method:'POST',signal,headers:{
+      'Content-Type':'application/json'
+    },body:JSON.stringify({query:name})});
     if(!r.ok)return [];
     const d=await r.json();
-    const txt=d.content[0].text;
-    // Extract JSON array
-    const arrMatch=txt.match(/\[[\s\S]*\]/);
-    if(arrMatch){
-      try{return JSON.parse(arrMatch[0]);}catch(e){}
-    }
-    // Maybe it returned a single object?
-    const objMatch=txt.match(/\{[\s\S]*\}/);
-    if(objMatch){
-      try{const obj=JSON.parse(objMatch[0]);return [obj];}catch(e){}
-    }
-    return [];
+    return d.results||[];
   }catch(e){if(e.name==='AbortError')throw e;return [];}
 }
 
@@ -1528,6 +1488,9 @@ function updateApiStatus(){
   const inp=document.getElementById('settings-api-input');
   const st=document.getElementById('settings-api-status');
   if(inp.value.trim()){
+    st.className='settings-status ok';
+    st.textContent=t('settings_status_custom');
+  } else if(state.proxyUrl){
     st.className='settings-status ok';
     st.textContent=t('settings_status_ok');
   } else {
