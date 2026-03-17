@@ -46,49 +46,45 @@ body { font-family:var(--font); background:var(--bg); color:var(--text); min-hei
 .btn-lg { padding:14px 32px; font-size:15px; border-radius:12px; }
 .btn-full { width:100%; }
 
-/* PAGE 1: SEARCH */
-.hero { display:flex; flex-direction:column; align-items:center; justify-content:center; min-height:calc(100vh - 56px); padding:40px 24px; text-align:center; }
-.hero-kanji { font-family:var(--font-serif); font-size:56px; font-weight:700; color:var(--navy); letter-spacing:8px; margin-bottom:12px; }
-.hero-sub { font-size:14px; color:var(--text3); letter-spacing:2px; margin-bottom:48px; }
+/* PAGE 1: SEARCH — everything inline */
+.hero { display:flex; flex-direction:column; align-items:center; justify-content:flex-start; min-height:calc(100vh - 56px); padding:100px 24px 60px; }
+.hero.has-results { justify-content:flex-start; padding-top:60px; }
+.hero-kanji { font-family:var(--font-serif); font-size:56px; font-weight:700; color:var(--navy); letter-spacing:8px; margin-bottom:12px; transition:var(--transition); }
+.hero.has-results .hero-kanji { font-size:32px; letter-spacing:4px; margin-bottom:8px; }
+.hero-sub { font-size:14px; color:var(--text3); letter-spacing:2px; margin-bottom:48px; transition:var(--transition); }
+.hero.has-results .hero-sub { font-size:12px; margin-bottom:24px; }
 .search-box { position:relative; width:100%; max-width:520px; }
 .search-box input { width:100%; height:60px; background:var(--surface); border:1px solid var(--border); border-radius:16px; padding:0 60px 0 24px; font:400 17px var(--font); color:var(--text); outline:none; transition:var(--transition); }
 .search-box input:focus { border-color:var(--accent); box-shadow:0 0 0 3px var(--accent-glow); }
+.search-box input:disabled { opacity:0.6; cursor:not-allowed; }
 .search-go { position:absolute; right:8px; top:50%; transform:translateY(-50%); width:44px; height:44px; border-radius:12px; background:var(--accent); border:none; color:#fff; font-size:20px; cursor:pointer; display:flex; align-items:center; justify-content:center; }
 .search-go:hover { background:var(--accent2); }
+.search-go:disabled { opacity:0.5; cursor:not-allowed; }
 .search-hint { margin-top:20px; font-size:13px; color:var(--text3); }
 .search-hint strong { color:var(--text2); font-weight:500; }
 
-/* DISCOVERY */
-.discovery { display:flex; flex-direction:column; align-items:center; justify-content:center; min-height:calc(100vh - 56px); padding:40px 24px; }
-.disc-container { width:100%; max-width:520px; }
-.disc-name { font-family:var(--font-serif); font-size:28px; font-weight:600; text-align:center; margin-bottom:8px; }
-.disc-sub { text-align:center; font-size:14px; color:var(--text3); margin-bottom:40px; }
-.disc-timer { text-align:center; font-size:36px; font-weight:300; color:var(--text2); margin-bottom:32px; font-variant-numeric:tabular-nums; }
-.progress-steps { display:flex; flex-direction:column; }
-.progress-step { display:flex; align-items:flex-start; gap:16px; padding:14px 0; position:relative; }
-.progress-step::before { content:''; position:absolute; left:15px; top:46px; bottom:-14px; width:1px; background:var(--border); }
-.progress-step:last-child::before { display:none; }
-.step-icon { width:32px; height:32px; border-radius:50%; background:var(--bg3); color:var(--text3); display:flex; align-items:center; justify-content:center; font-size:13px; font-weight:600; flex-shrink:0; transition:var(--transition); }
-.progress-step.active .step-icon { background:var(--accent); color:#fff; animation:pulse 1.5s ease infinite; }
-.progress-step.done .step-icon { background:var(--green); color:#fff; }
-@keyframes pulse { 0%,100%{box-shadow:0 0 0 0 rgba(58,110,165,0.3)} 50%{box-shadow:0 0 0 8px rgba(58,110,165,0)} }
-.step-label { font-size:14px; font-weight:500; }
-.step-detail { font-size:12px; color:var(--text3); margin-top:2px; }
-.disc-cancel { display:block; margin:32px auto 0; background:none; border:none; color:var(--text3); font:400 13px var(--font); cursor:pointer; }
+/* Inline result area */
+.inline-result { width:100%; max-width:520px; margin-top:28px; }
+.result-searching { display:flex; align-items:center; gap:12px; padding:16px 20px; background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); font-size:14px; color:var(--text2); }
+.result-searching .spinner { width:20px; height:20px; border:2px solid var(--border); border-top-color:var(--accent); border-radius:50%; animation:spin 0.8s linear infinite; flex-shrink:0; }
+@keyframes spin { to{transform:rotate(360deg)} }
 
-/* RESULTS */
-.results-page { padding:80px 24px 60px; max-width:680px; margin:0 auto; }
-.results-intro { text-align:center; margin-bottom:32px; }
-.results-intro h2 { font-family:var(--font-serif); font-size:24px; margin-bottom:8px; }
-.results-intro p { font-size:14px; color:var(--text3); }
-.result-card { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:24px; margin-bottom:16px; cursor:pointer; transition:var(--transition); }
-.result-card:hover { border-color:var(--accent); box-shadow:var(--shadow); }
-.rc-name { font-family:var(--font-serif); font-size:20px; font-weight:600; }
-.rc-name-en { font-size:12px; color:var(--text3); margin:2px 0 12px; }
-.rc-details { display:flex; flex-wrap:wrap; gap:16px; font-size:13px; color:var(--text2); }
-.rc-products { display:inline-flex; align-items:center; gap:6px; margin-top:12px; padding:6px 14px; background:var(--accent-glow); color:var(--accent); border-radius:20px; font-size:12px; font-weight:500; }
-.rc-map { margin-top:16px; border-radius:10px; overflow:hidden; }
-.results-actions { text-align:center; margin-top:24px; }
+.result-found { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:24px; box-shadow:var(--shadow); animation:slideUp 0.4s ease; }
+@keyframes slideUp { from{opacity:0;transform:translateY(12px)} to{opacity:1;transform:translateY(0)} }
+.rf-label { font-size:12px; color:var(--text3); text-transform:uppercase; letter-spacing:1px; margin-bottom:12px; }
+.rf-brewery { display:flex; align-items:center; gap:12px; margin-bottom:16px; }
+.rf-brewery-icon { width:44px; height:44px; border-radius:12px; background:var(--accent-glow); color:var(--accent); display:flex; align-items:center; justify-content:center; font-size:20px; flex-shrink:0; }
+.rf-brewery-name { font-family:var(--font-serif); font-size:20px; font-weight:600; }
+.rf-brewery-en { font-size:12px; color:var(--text3); margin-top:2px; }
+.rf-details { display:flex; flex-wrap:wrap; gap:8px; margin-bottom:16px; }
+.rf-tag { display:inline-flex; align-items:center; gap:4px; padding:5px 12px; background:var(--bg); border-radius:20px; font-size:12px; color:var(--text2); }
+.rf-products { display:inline-flex; align-items:center; gap:6px; padding:6px 14px; background:var(--green2); color:var(--green); border-radius:20px; font-size:12px; font-weight:600; margin-bottom:16px; }
+.rf-map { border-radius:10px; overflow:hidden; margin-bottom:16px; }
+.rf-confirm { text-align:center; padding-top:8px; border-top:1px solid var(--border); }
+.rf-confirm-text { font-size:14px; color:var(--text2); margin-bottom:14px; }
+.rf-actions { display:flex; gap:8px; justify-content:center; }
+.rf-not-me { font-size:13px; color:var(--text3); background:none; border:none; cursor:pointer; padding:8px 16px; }
+.rf-not-me:hover { color:var(--accent); }
 
 /* REGISTER */
 .register-page { display:flex; align-items:center; justify-content:center; min-height:calc(100vh - 56px); padding:40px 24px; }
@@ -144,8 +140,10 @@ body { font-family:var(--font); background:var(--bg); color:var(--text); min-hei
 
 @media(max-width:640px) {
   .hero-kanji { font-size:38px; }
+  .hero.has-results .hero-kanji { font-size:24px; }
   .search-box input { height:54px; font-size:15px; }
   .register-card { padding:28px; }
+  .rf-actions { flex-direction:column; }
 }
 </style>
 </head>
@@ -163,42 +161,18 @@ body { font-family:var(--font); background:var(--bg); color:var(--text); min-hei
   </div>
 </div>
 
-<!-- PAGE 1: SEARCH -->
+<!-- PAGE 1: SEARCH (everything inline) -->
 <div class="screen active" id="page-search">
-  <div class="hero">
+  <div class="hero" id="hero">
     <div class="hero-kanji" id="hero-kanji"></div>
     <div class="hero-sub" id="hero-sub"></div>
     <div class="search-box">
       <input type="text" id="search-input" autocomplete="off" onkeydown="if(event.key==='Enter')startSearch()">
-      <button class="search-go" onclick="startSearch()">→</button>
+      <button class="search-go" id="search-go-btn" onclick="startSearch()">→</button>
     </div>
     <div class="search-hint" id="search-hint"></div>
-  </div>
-</div>
-
-<!-- PAGE 1b: DISCOVERY -->
-<div class="screen" id="page-discovery">
-  <div class="discovery">
-    <div class="disc-container">
-      <div class="disc-name" id="disc-name"></div>
-      <div class="disc-sub" id="disc-sub"></div>
-      <div class="disc-timer" id="disc-timer">00:00</div>
-      <div class="progress-steps">
-        <div class="progress-step" id="step-0"><div class="step-icon">1</div><div><div class="step-label" id="sl-0"></div><div class="step-detail" id="sd-0"></div></div></div>
-        <div class="progress-step" id="step-1"><div class="step-icon">2</div><div><div class="step-label" id="sl-1"></div><div class="step-detail" id="sd-1"></div></div></div>
-        <div class="progress-step" id="step-2"><div class="step-icon">3</div><div><div class="step-label" id="sl-2"></div><div class="step-detail" id="sd-2"></div></div></div>
-      </div>
-      <button class="disc-cancel" id="disc-cancel" onclick="cancelSearch()"></button>
-    </div>
-  </div>
-</div>
-
-<!-- PAGE 1c: RESULTS -->
-<div class="screen" id="page-results">
-  <div class="results-page">
-    <div class="results-intro"><h2 id="res-title"></h2><p id="res-desc"></p></div>
-    <div id="results-list"></div>
-    <div class="results-actions"><button class="btn btn-secondary" onclick="showPage('search')" id="res-back-btn"></button></div>
+    <!-- Inline results appear here -->
+    <div class="inline-result" id="inline-result" style="display:none"></div>
   </div>
 </div>
 
@@ -262,11 +236,13 @@ const I18N = {
     hero_title:'酒蔵を探す', hero_sub:'TROVA LA TUA SAKAGURA',
     search_placeholder:'Nome della sakagura...',
     search_hint:'Inserisci il nome della tua sakagura. Cercheremo nel web <strong>dominio, prodotti e fonti</strong>.',
-    disc_sub:'Ricerca in corso',
-    step_0:'Ricerca del dominio e presenza web', step_1:'Ricerca fonti con prodotti', step_2:'Conteggio prodotti trovati',
-    sd_0:'Cerco dominio e sito ufficiale...', cancel:'Annulla',
-    res_title:'Abbiamo trovato risultati', res_desc:'Conferma quale è la tua sakagura per procedere alla registrazione.',
-    res_back:'← Cerca di nuovo', res_select:'Questa è la mia sakagura →', res_products:'prodotti trovati',
+    searching:'Sto cercando nel web...',
+    found_label:'HO TROVATO:',
+    found_confirm:'Confermi che è la tua sakagura?',
+    btn_confirm:'Sì, è la mia sakagura →',
+    btn_not_me:'No, cerca di nuovo',
+    products_found:'prodotti trovati',
+    not_found:'Nessun risultato trovato per questa ricerca. Prova con un altro nome.',
     reg_title:'Registra la tua sakagura', reg_desc:'Crea il tuo account per gestire le schede tecniche.',
     lbl_name:'Nome e cognome', lbl_email:'Email aziendale', lbl_pass:'Password',
     domain_match:'✓ Il dominio email corrisponde — otterrai il badge verificato!',
@@ -286,11 +262,13 @@ const I18N = {
     hero_title:'酒蔵を探す', hero_sub:'FIND YOUR SAKAGURA',
     search_placeholder:'Brewery name...',
     search_hint:'Enter your brewery name. We\'ll search the web for <strong>domain, products and sources</strong>.',
-    disc_sub:'Search in progress',
-    step_0:'Searching for domain and web presence', step_1:'Searching product sources', step_2:'Counting products found',
-    sd_0:'Searching for domain and website...', cancel:'Cancel',
-    res_title:'We found results', res_desc:'Confirm which is your brewery to proceed.',
-    res_back:'← Search again', res_select:'This is my brewery →', res_products:'products found',
+    searching:'Searching the web...',
+    found_label:'FOUND:',
+    found_confirm:'Is this your brewery?',
+    btn_confirm:'Yes, this is my brewery →',
+    btn_not_me:'No, search again',
+    products_found:'products found',
+    not_found:'No results found. Try a different name.',
     reg_title:'Register your brewery', reg_desc:'Create your account to manage technical sheets.',
     lbl_name:'Full name', lbl_email:'Business email', lbl_pass:'Password',
     domain_match:'✓ Email domain matches — you\'ll get the verified badge!',
@@ -310,11 +288,13 @@ const I18N = {
     hero_title:'酒蔵を探す', hero_sub:'あなたの酒蔵を見つける',
     search_placeholder:'酒蔵の名前...',
     search_hint:'酒蔵名を入力。<strong>ドメイン、商品、情報源</strong>をウェブで検索します。',
-    disc_sub:'検索中',
-    step_0:'ドメインとウェブプレゼンスの検索', step_1:'商品情報源の検索', step_2:'見つかった商品の集計',
-    sd_0:'ドメインと公式サイトを検索中...', cancel:'キャンセル',
-    res_title:'結果が見つかりました', res_desc:'登録に進むため、あなたの酒蔵を確認してください。',
-    res_back:'← もう一度検索', res_select:'これは私の酒蔵です →', res_products:'件の商品',
+    searching:'ウェブを検索中...',
+    found_label:'見つかりました:',
+    found_confirm:'あなたの酒蔵ですか？',
+    btn_confirm:'はい、私の酒蔵です →',
+    btn_not_me:'いいえ、もう一度検索',
+    products_found:'件の商品',
+    not_found:'結果が見つかりませんでした。別の名前で試してください。',
     reg_title:'酒蔵を登録', reg_desc:'技術シートを管理するアカウントを作成。',
     lbl_name:'氏名', lbl_email:'ビジネスメール', lbl_pass:'パスワード',
     domain_match:'✓ メールドメインが一致 — 認証バッジ取得可能！',
@@ -338,7 +318,8 @@ let state = {
   user: JSON.parse(localStorage.getItem('sp_user')||'null'),
   brewery: JSON.parse(localStorage.getItem('sp_brewery')||'null'),
   files: JSON.parse(localStorage.getItem('sp_files')||'[]'),
-  aborted:false, timerInterval:null
+  searching: false,
+  foundData: null
 };
 
 function t(k){return(I18N[state.lang]||I18N.it)[k]||k}
@@ -351,15 +332,6 @@ function applyLang(){
   document.getElementById('hero-sub').textContent=t('hero_sub');
   document.getElementById('search-input').placeholder=t('search_placeholder');
   document.getElementById('search-hint').innerHTML=t('search_hint');
-  document.getElementById('disc-sub').textContent=t('disc_sub');
-  document.getElementById('sl-0').textContent=t('step_0');
-  document.getElementById('sl-1').textContent=t('step_1');
-  document.getElementById('sl-2').textContent=t('step_2');
-  document.getElementById('sd-0').textContent=t('sd_0');
-  document.getElementById('disc-cancel').textContent=t('cancel');
-  document.getElementById('res-title').textContent=t('res_title');
-  document.getElementById('res-desc').textContent=t('res_desc');
-  document.getElementById('res-back-btn').textContent=t('res_back');
   document.getElementById('reg-title').textContent=t('reg_title');
   document.getElementById('reg-desc').textContent=t('reg_desc');
   document.getElementById('lbl-name').textContent=t('lbl_name');
@@ -382,59 +354,135 @@ function showPage(n){
 }
 function goHome(){showPage(state.user&&state.brewery?'dashboard':'search');}
 
-// SEARCH & DISCOVERY
-let timer=0;
-function startTimer(){timer=0;const el=document.getElementById('disc-timer');state.timerInterval=setInterval(()=>{timer++;el.textContent=String(Math.floor(timer/60)).padStart(2,'0')+':'+String(timer%60).padStart(2,'0');},1000);}
-function stopTimer(){if(state.timerInterval)clearInterval(state.timerInterval);}
-function setStep(i,st,detail){
-  document.querySelectorAll('.progress-step').forEach((s,idx)=>{s.classList.remove('active','done');if(idx<i)s.classList.add('done');if(idx===i&&st==='active')s.classList.add('active');if(idx===i&&st==='done')s.classList.add('done');});
-  if(detail){const el=document.getElementById('sd-'+i);if(el)el.textContent=detail;}
-}
-function cancelSearch(){state.aborted=true;stopTimer();showPage('search');}
-
+// SEARCH — inline results
 async function startSearch(){
+  if(state.searching) return;
   const name=document.getElementById('search-input').value.trim();
   if(!name)return;
-  state.aborted=false;
-  document.getElementById('disc-name').textContent=name;
-  document.getElementById('disc-timer').textContent='00:00';
-  document.querySelectorAll('.progress-step').forEach(s=>s.classList.remove('active','done'));
-  document.querySelectorAll('.step-detail').forEach(s=>s.textContent='');
-  showPage('discovery');
-  startTimer();
+
+  state.searching=true;
+  const hero=document.getElementById('hero');
+  const ir=document.getElementById('inline-result');
+  const inp=document.getElementById('search-input');
+  const goBtn=document.getElementById('search-go-btn');
+  const hint=document.getElementById('search-hint');
+
+  // Shrink hero, show searching state
+  hero.classList.add('has-results');
+  hint.style.display='none';
+  inp.disabled=true;
+  goBtn.disabled=true;
+  ir.style.display='block';
+  ir.innerHTML=`<div class="result-searching"><div class="spinner"></div>${esc(t('searching'))}</div>`;
+
   const delay=ms=>new Promise(r=>setTimeout(r,ms));
 
-  // Step 1: domain
-  setStep(0,'active',t('sd_0'));
+  // Step 1: geocode
   const geo=await geocodeLookup(name);
-  if(state.aborted)return;
-  let displayName=name,domain='';
-  if(geo){displayName=geo.displayName||name;domain=geo.website||'';
-    setStep(0,'done','✓ '+displayName+(domain?' — '+domain:''));
-    document.getElementById('disc-name').textContent=displayName;
-  } else { setStep(0,'done','✓ '+name); }
-  await delay(600);
+  let domain='', displayName=name;
+  if(geo){
+    displayName=geo.displayName||name;
+    domain=geo.website||'';
+  }
 
-  // Step 2: products
-  if(state.aborted)return;
-  setStep(1,'active',state.lang==='it'?'Cerco fonti con prodotti...':state.lang==='ja'?'商品のある情報源を検索中...':'Searching product sources...');
+  // Step 2: get products
   let data=null;
-  if(state.apiKey){data=await aiSearch(name);} else {data=getDemoBrewery(name);await delay(2000);}
-  if(state.aborted)return;
-  if(!data)data={company:{name_jp:displayName,name_en:'',website:domain,prefecture:geo?.prefecture||''},products:[]};
-  const pc=data.products?.length||0;
-  setStep(1,'done','✓ '+pc+' '+t('res_products'));
-  await delay(500);
+  if(state.apiKey){data=await aiSearch(name);} else {data=getDemoBrewery(name);await delay(1200);}
+  if(!data){
+    // Try with domain-based search
+    if(domain){
+      data={company:{name_jp:displayName,name_en:'',website:domain,prefecture:geo?.prefecture||'',address:geo?.address||''},products:[]};
+    }
+  }
 
-  // Step 3: finalize
-  if(state.aborted)return;
-  setStep(2,'active',state.lang==='it'?'Preparo risultati...':state.lang==='ja'?'結果を準備中...':'Preparing results...');
-  await delay(600);
-  setStep(2,'done','✓');
-  stopTimer();
-  await delay(400);
-  if(geo){if(!data.company.address&&geo.address)data.company.address=geo.address;if(!data.company.prefecture&&geo.prefecture)data.company.prefecture=geo.prefecture;data._geo=geo;}
-  showResults(data);
+  state.searching=false;
+  inp.disabled=false;
+  goBtn.disabled=false;
+
+  if(!data && !domain){
+    // Nothing found
+    ir.innerHTML=`<div class="result-searching" style="border-color:var(--border2)">${esc(t('not_found'))}</div>`;
+    setTimeout(()=>{ir.style.display='none';hero.classList.remove('has-results');hint.style.display='';},3000);
+    return;
+  }
+
+  if(!data) data={company:{name_jp:displayName,name_en:'',website:domain,prefecture:geo?.prefecture||''},products:[]};
+
+  // Merge geo data
+  if(geo){
+    if(!data.company.address&&geo.address)data.company.address=geo.address;
+    if(!data.company.prefecture&&geo.prefecture)data.company.prefecture=geo.prefecture;
+    if(!data.company.website&&domain)data.company.website=domain;
+    data._geo=geo;
+  }
+
+  state.foundData=data;
+  showInlineResult(data);
+}
+
+function showInlineResult(data){
+  const c=data.company, geo=data._geo, pc=data.products?.length||0;
+  const ir=document.getElementById('inline-result');
+  const website=c.website||'';
+
+  const mapHtml=geo&&geo.lat?`<div class="rf-map"><iframe src="https://www.openstreetmap.org/export/embed.html?bbox=${geo.lng-0.006},${geo.lat-0.004},${geo.lng+0.006},${geo.lat+0.004}&layer=mapnik&marker=${geo.lat},${geo.lng}" width="100%" height="160" style="border:0;border-radius:10px" loading="lazy"></iframe></div>`:'';
+
+  ir.innerHTML=`
+    <div class="result-found">
+      <div class="rf-label">${esc(t('found_label'))}</div>
+      <div class="rf-brewery">
+        <div class="rf-brewery-icon">🏯</div>
+        <div>
+          <div class="rf-brewery-name">${esc(c.name_jp||c.name_en)}</div>
+          ${c.name_en&&c.name_jp?`<div class="rf-brewery-en">${esc(c.name_en)}</div>`:''}
+        </div>
+      </div>
+      <div class="rf-details">
+        ${website?`<div class="rf-tag">🌐 ${esc(website)}</div>`:''}
+        ${c.prefecture?`<div class="rf-tag">📍 ${esc(c.prefecture)}</div>`:''}
+        ${c.phone?`<div class="rf-tag">📞 ${esc(c.phone)}</div>`:''}
+      </div>
+      ${pc?`<div class="rf-products">🍶 ${pc} ${esc(t('products_found'))}</div>`:''}
+      ${mapHtml}
+      <div class="rf-confirm">
+        <div class="rf-confirm-text">${esc(t('found_confirm'))}</div>
+        <div class="rf-actions">
+          <button class="btn btn-primary btn-lg" onclick="confirmBrewery()">${esc(t('btn_confirm'))}</button>
+          <button class="rf-not-me" onclick="resetSearch()">${esc(t('btn_not_me'))}</button>
+        </div>
+      </div>
+    </div>`;
+}
+
+function resetSearch(){
+  const hero=document.getElementById('hero');
+  const ir=document.getElementById('inline-result');
+  const hint=document.getElementById('search-hint');
+  ir.style.display='none';
+  ir.innerHTML='';
+  hero.classList.remove('has-results');
+  hint.style.display='';
+  document.getElementById('search-input').value='';
+  document.getElementById('search-input').focus();
+  state.foundData=null;
+}
+
+function confirmBrewery(){
+  if(!state.foundData)return;
+  state.brewery=state.foundData;
+  localStorage.setItem('sp_brewery',JSON.stringify(state.foundData));
+  const c=state.foundData.company;
+  document.getElementById('reg-brewery').textContent='🏯 '+c.name_jp+(c.name_en?' — '+c.name_en:'');
+  document.getElementById('inp-email').placeholder='you@'+(c.website||'brewery.co.jp');
+  const ei=document.getElementById('inp-email');
+  ei.oninput=()=>{
+    const d=(ei.value.split('@')[1]||'').toLowerCase();
+    const bd=(c.website||'').replace(/^https?:\/\//,'').replace(/^www\./,'').split('/')[0].toLowerCase();
+    document.getElementById('domain-hint').style.display=(d&&bd&&d===bd)?'block':'none';
+  };
+  document.getElementById('reg-form').style.display='';
+  document.getElementById('verification-sent').style.display='none';
+  showPage('register');
 }
 
 async function geocodeLookup(name){
@@ -481,40 +529,24 @@ const demoData={
   kubota:{company:{name_jp:'朝日酒造（久保田）',name_en:'Asahi-Shuzo (Kubota)',prefecture:'新潟県',website:'asahi-shuzo.co.jp'},products:[
     {name_jp:'久保田 萬寿',name_en:'Kubota Manju',type:'Junmai Daiginjo',type_detail:'純米大吟醸',rice:'五百万石',polishing_rate:'33%',alcohol:'15%'},
     {name_jp:'久保田 千寿',name_en:'Kubota Senju',type:'Ginjo',type_detail:'吟醸',rice:'五百万石',polishing_rate:'55%',alcohol:'15%'},
+  ]},
+  kenbishi:{company:{name_jp:'剣菱酒造',name_en:'Kenbishi Sake Brewing',prefecture:'兵庫県',website:'kenbishi.co.jp',address:'兵庫県神戸市東灘区御影本町3-2-1',phone:'078-451-2501'},products:[
+    {name_jp:'剣菱',name_en:'Kenbishi',type:'Honjozo',type_detail:'本醸造',rice:'山田錦・愛山',polishing_rate:'70-75%',alcohol:'17%'},
+    {name_jp:'黒松剣菱',name_en:'Kuromatsu Kenbishi',type:'Tokubetsu Junmai',type_detail:'特別純米',rice:'山田錦・愛山',polishing_rate:'60-65%',alcohol:'17%'},
+    {name_jp:'瑞穂黒松剣菱',name_en:'Mizuho Kuromatsu Kenbishi',type:'Junmai',type_detail:'純米',rice:'山田錦・愛山',polishing_rate:'55-60%',alcohol:'17%'},
+    {name_jp:'極上黒松剣菱',name_en:'Gokujo Kuromatsu Kenbishi',type:'Junmai Ginjo',type_detail:'純米吟醸',rice:'山田錦・愛山',polishing_rate:'50-55%',alcohol:'16-17%'},
   ]}
 };
-function getDemoBrewery(n){const q=n.toLowerCase();if(q.includes('楯')||q.includes('tatenokawa'))return demoData.tatenokawa;if(q.includes('鯉')||q.includes('koikawa'))return demoData.koikawa;if(q.includes('天吹')||q.includes('amabuki'))return demoData.amabuki;if(q.includes('獺祭')||q.includes('dassai'))return demoData.dassai;if(q.includes('久保田')||q.includes('kubota'))return demoData.kubota;return null;}
 
-function showResults(data){
-  const c=data.company,geo=data._geo,pc=data.products?.length||0;
-  const mapHtml=geo&&geo.lat?`<div class="rc-map"><iframe src="https://www.openstreetmap.org/export/embed.html?bbox=${geo.lng-0.006},${geo.lat-0.004},${geo.lng+0.006},${geo.lat+0.004}&layer=mapnik&marker=${geo.lat},${geo.lng}" width="100%" height="180" style="border:0;border-radius:10px" loading="lazy"></iframe></div>`:'';
-  document.getElementById('results-list').innerHTML=`
-    <div class="result-card" onclick="selectBrewery(this)" data-brewery='${JSON.stringify(data).replace(/'/g,"&#39;")}'>
-      <div class="rc-name">${esc(c.name_jp)}</div>
-      <div class="rc-name-en">${esc(c.name_en||'')}</div>
-      <div class="rc-details">
-        ${c.prefecture?`<div>📍 ${esc(c.prefecture)}</div>`:''}
-        ${c.website?`<div>🌐 ${esc(c.website)}</div>`:''}
-        ${c.phone?`<div>📞 ${esc(c.phone)}</div>`:''}
-      </div>
-      ${pc?`<div class="rc-products">🍶 ${pc} ${esc(t('res_products'))}</div>`:''}
-      ${mapHtml}
-      <div style="margin-top:16px;text-align:center"><button class="btn btn-primary btn-lg">${esc(t('res_select'))}</button></div>
-    </div>`;
-  showPage('results');
-}
-
-function selectBrewery(card){
-  const data=JSON.parse(card.dataset.brewery);
-  state.brewery=data;localStorage.setItem('sp_brewery',JSON.stringify(data));
-  const c=data.company;
-  document.getElementById('reg-brewery').textContent='🏯 '+c.name_jp+(c.name_en?' — '+c.name_en:'');
-  document.getElementById('inp-email').placeholder='you@'+(c.website||'brewery.co.jp');
-  const ei=document.getElementById('inp-email');
-  ei.oninput=()=>{const d=(ei.value.split('@')[1]||'').toLowerCase();const bd=(c.website||'').replace(/^https?:\/\//,'').replace(/^www\./,'').split('/')[0].toLowerCase();document.getElementById('domain-hint').style.display=(d&&bd&&d===bd)?'block':'none';};
-  document.getElementById('reg-form').style.display='';
-  document.getElementById('verification-sent').style.display='none';
-  showPage('register');
+function getDemoBrewery(n){
+  const q=n.toLowerCase();
+  if(q.includes('楯')||q.includes('tatenokawa'))return demoData.tatenokawa;
+  if(q.includes('鯉')||q.includes('koikawa'))return demoData.koikawa;
+  if(q.includes('天吹')||q.includes('amabuki'))return demoData.amabuki;
+  if(q.includes('獺祭')||q.includes('dassai'))return demoData.dassai;
+  if(q.includes('久保田')||q.includes('kubota'))return demoData.kubota;
+  if(q.includes('剣菱')||q.includes('kenbishi'))return demoData.kenbishi;
+  return null;
 }
 
 function register(){
@@ -564,7 +596,7 @@ function renderProducts(){
   list.innerHTML=prods.map(p=>`<div class="product-row"><div><div class="pr-name">${esc(p.name_jp)}</div><div class="pr-type">${esc(p.type_detail||p.type||'')} ${p.polishing_rate?'· '+esc(p.polishing_rate):''} ${p.alcohol?'· '+esc(p.alcohol):''}</div></div></div>`).join('');
 }
 
-function logout(){state.user=null;state.brewery=null;state.files=[];localStorage.removeItem('sp_user');localStorage.removeItem('sp_brewery');localStorage.removeItem('sp_files');showPage('search');}
+function logout(){state.user=null;state.brewery=null;state.files=[];state.foundData=null;localStorage.removeItem('sp_user');localStorage.removeItem('sp_brewery');localStorage.removeItem('sp_files');resetSearch();showPage('search');}
 
 applyLang();
 if(state.user&&state.brewery)enterDashboard();
