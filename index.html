@@ -8,2925 +8,566 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+JP:wght@300;400;500;600;700&family=Noto+Serif+JP:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root {
-  --bg: #f5f0e8;
-  --bg2: #ebe5d8;
-  --bg3: #e0d9cc;
-  --bg4: #d5cec0;
-  --surface: #ffffff;
-  --surface2: #faf7f2;
-  --border: #d5cec0;
-  --border2: #c0b8a8;
-  --text: #1a2a44;
-  --text2: #4a5568;
-  --text3: #8a8070;
-  --accent: #3a6ea5;
-  --accent2: #2d5a8a;
-  --accent-glow: rgba(58,110,165,0.12);
-  --gold: #c8a45e;
-  --gold2: #a8884e;
-  --green: #4a9a6a;
-  --green2: rgba(74,154,106,0.12);
-  --blue: #5b9bd5;
+  --bg: #f5f0e8; --bg2: #ebe5d8; --bg3: #e0d9cc;
+  --surface: #ffffff; --surface2: #faf7f2;
+  --border: #d5cec0; --border2: #c0b8a8;
+  --text: #1a2a44; --text2: #4a5568; --text3: #8a8070;
+  --accent: #3a6ea5; --accent2: #2d5a8a; --accent-glow: rgba(58,110,165,0.12);
+  --gold: #c8a45e; --green: #34a853; --green2: rgba(52,168,83,0.1);
   --navy: #1a2a44;
-  --radius: 12px;
-  --radius-sm: 8px;
-  --radius-lg: 20px;
-  --font: 'Inter', 'Noto Sans JP', sans-serif;
-  --font-serif: 'Noto Serif JP', serif;
-  --shadow: 0 4px 24px rgba(26,42,68,0.08);
-  --shadow-lg: 0 8px 48px rgba(26,42,68,0.12);
-  --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  --radius: 12px; --radius-sm: 8px; --radius-lg: 20px;
+  --font: 'Inter','Noto Sans JP',sans-serif; --font-serif: 'Noto Serif JP',serif;
+  --shadow: 0 4px 24px rgba(26,42,68,0.08); --shadow-lg: 0 8px 48px rgba(26,42,68,0.12);
+  --transition: 0.3s cubic-bezier(0.4,0,0.2,1);
 }
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family:var(--font); background:var(--bg); color:var(--text); min-height:100vh; -webkit-font-smoothing:antialiased; }
 
-* { margin: 0; padding: 0; box-sizing: border-box; }
+.topbar { position:fixed; top:0; left:0; right:0; z-index:100; height:56px; display:flex; align-items:center; justify-content:space-between; padding:0 24px; background:rgba(26,42,68,0.95); backdrop-filter:blur(20px); border-bottom:1px solid rgba(255,255,255,0.1); }
+.topbar-logo { font-family:var(--font-serif); font-size:18px; font-weight:600; color:#fff; letter-spacing:0.5px; display:flex; align-items:center; gap:10px; cursor:pointer; }
+.topbar-logo span { color:var(--gold); font-size:14px; }
+.topbar-right { display:flex; align-items:center; gap:8px; }
+.lang-switcher { display:flex; gap:2px; background:rgba(255,255,255,0.1); border-radius:8px; padding:2px; border:1px solid rgba(255,255,255,0.15); }
+.lang-btn { background:none; border:none; color:rgba(255,255,255,0.5); font:500 11px var(--font); padding:4px 10px; border-radius:6px; cursor:pointer; transition:var(--transition); }
+.lang-btn:hover { color:rgba(255,255,255,0.8); }
+.lang-btn.active { background:var(--gold); color:var(--navy); }
+.topbar-btn { background:rgba(255,255,255,0.1); border:1px solid rgba(255,255,255,0.15); color:rgba(255,255,255,0.6); cursor:pointer; font:500 12px var(--font); padding:6px 14px; border-radius:8px; transition:var(--transition); display:none; }
+.topbar-btn:hover { color:#fff; border-color:rgba(255,255,255,0.3); }
 
-body {
-  font-family: var(--font);
-  background: var(--bg);
-  color: var(--text);
-  min-height: 100vh;
-  overflow-x: hidden;
-  -webkit-font-smoothing: antialiased;
-}
+.screen { display:none; min-height:100vh; padding-top:56px; }
+.screen.active { display:block; animation:fadeIn 0.4s ease; }
+@keyframes fadeIn { from{opacity:0} to{opacity:1} }
 
-/* ─── TOP BAR ─── */
-.topbar {
-  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
-  height: 56px;
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 0 24px;
-  background: rgba(26,42,68,0.95);
-  backdrop-filter: blur(20px);
-  border-bottom: 1px solid rgba(255,255,255,0.1);
-  transition: var(--transition);
-}
-.topbar.hidden { transform: translateY(-100%); }
-.topbar-logo {
-  font-family: var(--font-serif);
-  font-size: 18px; font-weight: 600;
-  color: #ffffff;
-  letter-spacing: 0.5px;
-  display: flex; align-items: center; gap: 10px;
-}
-.topbar-logo span { color: var(--gold); font-size: 14px; }
-.topbar-nav { display: flex; gap: 4px; }
-.topbar-nav button {
-  background: none; border: none; color: rgba(255,255,255,0.6);
-  font: 500 13px var(--font);
-  padding: 8px 16px; border-radius: var(--radius-sm);
-  cursor: pointer; transition: var(--transition);
-  position: relative;
-}
-.topbar-nav button:hover { color: #fff; background: rgba(255,255,255,0.1); }
-.topbar-nav button.active { color: #fff; }
-.topbar-nav button.active::after {
-  content: ''; position: absolute; bottom: -1px; left: 16px; right: 16px;
-  height: 2px; background: var(--gold); border-radius: 2px;
-}
-.topbar-right { display: flex; align-items: center; gap: 8px; }
+.btn { display:inline-flex; align-items:center; justify-content:center; gap:6px; padding:10px 20px; border:none; border-radius:var(--radius-sm); font:500 13px var(--font); cursor:pointer; transition:var(--transition); text-decoration:none; }
+.btn-primary { background:var(--accent); color:#fff; }
+.btn-primary:hover { background:var(--accent2); }
+.btn-secondary { background:var(--bg2); color:var(--text2); border:1px solid var(--border); }
+.btn-secondary:hover { border-color:var(--accent); color:var(--accent); }
+.btn-lg { padding:14px 32px; font-size:15px; border-radius:12px; }
+.btn-full { width:100%; }
 
-/* Language switcher */
-.lang-switcher {
-  display: flex; gap: 2px;
-  background: rgba(255,255,255,0.1);
-  border-radius: 8px;
-  padding: 2px;
-  border: 1px solid rgba(255,255,255,0.15);
-}
-.lang-btn {
-  background: none; border: none;
-  color: rgba(255,255,255,0.5);
-  font: 500 11px var(--font);
-  padding: 4px 10px; border-radius: 6px;
-  cursor: pointer; transition: var(--transition);
-  letter-spacing: 0.5px;
-}
-.lang-btn:hover { color: rgba(255,255,255,0.8); }
-.lang-btn.active {
-  background: var(--gold);
-  color: var(--navy);
-}
+/* PAGE 1: SEARCH */
+.hero { display:flex; flex-direction:column; align-items:center; justify-content:center; min-height:calc(100vh - 56px); padding:40px 24px; text-align:center; }
+.hero-kanji { font-family:var(--font-serif); font-size:56px; font-weight:700; color:var(--navy); letter-spacing:8px; margin-bottom:12px; }
+.hero-sub { font-size:14px; color:var(--text3); letter-spacing:2px; margin-bottom:48px; }
+.search-box { position:relative; width:100%; max-width:520px; }
+.search-box input { width:100%; height:60px; background:var(--surface); border:1px solid var(--border); border-radius:16px; padding:0 60px 0 24px; font:400 17px var(--font); color:var(--text); outline:none; transition:var(--transition); }
+.search-box input:focus { border-color:var(--accent); box-shadow:0 0 0 3px var(--accent-glow); }
+.search-go { position:absolute; right:8px; top:50%; transform:translateY(-50%); width:44px; height:44px; border-radius:12px; background:var(--accent); border:none; color:#fff; font-size:20px; cursor:pointer; display:flex; align-items:center; justify-content:center; }
+.search-go:hover { background:var(--accent2); }
+.search-hint { margin-top:20px; font-size:13px; color:var(--text3); }
+.search-hint strong { color:var(--text2); font-weight:500; }
 
-.topbar-right .settings-btn {
-  width: 36px; height: 36px; border-radius: 50%;
-  background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.15);
-  color: rgba(255,255,255,0.6); cursor: pointer;
-  display: flex; align-items: center; justify-content: center;
-  transition: var(--transition); font-size: 16px;
-}
-.topbar-right .settings-btn:hover { color: #fff; border-color: rgba(255,255,255,0.3); }
+/* DISCOVERY */
+.discovery { display:flex; flex-direction:column; align-items:center; justify-content:center; min-height:calc(100vh - 56px); padding:40px 24px; }
+.disc-container { width:100%; max-width:520px; }
+.disc-name { font-family:var(--font-serif); font-size:28px; font-weight:600; text-align:center; margin-bottom:8px; }
+.disc-sub { text-align:center; font-size:14px; color:var(--text3); margin-bottom:40px; }
+.disc-timer { text-align:center; font-size:36px; font-weight:300; color:var(--text2); margin-bottom:32px; font-variant-numeric:tabular-nums; }
+.progress-steps { display:flex; flex-direction:column; }
+.progress-step { display:flex; align-items:flex-start; gap:16px; padding:14px 0; position:relative; }
+.progress-step::before { content:''; position:absolute; left:15px; top:46px; bottom:-14px; width:1px; background:var(--border); }
+.progress-step:last-child::before { display:none; }
+.step-icon { width:32px; height:32px; border-radius:50%; background:var(--bg3); color:var(--text3); display:flex; align-items:center; justify-content:center; font-size:13px; font-weight:600; flex-shrink:0; transition:var(--transition); }
+.progress-step.active .step-icon { background:var(--accent); color:#fff; animation:pulse 1.5s ease infinite; }
+.progress-step.done .step-icon { background:var(--green); color:#fff; }
+@keyframes pulse { 0%,100%{box-shadow:0 0 0 0 rgba(58,110,165,0.3)} 50%{box-shadow:0 0 0 8px rgba(58,110,165,0)} }
+.step-label { font-size:14px; font-weight:500; }
+.step-detail { font-size:12px; color:var(--text3); margin-top:2px; }
+.disc-cancel { display:block; margin:32px auto 0; background:none; border:none; color:var(--text3); font:400 13px var(--font); cursor:pointer; }
 
-/* ─── SCREENS ─── */
-.screen {
-  display: none; min-height: 100vh;
-  padding-top: 56px;
-  animation: fadeIn 0.4s ease;
-}
-.screen.active { display: block; }
-@keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+/* RESULTS */
+.results-page { padding:80px 24px 60px; max-width:680px; margin:0 auto; }
+.results-intro { text-align:center; margin-bottom:32px; }
+.results-intro h2 { font-family:var(--font-serif); font-size:24px; margin-bottom:8px; }
+.results-intro p { font-size:14px; color:var(--text3); }
+.result-card { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:24px; margin-bottom:16px; cursor:pointer; transition:var(--transition); }
+.result-card:hover { border-color:var(--accent); box-shadow:var(--shadow); }
+.rc-name { font-family:var(--font-serif); font-size:20px; font-weight:600; }
+.rc-name-en { font-size:12px; color:var(--text3); margin:2px 0 12px; }
+.rc-details { display:flex; flex-wrap:wrap; gap:16px; font-size:13px; color:var(--text2); }
+.rc-products { display:inline-flex; align-items:center; gap:6px; margin-top:12px; padding:6px 14px; background:var(--accent-glow); color:var(--accent); border-radius:20px; font-size:12px; font-weight:500; }
+.rc-map { margin-top:16px; border-radius:10px; overflow:hidden; }
+.results-actions { text-align:center; margin-top:24px; }
 
-/* ─── HERO / SEARCH SCREEN ─── */
-.hero {
-  display: flex; flex-direction: column;
-  align-items: center; justify-content: center;
-  min-height: calc(100vh - 56px);
-  padding: 40px 24px;
-  text-align: center;
-  position: relative;
-}
-.hero::before {
-  content: '';
-  position: absolute; top: 0; left: 50%; transform: translateX(-50%);
-  width: 600px; height: 600px;
-  background: radial-gradient(circle, var(--accent-glow) 0%, transparent 70%);
-  pointer-events: none;
-}
-.hero-kanji {
-  font-family: var(--font-serif);
-  font-size: 64px; font-weight: 700;
-  color: var(--navy);
-  letter-spacing: 8px;
-  margin-bottom: 12px;
-  opacity: 0.9;
-}
-.hero-sub {
-  font-size: 15px; color: var(--text3);
-  font-weight: 400; margin-bottom: 48px;
-  letter-spacing: 2px;
-}
-.search-box {
-  position: relative; width: 100%; max-width: 520px; z-index: 1;
-}
-.search-box input {
-  width: 100%; height: 60px;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 16px;
-  padding: 0 60px 0 24px;
-  font: 400 17px var(--font);
-  color: var(--text);
-  outline: none;
-  transition: var(--transition);
-}
-.search-box input::placeholder { color: var(--text3); }
-.search-box input:focus {
-  border-color: var(--accent);
-  box-shadow: 0 0 0 3px var(--accent-glow);
-}
-.search-box .search-btn {
-  position: absolute; right: 8px; top: 50%; transform: translateY(-50%);
-  width: 44px; height: 44px; border-radius: 12px;
-  background: var(--accent); border: none;
-  color: #fff; font-size: 20px; cursor: pointer;
-  display: flex; align-items: center; justify-content: center;
-  transition: var(--transition);
-}
-.search-box .search-btn:hover { background: var(--accent2); }
-.search-box .search-btn:disabled { opacity: 0.5; cursor: not-allowed; }
-.search-hint {
-  margin-top: 20px; font-size: 13px; color: var(--text3);
-  z-index: 1;
-}
-.search-hint strong { color: var(--text2); font-weight: 500; }
+/* REGISTER */
+.register-page { display:flex; align-items:center; justify-content:center; min-height:calc(100vh - 56px); padding:40px 24px; }
+.register-card { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-lg); padding:40px; max-width:480px; width:100%; box-shadow:var(--shadow-lg); }
+.reg-header { text-align:center; margin-bottom:28px; }
+.reg-header h2 { font-size:22px; font-weight:600; margin-bottom:6px; }
+.reg-header p { font-size:13px; color:var(--text3); }
+.reg-brewery { display:flex; align-items:center; gap:10px; padding:12px 16px; background:var(--accent-glow); border:1px solid rgba(58,110,165,0.2); border-radius:var(--radius-sm); margin-bottom:24px; font-size:14px; font-weight:500; color:var(--accent); }
+.reg-form label { display:block; font-size:11px; font-weight:600; color:var(--text2); margin:16px 0 6px; text-transform:uppercase; letter-spacing:0.5px; }
+.reg-form label:first-child { margin-top:0; }
+.reg-form input { width:100%; height:44px; background:var(--surface2); border:1px solid var(--border); border-radius:var(--radius-sm); padding:0 14px; font:400 14px var(--font); color:var(--text); outline:none; transition:var(--transition); }
+.reg-form input:focus { border-color:var(--accent); }
+.domain-hint { margin-top:8px; padding:10px 14px; background:var(--green2); border:1px solid rgba(52,168,83,0.2); border-radius:var(--radius-sm); font-size:12px; color:var(--green); display:none; }
+.verification-sent { text-align:center; padding:32px; display:none; }
+.verification-sent .icon { font-size:48px; margin-bottom:12px; }
+.verification-sent h3 { font-size:18px; margin-bottom:8px; }
+.verification-sent p { font-size:13px; color:var(--text3); line-height:1.6; }
 
-/* Recent searches */
-.recent-searches {
-  margin-top: 32px; z-index: 1;
-  display: flex; flex-wrap: wrap; gap: 8px;
-  justify-content: center; max-width: 520px;
-}
-.recent-tag {
-  background: var(--bg3); border: 1px solid var(--border);
-  border-radius: 20px; padding: 6px 16px;
-  font: 400 13px var(--font); color: var(--text2);
-  cursor: pointer; transition: var(--transition);
-}
-.recent-tag:hover { border-color: var(--accent); color: var(--accent); }
+/* DASHBOARD */
+.dashboard { max-width:800px; margin:0 auto; padding:80px 24px 60px; }
+.dash-header { display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:16px; margin-bottom:32px; }
+.dash-brewery { font-family:var(--font-serif); font-size:24px; font-weight:600; display:flex; align-items:center; gap:8px; }
+.dash-verified-badge { display:inline-flex; align-items:center; gap:4px; padding:3px 10px; border-radius:20px; font-size:11px; font-weight:600; margin-top:4px; }
+.dash-verified-badge.verified { background:var(--green2); color:var(--green); }
+.dash-verified-badge.pending { background:#fff3cd; color:#856404; }
 
-/* ─── DISCOVERY SCREEN ─── */
-.discovery {
-  display: flex; flex-direction: column;
-  align-items: center; justify-content: center;
-  min-height: calc(100vh - 56px);
-  padding: 40px 24px;
-}
-.discovery-container {
-  width: 100%; max-width: 480px;
-  position: relative;
-}
-.discovery-brewery-name {
-  font-family: var(--font-serif);
-  font-size: 28px; font-weight: 600;
-  text-align: center; margin-bottom: 8px;
-}
-.discovery-subtitle {
-  text-align: center; font-size: 14px;
-  color: var(--text3); margin-bottom: 48px;
-}
+.upload-section { background:var(--surface); border:2px dashed var(--border); border-radius:var(--radius-lg); padding:48px 32px; text-align:center; margin-bottom:32px; transition:var(--transition); cursor:pointer; }
+.upload-section:hover { border-color:var(--accent); background:var(--surface2); }
+.upload-section.dragover { border-color:var(--accent); background:var(--accent-glow); }
+.upload-icon { font-size:48px; margin-bottom:12px; }
+.upload-title { font-size:16px; font-weight:600; margin-bottom:6px; }
+.upload-desc { font-size:13px; color:var(--text3); margin-bottom:16px; line-height:1.6; }
+.upload-formats { font-size:11px; color:var(--text3); }
+.upload-formats strong { color:var(--text2); }
 
-/* Timer */
-.discovery-timer {
-  text-align: center; margin-bottom: 32px;
-  font-size: 36px; font-weight: 300;
-  color: var(--text2);
-  font-variant-numeric: tabular-nums;
-  letter-spacing: 2px;
-}
+.uploaded-files { margin-bottom:32px; }
+.uploaded-file { display:flex; align-items:center; justify-content:space-between; background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-sm); padding:14px 18px; margin-bottom:8px; }
+.uf-info { display:flex; align-items:center; gap:12px; }
+.uf-icon { font-size:24px; }
+.uf-name { font-size:13px; font-weight:500; }
+.uf-meta { font-size:11px; color:var(--text3); }
+.uf-status { padding:4px 10px; border-radius:12px; font-size:11px; font-weight:500; }
+.uf-status.processing { background:#fff3cd; color:#856404; }
+.uf-status.done { background:var(--green2); color:var(--green); }
 
-/* Progress steps */
-.progress-steps { display: flex; flex-direction: column; gap: 0; }
-.progress-step {
-  display: flex; align-items: flex-start; gap: 16px;
-  padding: 16px 0;
-  position: relative;
-}
-.progress-step::before {
-  content: '';
-  position: absolute; left: 15px; top: 48px; bottom: -16px;
-  width: 1px; background: var(--border);
-}
-.progress-step:last-child::before { display: none; }
+.dash-section { margin-bottom:32px; }
+.dash-section-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:16px; }
+.dash-section-title { font-size:16px; font-weight:600; }
+.product-row { display:flex; align-items:center; justify-content:space-between; background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-sm); padding:14px 18px; margin-bottom:8px; transition:var(--transition); }
+.product-row:hover { border-color:var(--accent); }
+.pr-name { font-family:var(--font-serif); font-size:14px; font-weight:500; }
+.pr-type { font-size:11px; color:var(--text3); margin-top:2px; }
 
-.step-icon {
-  width: 32px; height: 32px; border-radius: 50%;
-  display: flex; align-items: center; justify-content: center;
-  flex-shrink: 0;
-  background: var(--bg3); border: 1px solid var(--border);
-  color: var(--text3); font-size: 14px;
-  transition: all 0.5s ease;
-  position: relative; z-index: 1;
-}
-.progress-step.active .step-icon {
-  background: var(--accent-glow);
-  border-color: var(--accent);
-  color: var(--accent);
-  box-shadow: 0 0 16px var(--accent-glow);
-}
-.progress-step.done .step-icon {
-  background: var(--green2);
-  border-color: var(--green);
-  color: var(--green);
-}
-.progress-step.active .step-icon::after {
-  content: '';
-  position: absolute; inset: -3px;
-  border-radius: 50%;
-  border: 2px solid var(--accent);
-  animation: pulse-ring 1.5s ease infinite;
-}
-@keyframes pulse-ring {
-  0% { transform: scale(1); opacity: 0.6; }
-  100% { transform: scale(1.5); opacity: 0; }
-}
-
-.step-content { flex: 1; padding-top: 4px; }
-.step-label {
-  font-size: 15px; font-weight: 500; color: var(--text);
-  transition: var(--transition);
-}
-.progress-step:not(.active):not(.done) .step-label { color: var(--text3); }
-.step-detail {
-  font-size: 13px; color: var(--text3);
-  margin-top: 4px;
-  max-height: 0; overflow: hidden;
-  transition: max-height 0.4s ease, opacity 0.4s ease;
-  opacity: 0;
-}
-.progress-step.active .step-detail,
-.progress-step.done .step-detail {
-  max-height: 60px; opacity: 1;
-}
-
-/* Cancel btn */
-.discovery-cancel {
-  display: block; margin: 40px auto 0;
-  background: none; border: 1px solid var(--border);
-  color: var(--text3); font: 400 13px var(--font);
-  padding: 8px 24px; border-radius: 20px;
-  cursor: pointer; transition: var(--transition);
-}
-.discovery-cancel:hover { border-color: var(--text3); color: var(--text2); }
-
-/* ─── RESULTS SCREEN ─── */
-.results {
-  padding: 80px 24px 60px;
-  max-width: 1100px;
-  margin: 0 auto;
-}
-.results-header {
-  display: flex; align-items: flex-start;
-  justify-content: space-between;
-  margin-bottom: 40px; gap: 24px;
-  flex-wrap: wrap;
-}
-.results-header-left { flex: 1; min-width: 280px; }
-.results-brewery {
-  font-family: var(--font-serif);
-  font-size: 32px; font-weight: 600;
-  margin-bottom: 4px;
-}
-.results-brewery-en {
-  font-size: 14px; color: var(--text3);
-  font-weight: 400; margin-bottom: 16px;
-}
-.results-meta {
-  display: flex; flex-wrap: wrap; gap: 16px;
-}
-.results-meta-item {
-  display: flex; align-items: center; gap: 6px;
-  font-size: 13px; color: var(--text2);
-}
-.results-meta-item .icon { color: var(--accent); font-size: 15px; }
-.results-header-actions { display: flex; gap: 8px; flex-wrap: wrap; }
-.btn {
-  font: 500 13px var(--font);
-  padding: 10px 20px; border-radius: var(--radius-sm);
-  cursor: pointer; transition: var(--transition);
-  display: flex; align-items: center; gap: 8px;
-  border: none;
-}
-.btn-primary {
-  background: var(--accent); color: #fff;
-}
-.btn-primary:hover { background: var(--accent2); }
-.btn-secondary {
-  background: var(--bg3); border: 1px solid var(--border);
-  color: var(--text2);
-}
-.btn-secondary:hover { color: var(--text); border-color: var(--border2); }
-.btn-ghost {
-  background: none; border: none; color: var(--text2);
-  padding: 10px 12px;
-}
-.btn-ghost:hover { color: var(--text); }
-
-/* Company card */
-.company-card {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
-  padding: 28px;
-  margin-bottom: 32px;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 20px 40px;
-}
-.company-card h3 {
-  grid-column: 1 / -1;
-  font-size: 14px; font-weight: 600;
-  color: var(--text2);
-  text-transform: uppercase;
-  letter-spacing: 1.5px;
-  padding-bottom: 12px;
-  border-bottom: 1px solid var(--border);
-  display: flex; align-items: center; gap: 8px;
-}
-.company-card h3 .badge {
-  font-size: 11px; font-weight: 500;
-  background: var(--green2); color: var(--green);
-  padding: 2px 8px; border-radius: 10px;
-  text-transform: none; letter-spacing: 0;
-}
-.detail-row { display: flex; flex-direction: column; gap: 4px; }
-.detail-label { font-size: 11px; color: var(--text3); text-transform: uppercase; letter-spacing: 1px; }
-.detail-value { font-size: 14px; color: var(--text); }
-.detail-value.highlight { color: var(--accent); font-weight: 500; }
-.detail-value.serif { font-family: var(--font-serif); font-size: 16px; }
-
-/* Products section */
-.products-header {
-  display: flex; align-items: center;
-  justify-content: space-between;
-  margin-bottom: 20px; gap: 16px;
-  flex-wrap: wrap;
-}
-.products-title {
-  font-size: 18px; font-weight: 600;
-}
-.products-count {
-  font-size: 13px; color: var(--text3);
-  background: var(--bg3); padding: 4px 12px;
-  border-radius: 12px;
-}
-.products-filters {
-  display: flex; gap: 6px;
-}
-.filter-pill {
-  background: var(--bg3); border: 1px solid var(--border);
-  color: var(--text2); font: 400 12px var(--font);
-  padding: 5px 14px; border-radius: 16px;
-  cursor: pointer; transition: var(--transition);
-}
-.filter-pill:hover { border-color: var(--border2); color: var(--text); }
-.filter-pill.active { background: var(--accent-glow); border-color: var(--accent); color: var(--accent); }
-
-/* Product cards grid */
-.products-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-  gap: 16px;
-}
-.product-card {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 20px;
-  cursor: pointer;
-  transition: var(--transition);
-  position: relative;
-  overflow: hidden;
-}
-.product-card:hover {
-  border-color: var(--border2);
-  transform: translateY(-2px);
-  box-shadow: var(--shadow);
-}
-.product-card.selected {
-  border-color: var(--accent);
-  background: linear-gradient(135deg, var(--surface), var(--accent-glow));
-}
-.product-card .select-check {
-  position: absolute; top: 12px; right: 12px;
-  width: 22px; height: 22px; border-radius: 50%;
-  border: 2px solid var(--border);
-  display: flex; align-items: center; justify-content: center;
-  font-size: 12px; color: transparent;
-  transition: var(--transition);
-}
-.product-card.selected .select-check {
-  background: var(--accent); border-color: var(--accent);
-  color: #fff;
-}
-.product-type-badge {
-  display: inline-block;
-  font-size: 11px; font-weight: 500;
-  padding: 3px 10px; border-radius: 10px;
-  margin-bottom: 10px;
-  letter-spacing: 0.5px;
-}
-.badge-daiginjo { background: rgba(200,164,94,0.15); color: var(--gold); }
-.badge-ginjo { background: rgba(91,155,213,0.15); color: var(--blue); }
-.badge-junmai { background: rgba(92,184,92,0.15); color: var(--green); }
-.badge-tokubetsu { background: rgba(168,136,78,0.15); color: var(--gold2); }
-.badge-other { background: var(--bg3); color: var(--text2); }
-
-.product-name {
-  font-family: var(--font-serif);
-  font-size: 17px; font-weight: 500;
-  margin-bottom: 4px;
-  padding-right: 30px;
-}
-.product-name-en {
-  font-size: 12px; color: var(--text3);
-  margin-bottom: 14px;
-}
-.product-specs {
-  display: grid; grid-template-columns: 1fr 1fr 1fr;
-  gap: 10px;
-}
-.spec { display: flex; flex-direction: column; gap: 2px; }
-.spec-label { font-size: 10px; color: var(--text3); text-transform: uppercase; letter-spacing: 0.5px; }
-.spec-value { font-size: 14px; font-weight: 500; color: var(--text); }
-.spec-value.na { color: var(--text3); font-weight: 400; font-style: italic; font-size: 12px; }
-
-.product-rice {
-  margin-top: 12px; padding-top: 12px;
-  border-top: 1px solid var(--border);
-  font-size: 12px; color: var(--text2);
-  display: flex; align-items: center; gap: 6px;
-}
-.product-rice .rice-icon { color: var(--gold); }
-.product-notes {
-  margin-top: 8px;
-  font-size: 12px; color: var(--text3);
-  font-style: italic; line-height: 1.5;
-  display: -webkit-box; -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical; overflow: hidden;
-}
-
-/* Select all bar */
-.select-bar {
-  position: sticky; bottom: 20px; z-index: 50;
-  max-width: 600px; margin: 24px auto 0;
-  background: var(--navy);
-  border: 1px solid rgba(255,255,255,0.1);
-  border-radius: var(--radius);
-  padding: 14px 20px;
-  display: flex; align-items: center;
-  justify-content: space-between;
-  gap: 16px;
-  box-shadow: var(--shadow-lg);
-  backdrop-filter: blur(20px);
-  transition: var(--transition);
-  opacity: 0; transform: translateY(20px);
-  pointer-events: none;
-}
-.select-bar.visible {
-  opacity: 1; transform: none; pointer-events: all;
-}
-.select-bar-left {
-  font-size: 14px; color: rgba(255,255,255,0.7);
-}
-.select-bar-left strong { color: #fff; }
-.select-bar-right { display: flex; gap: 8px; }
-
-/* ─── SETTINGS MODAL ─── */
-.modal-overlay {
-  display: none; position: fixed; inset: 0; z-index: 200;
-  background: rgba(0,0,0,0.6);
-  backdrop-filter: blur(4px);
-  align-items: center; justify-content: center;
-  padding: 24px;
-}
-.modal-overlay.active { display: flex; }
-.modal {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
-  width: 100%; max-width: 480px;
-  padding: 28px;
-  box-shadow: var(--shadow-lg);
-  animation: modalIn 0.3s ease;
-}
-@keyframes modalIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: none; } }
-.modal h2 {
-  font-size: 18px; font-weight: 600;
-  margin-bottom: 4px;
-}
-.modal p { font-size: 13px; color: var(--text3); margin-bottom: 20px; }
-.modal label {
-  display: block; font-size: 12px; font-weight: 500;
-  color: var(--text2); margin-bottom: 6px;
-  text-transform: uppercase; letter-spacing: 1px;
-}
-.modal input[type="text"], .modal input[type="password"] {
-  width: 100%; height: 44px;
-  background: var(--surface2); border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
-  padding: 0 14px; font: 400 14px var(--font);
-  color: var(--text); outline: none;
-  margin-bottom: 16px; transition: var(--transition);
-}
-.modal input:focus { border-color: var(--accent); }
-.modal-actions {
-  display: flex; justify-content: flex-end; gap: 8px;
-  margin-top: 8px;
-}
-
-/* ─── RESPONSIVE ─── */
-@media (max-width: 768px) {
-  .hero-kanji { font-size: 42px; }
-  .company-card { grid-template-columns: 1fr; }
-  .products-grid { grid-template-columns: 1fr; }
-  .results-header { flex-direction: column; }
-  .product-specs { grid-template-columns: 1fr 1fr; }
-}
-@media (max-width: 480px) {
-  .topbar { padding: 0 12px; }
-  .topbar-nav button { padding: 8px 10px; font-size: 12px; }
-  .hero { padding: 40px 16px; }
-  .search-box input { height: 54px; font-size: 15px; padding: 0 54px 0 18px; }
-  .results { padding: 72px 16px 40px; }
-  .results-brewery { font-size: 24px; }
-  .lang-btn { padding: 4px 7px; font-size: 10px; }
-}
-
-/* ─── UTILITY ─── */
-.editable {
-  cursor: text; border-radius: 4px;
-  padding: 1px 4px; margin: -1px -4px;
-  transition: var(--transition);
-}
-.editable:hover { background: var(--bg3); }
-.editable:focus {
-  outline: none; background: var(--bg);
-  box-shadow: 0 0 0 2px var(--accent-glow);
-}
-.fade-in { animation: fadeIn 0.5s ease; }
-.slide-up { animation: slideUp 0.5s ease; }
-@keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: none; } }
-
-/* ─── DEMO NOT FOUND MODAL ─── */
-.demo-modal-overlay {
-  position: fixed; inset: 0; z-index: 300;
-  background: rgba(0,0,0,0.55);
-  backdrop-filter: blur(6px);
-  display: flex; align-items: center; justify-content: center;
-  padding: 24px;
-  animation: fadeIn 0.3s ease;
-}
-.demo-modal {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
-  width: 100%; max-width: 520px;
-  padding: 32px;
-  box-shadow: var(--shadow-lg);
-  animation: modalIn 0.3s ease;
-  text-align: center;
-}
-.demo-modal-icon { font-size: 48px; margin-bottom: 12px; }
-.demo-modal h3 {
-  font-size: 20px; font-weight: 600;
-  color: var(--navy); margin-bottom: 8px;
-}
-.demo-modal p { font-size: 14px; color: var(--text2); line-height: 1.6; margin-bottom: 16px; }
-.demo-modal-section { margin: 20px 0; text-align: left; }
-.demo-modal-label {
-  font-size: 11px; font-weight: 600; color: var(--text3);
-  text-transform: uppercase; letter-spacing: 1px;
-  margin-bottom: 10px;
-}
-.demo-tags { display: flex; flex-wrap: wrap; gap: 8px; }
-.demo-tag {
-  background: var(--bg2); border: 1px solid var(--border);
-  border-radius: 20px; padding: 6px 14px;
-  font: 400 13px var(--font); color: var(--text2);
-  cursor: pointer; transition: var(--transition);
-}
-.demo-tag:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-glow); }
-.demo-modal-divider {
-  height: 1px; background: var(--border);
-  margin: 20px 0;
-}
-.demo-modal-hint {
-  font-size: 13px; color: var(--accent); font-weight: 500;
-}
-.demo-modal-actions {
-  display: flex; justify-content: center; gap: 12px;
-  margin-top: 20px;
-}
-
-/* ─── GOOGLE MAPS CARD ─── */
-.gmaps-card {
-  background: var(--surface);
-  border: 2px solid #34a853;
-  border-radius: var(--radius);
-  padding: 20px;
-  margin: 0 auto 20px;
-  max-width: 900px;
-}
-.gmaps-header {
-  display: flex; align-items: center; justify-content: space-between;
-  flex-wrap: wrap; gap: 10px; margin-bottom: 12px;
-}
-.gmaps-badge {
-  display: inline-flex; align-items: center; gap: 6px;
-  background: rgba(52,168,83,0.1);
-  color: #34a853; font-weight: 600; font-size: 13px;
-  padding: 4px 12px; border-radius: 20px;
-}
-.gmaps-rating { font-size: 14px; color: var(--text2); display: flex; align-items: center; gap: 6px; }
-.gmaps-stars { color: #f9ab00; letter-spacing: 1px; }
-.gmaps-count { color: var(--text3); font-size: 12px; }
-.gmaps-address { font-size: 13px; color: var(--text2); margin-bottom: 12px; }
-.gmaps-map { margin: 12px 0; border-radius: 12px; overflow: hidden; }
-.gmaps-links { display: flex; gap: 20px; margin-top: 8px; }
-.gmaps-link {
-  display: inline-block;
-  font-size: 13px; color: var(--accent); text-decoration: none;
-  font-weight: 500;
-}
-.gmaps-link:hover { text-decoration: underline; }
-.verified-check {
-  display: inline-flex; align-items: center; justify-content: center;
-  width: 24px; height: 24px; border-radius: 50%;
-  background: #34a853; color: #fff;
-  font-size: 14px; font-weight: 700;
-  vertical-align: middle; margin-left: 8px;
-}
-
-/* ─── CONFIRM SCREEN ─── */
-.confirm-container {
-  display: flex; align-items: center; justify-content: center;
-  min-height: calc(100vh - 56px); padding: 40px 24px;
-}
-.confirm-card {
-  background: var(--surface); border: 1px solid var(--border);
-  border-radius: var(--radius-lg); padding: 40px;
-  max-width: 560px; width: 100%;
-  text-align: center; box-shadow: var(--shadow-lg);
-}
-.confirm-icon { font-size: 56px; margin-bottom: 16px; }
-.confirm-title { font-size: 16px; color: var(--text3); text-transform: uppercase; letter-spacing: 2px; margin-bottom: 20px; }
-.confirm-brewery-name { font-family: var(--font-serif); font-size: 32px; font-weight: 600; color: var(--navy); margin-bottom: 4px; }
-.confirm-brewery-en { font-size: 14px; color: var(--text3); margin-bottom: 20px; }
-.confirm-details { font-size: 13px; color: var(--text2); line-height: 1.8; margin-bottom: 16px; text-align: left; padding: 16px; background: var(--surface2); border-radius: var(--radius-sm); }
-.confirm-map { margin: 16px 0; border-radius: var(--radius); overflow: hidden; }
-.confirm-question { font-size: 18px; font-weight: 600; color: var(--navy); margin: 24px 0 20px; }
-.confirm-actions { display: flex; gap: 12px; justify-content: center; }
-.btn-lg { padding: 14px 32px; font-size: 15px; border-radius: 12px; }
-
-/* ─── REGISTER SCREEN ─── */
-.register-container {
-  display: flex; align-items: center; justify-content: center;
-  min-height: calc(100vh - 56px); padding: 40px 24px;
-}
-.register-card {
-  background: var(--surface); border: 1px solid var(--border);
-  border-radius: var(--radius-lg); padding: 36px;
-  max-width: 480px; width: 100%; box-shadow: var(--shadow-lg);
-}
-.register-header { text-align: center; margin-bottom: 24px; }
-.register-icon { font-size: 40px; margin-bottom: 8px; }
-.register-header h2 { font-size: 22px; font-weight: 600; margin-bottom: 6px; }
-.register-header p { font-size: 13px; color: var(--text3); }
-.register-brewery-badge {
-  display: flex; align-items: center; gap: 10px;
-  padding: 12px 16px; background: var(--accent-glow);
-  border: 1px solid rgba(58,110,165,0.2);
-  border-radius: var(--radius-sm); margin-bottom: 24px;
-  font-size: 14px; font-weight: 500; color: var(--accent);
-}
-.register-form label {
-  display: block; font-size: 12px; font-weight: 600;
-  color: var(--text2); margin-bottom: 6px; margin-top: 16px;
-  text-transform: uppercase; letter-spacing: 0.5px;
-}
-.register-form label:first-child { margin-top: 0; }
-.register-form input, .register-form select {
-  width: 100%; height: 44px;
-  background: var(--surface2); border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
-  padding: 0 14px; font: 400 14px var(--font);
-  color: var(--text); outline: none; transition: var(--transition);
-}
-.register-form select { cursor: pointer; }
-.register-form input:focus, .register-form select:focus { border-color: var(--accent); }
-.register-domain-hint {
-  margin-top: 8px; padding: 10px 14px;
-  background: rgba(52,168,83,0.08); border: 1px solid rgba(52,168,83,0.2);
-  border-radius: var(--radius-sm);
-  font-size: 12px; color: #34a853; display: none;
-}
-.btn-full { width: 100%; margin-top: 24px; }
-
-/* ─── DASHBOARD ─── */
-.dashboard {
-  max-width: 1100px; margin: 0 auto;
-  padding: 80px 24px 40px;
-}
-.dash-header {
-  display: flex; align-items: flex-start; justify-content: space-between;
-  margin-bottom: 28px; flex-wrap: wrap; gap: 16px;
-}
-.dash-brewery-name {
-  font-family: var(--font-serif);
-  font-size: 28px; font-weight: 600;
-  display: flex; align-items: center; gap: 8px;
-}
-.dash-brewery-en { font-size: 13px; color: var(--text3); margin-top: 2px; }
-.dash-verified {
-  display: inline-flex; align-items: center; gap: 6px;
-  margin-top: 6px; font-size: 12px; font-weight: 500;
-  padding: 3px 10px; border-radius: 20px;
-}
-.dash-verified.verified { background: rgba(52,168,83,0.1); color: #34a853; }
-.dash-verified.unverified { background: var(--bg3); color: var(--text3); }
-.dash-header-right { display: flex; gap: 8px; }
-.btn-sm { padding: 8px 16px; font-size: 12px; }
-
-/* Dashboard tabs */
-.dash-tabs {
-  display: flex; gap: 4px; margin-bottom: 24px;
-  border-bottom: 1px solid var(--border);
-  padding-bottom: 0;
-}
-.dash-tab {
-  background: none; border: none;
-  padding: 10px 20px; font: 500 13px var(--font);
-  color: var(--text3); cursor: pointer;
-  border-bottom: 2px solid transparent;
-  transition: var(--transition); margin-bottom: -1px;
-}
-.dash-tab:hover { color: var(--text); }
-.dash-tab.active { color: var(--accent); border-bottom-color: var(--accent); }
-
-/* Dashboard panels */
-.dash-panel { display: none; }
-.dash-panel.active { display: block; }
-.panel-toolbar {
-  display: flex; align-items: center; justify-content: space-between;
-  margin-bottom: 20px; flex-wrap: wrap; gap: 12px;
-}
-.panel-toolbar-right { display: flex; align-items: center; gap: 8px; }
-.panel-title { font-size: 16px; font-weight: 600; }
-
-/* Dashboard product cards */
-.dash-products-grid {
-  display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-  gap: 16px;
-}
-.dash-product-card {
-  background: var(--surface); border: 1px solid var(--border);
-  border-radius: var(--radius); padding: 20px;
-  transition: var(--transition); position: relative;
-}
-.dash-product-card:hover { border-color: var(--accent); box-shadow: var(--shadow); }
-.dash-product-actions {
-  position: absolute; top: 12px; right: 12px;
-  display: flex; gap: 4px;
-}
-.dash-product-actions button {
-  width: 32px; height: 32px; border-radius: 8px;
-  border: 1px solid var(--border); background: var(--surface);
-  color: var(--text3); cursor: pointer; font-size: 14px;
-  display: flex; align-items: center; justify-content: center;
-  transition: var(--transition);
-}
-.dash-product-actions button:hover { border-color: var(--accent); color: var(--accent); }
-.dpc-name { font-family: var(--font-serif); font-size: 16px; font-weight: 500; padding-right: 70px; }
-.dpc-name-en { font-size: 11px; color: var(--text3); margin: 2px 0 12px; }
-.dpc-badge {
-  display: inline-block; padding: 2px 10px;
-  border-radius: 12px; font-size: 11px; font-weight: 500;
-  margin-bottom: 12px;
-}
-.dpc-specs { display: grid; grid-template-columns: repeat(3,1fr); gap: 8px; }
-.dpc-spec-label { font-size: 9px; color: var(--text3); text-transform: uppercase; letter-spacing: 0.5px; }
-.dpc-spec-value { font-size: 13px; font-weight: 500; }
-
-/* Sheets grid */
-.sheets-grid {
-  display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 16px;
-}
-.sheet-card {
-  background: var(--surface); border: 1px solid var(--border);
-  border-radius: var(--radius); padding: 20px;
-  text-align: center; transition: var(--transition);
-}
-.sheet-card:hover { border-color: var(--accent); box-shadow: var(--shadow); }
-.sheet-card-name { font-family: var(--font-serif); font-size: 15px; font-weight: 500; margin-bottom: 4px; }
-.sheet-card-type { font-size: 11px; color: var(--text3); margin-bottom: 16px; }
-.sheet-card-actions { display: flex; gap: 8px; justify-content: center; }
-
-/* Commercial view */
-.commercial-preview {
-  background: var(--surface); border: 1px solid var(--border);
-  border-radius: var(--radius); padding: 32px;
-}
-.commercial-hero { text-align: center; margin-bottom: 32px; }
-.commercial-hero h2 { font-family: var(--font-serif); font-size: 28px; margin-bottom: 4px; }
-.commercial-hero p { font-size: 13px; color: var(--text3); }
-.commercial-products { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 20px; }
-.commercial-product { text-align: center; padding: 20px; }
-.commercial-product-name { font-family: var(--font-serif); font-size: 15px; font-weight: 500; margin-bottom: 4px; }
-.commercial-product-type { font-size: 11px; color: var(--gold); margin-bottom: 8px; }
-.commercial-product-desc { font-size: 12px; color: var(--text3); font-style: italic; line-height: 1.5; }
-
-/* Exporters */
-.exporters-list { display: flex; flex-direction: column; gap: 12px; }
-.exporter-card {
-  display: flex; align-items: center; justify-content: space-between;
-  background: var(--surface); border: 1px solid var(--border);
-  border-radius: var(--radius-sm); padding: 16px 20px;
-}
-.exporter-info { display: flex; flex-direction: column; gap: 2px; }
-.exporter-name { font-weight: 500; font-size: 14px; }
-.exporter-detail { font-size: 12px; color: var(--text3); }
-
-/* Modal large */
-.modal-lg { max-width: 640px; max-height: 85vh; overflow-y: auto; }
-.sake-form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-.sake-form-grid .form-group { display: flex; flex-direction: column; }
-.sake-form-grid .form-group.full { grid-column: 1 / -1; }
-.sake-form-grid label { font-size: 11px; font-weight: 500; color: var(--text3); margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.5px; }
-.sake-form-grid input, .sake-form-grid select, .sake-form-grid textarea {
-  width: 100%; padding: 8px 12px; border: 1px solid var(--border);
-  border-radius: var(--radius-sm); font: 400 13px var(--font);
-  background: var(--surface2); color: var(--text); outline: none;
-}
-.sake-form-grid textarea { resize: vertical; }
-.sake-form-grid input:focus, .sake-form-grid select:focus, .sake-form-grid textarea:focus { border-color: var(--accent); }
-
-#sheet-lang-select {
-  padding: 6px 12px; border: 1px solid var(--border);
-  border-radius: var(--radius-sm); font: 400 12px var(--font);
-  background: var(--surface); cursor: pointer;
+@media(max-width:640px) {
+  .hero-kanji { font-size:38px; }
+  .search-box input { height:54px; font-size:15px; }
+  .register-card { padding:28px; }
 }
 </style>
 </head>
 <body>
 
-<!-- ─── TOP BAR ─── -->
-<div class="topbar" id="topbar">
-  <div class="topbar-logo">酒蔵 <span>PLATFORM</span></div>
-  <nav class="topbar-nav">
-    <button class="active" data-nav="search" onclick="showScreen('search')"></button>
-    <button data-nav="products-list" onclick="showScreen('products-list')"></button>
-    <button data-nav="sheets" onclick="showScreen('sheets')"></button>
-  </nav>
+<div class="topbar">
+  <div class="topbar-logo" onclick="goHome()">酒蔵 <span>PLATFORM</span></div>
   <div class="topbar-right">
     <div class="lang-switcher">
       <button class="lang-btn" data-lang="it" onclick="switchLang('it')">IT</button>
       <button class="lang-btn" data-lang="en" onclick="switchLang('en')">EN</button>
       <button class="lang-btn" data-lang="ja" onclick="switchLang('ja')">JA</button>
     </div>
-    <button class="settings-btn" onclick="openSettings()" id="settings-btn-top">⚙</button>
-    <button class="settings-btn" onclick="logoutUser()" id="logout-btn" style="display:none;font-size:12px" title="Logout">↪</button>
+    <button class="topbar-btn" id="btn-logout" onclick="logout()"></button>
   </div>
 </div>
 
-<!-- ─── SCREEN: SEARCH ─── -->
-<div class="screen active" id="screen-search">
+<!-- PAGE 1: SEARCH -->
+<div class="screen active" id="page-search">
   <div class="hero">
     <div class="hero-kanji" id="hero-kanji"></div>
     <div class="hero-sub" id="hero-sub"></div>
     <div class="search-box">
-      <input type="text" id="brewery-input" autocomplete="off"
-             onkeydown="if(event.key==='Enter')startDiscovery()">
-      <button class="search-btn" onclick="startDiscovery()" id="search-go">→</button>
+      <input type="text" id="search-input" autocomplete="off" onkeydown="if(event.key==='Enter')startSearch()">
+      <button class="search-go" onclick="startSearch()">→</button>
     </div>
     <div class="search-hint" id="search-hint"></div>
-    <div class="recent-searches" id="recent-searches"></div>
   </div>
 </div>
 
-<!-- ─── SCREEN: DISCOVERY ─── -->
-<div class="screen" id="screen-discovery">
+<!-- PAGE 1b: DISCOVERY -->
+<div class="screen" id="page-discovery">
   <div class="discovery">
-    <div class="discovery-container">
-      <div class="discovery-brewery-name" id="disc-name"></div>
-      <div class="discovery-subtitle" id="disc-subtitle"></div>
-      <div class="discovery-timer" id="disc-timer">00:00</div>
-      <div class="progress-steps" id="progress-steps">
-        <div class="progress-step" data-step="0">
-          <div class="step-icon">1</div>
-          <div class="step-content">
-            <div class="step-label" id="step-label-0"></div>
-            <div class="step-detail" id="step-detail-0"></div>
-          </div>
-        </div>
-        <div class="progress-step" data-step="1">
-          <div class="step-icon">2</div>
-          <div class="step-content">
-            <div class="step-label" id="step-label-1"></div>
-            <div class="step-detail" id="step-detail-1"></div>
-          </div>
-        </div>
-        <div class="progress-step" data-step="2">
-          <div class="step-icon">3</div>
-          <div class="step-content">
-            <div class="step-label" id="step-label-2"></div>
-            <div class="step-detail" id="step-detail-2"></div>
-          </div>
-        </div>
-        <div class="progress-step" data-step="3">
-          <div class="step-icon">4</div>
-          <div class="step-content">
-            <div class="step-label" id="step-label-3"></div>
-            <div class="step-detail" id="step-detail-3"></div>
-          </div>
-        </div>
-        <div class="progress-step" data-step="4">
-          <div class="step-icon">5</div>
-          <div class="step-content">
-            <div class="step-label" id="step-label-4"></div>
-            <div class="step-detail" id="step-detail-4"></div>
-          </div>
-        </div>
+    <div class="disc-container">
+      <div class="disc-name" id="disc-name"></div>
+      <div class="disc-sub" id="disc-sub"></div>
+      <div class="disc-timer" id="disc-timer">00:00</div>
+      <div class="progress-steps">
+        <div class="progress-step" id="step-0"><div class="step-icon">1</div><div><div class="step-label" id="sl-0"></div><div class="step-detail" id="sd-0"></div></div></div>
+        <div class="progress-step" id="step-1"><div class="step-icon">2</div><div><div class="step-label" id="sl-1"></div><div class="step-detail" id="sd-1"></div></div></div>
+        <div class="progress-step" id="step-2"><div class="step-icon">3</div><div><div class="step-label" id="sl-2"></div><div class="step-detail" id="sd-2"></div></div></div>
       </div>
-      <button class="discovery-cancel" id="disc-cancel" onclick="cancelDiscovery()"></button>
+      <button class="disc-cancel" id="disc-cancel" onclick="cancelSearch()"></button>
     </div>
   </div>
 </div>
 
-<!-- ─── SCREEN: RESULTS ─── -->
-<div class="screen" id="screen-results">
-  <div class="results" id="results-container"></div>
-</div>
-
-<!-- ─── SCREEN: CONFIRM BREWERY ─── -->
-<div class="screen" id="screen-confirm">
-  <div class="confirm-container">
-    <div class="confirm-card">
-      <div class="confirm-icon">🏯</div>
-      <h2 class="confirm-title" id="confirm-title"></h2>
-      <div class="confirm-brewery-name" id="confirm-brewery-name"></div>
-      <div class="confirm-brewery-en" id="confirm-brewery-en"></div>
-      <div class="confirm-details" id="confirm-details"></div>
-      <div class="confirm-map" id="confirm-map"></div>
-      <p class="confirm-question" id="confirm-question"></p>
-      <div class="confirm-actions">
-        <button class="btn btn-secondary btn-lg" onclick="showScreen('search')" id="confirm-no-btn"></button>
-        <button class="btn btn-primary btn-lg" onclick="showClaimFlow()" id="confirm-yes-btn"></button>
-      </div>
-    </div>
+<!-- PAGE 1c: RESULTS -->
+<div class="screen" id="page-results">
+  <div class="results-page">
+    <div class="results-intro"><h2 id="res-title"></h2><p id="res-desc"></p></div>
+    <div id="results-list"></div>
+    <div class="results-actions"><button class="btn btn-secondary" onclick="showPage('search')" id="res-back-btn"></button></div>
   </div>
 </div>
 
-<!-- ─── SCREEN: REGISTER / CLAIM ─── -->
-<div class="screen" id="screen-register">
-  <div class="register-container">
+<!-- PAGE 2: REGISTER -->
+<div class="screen" id="page-register">
+  <div class="register-page">
     <div class="register-card">
-      <div class="register-header">
-        <div class="register-icon">🔐</div>
-        <h2 id="register-title"></h2>
-        <p id="register-desc"></p>
+      <div class="reg-header"><h2 id="reg-title"></h2><p id="reg-desc"></p></div>
+      <div class="reg-brewery" id="reg-brewery"></div>
+      <div class="reg-form" id="reg-form">
+        <label id="lbl-name"></label>
+        <input type="text" id="inp-name">
+        <label id="lbl-email"></label>
+        <input type="email" id="inp-email">
+        <div class="domain-hint" id="domain-hint"></div>
+        <label id="lbl-pass"></label>
+        <input type="password" id="inp-pass">
+        <button class="btn btn-primary btn-lg btn-full" style="margin-top:24px" onclick="register()" id="btn-register"></button>
       </div>
-      <div class="register-brewery-badge" id="register-brewery-badge"></div>
-      <div class="register-form">
-        <label id="reg-name-label"></label>
-        <input type="text" id="reg-name" placeholder="">
-        <label id="reg-role-label"></label>
-        <select id="reg-role">
-          <option value="owner" id="reg-role-owner"></option>
-          <option value="manager" id="reg-role-manager"></option>
-          <option value="exporter" id="reg-role-exporter"></option>
-          <option value="staff" id="reg-role-staff"></option>
-        </select>
-        <label id="reg-email-label"></label>
-        <input type="email" id="reg-email" placeholder="">
-        <label id="reg-pass-label"></label>
-        <input type="password" id="reg-pass" placeholder="">
-        <div class="register-domain-hint" id="reg-domain-hint"></div>
-        <button class="btn btn-primary btn-lg btn-full" onclick="completeRegistration()" id="reg-submit-btn"></button>
+      <div class="verification-sent" id="verification-sent">
+        <div class="icon">📧</div>
+        <h3 id="verif-title"></h3>
+        <p id="verif-desc"></p>
+        <button class="btn btn-primary btn-lg" style="margin-top:20px" onclick="enterDashboard()" id="btn-enter-dash"></button>
       </div>
     </div>
   </div>
 </div>
 
-<!-- ─── SCREEN: DASHBOARD ─── -->
-<div class="screen" id="screen-dashboard">
+<!-- PAGE 3: DASHBOARD -->
+<div class="screen" id="page-dashboard">
   <div class="dashboard">
-    <div class="dash-header" id="dash-header">
-      <div class="dash-header-left">
-        <div class="dash-brewery-name" id="dash-brewery-name"></div>
-        <div class="dash-brewery-en" id="dash-brewery-en"></div>
-        <div class="dash-verified" id="dash-verified"></div>
-      </div>
-      <div class="dash-header-right">
-        <button class="btn btn-secondary btn-sm" onclick="openDomainVerify()" id="dash-verify-btn"></button>
-        <button class="btn btn-secondary btn-sm" onclick="openInviteStaff()" id="dash-invite-btn"></button>
+    <div class="dash-header">
+      <div>
+        <div class="dash-brewery" id="dash-name"></div>
+        <div class="dash-verified-badge" id="dash-badge"></div>
       </div>
     </div>
-
-    <!-- Tab navigation -->
-    <div class="dash-tabs" id="dash-tabs">
-      <button class="dash-tab active" data-tab="products" onclick="switchDashTab('products')"></button>
-      <button class="dash-tab" data-tab="sheets" onclick="switchDashTab('sheets')"></button>
-      <button class="dash-tab" data-tab="commercial" onclick="switchDashTab('commercial')"></button>
-      <button class="dash-tab" data-tab="exporters" onclick="switchDashTab('exporters')"></button>
+    <div class="upload-section" id="upload-area"
+         onclick="document.getElementById('file-input').click()"
+         ondragover="event.preventDefault();this.classList.add('dragover')"
+         ondragleave="this.classList.remove('dragover')"
+         ondrop="event.preventDefault();this.classList.remove('dragover');handleFiles(event.dataTransfer.files)">
+      <div class="upload-icon">📄</div>
+      <div class="upload-title" id="upload-title"></div>
+      <div class="upload-desc" id="upload-desc"></div>
+      <div class="upload-formats" id="upload-formats"></div>
+      <input type="file" id="file-input" multiple accept=".pdf,.xlsx,.xls,.csv,.doc,.docx,.jpg,.jpeg,.png" style="display:none" onchange="handleFiles(this.files)">
     </div>
-
-    <!-- Tab: Products -->
-    <div class="dash-panel active" id="panel-products">
-      <div class="panel-toolbar">
-        <div class="panel-title" id="panel-products-title"></div>
-        <button class="btn btn-primary btn-sm" onclick="openAddSake()" id="dash-add-btn">+ </button>
-      </div>
-      <div class="dash-products-grid" id="dash-products-grid"></div>
-    </div>
-
-    <!-- Tab: Technical Sheets -->
-    <div class="dash-panel" id="panel-sheets">
-      <div class="panel-toolbar">
-        <div class="panel-title" id="panel-sheets-title"></div>
-        <div class="panel-toolbar-right">
-          <select id="sheet-lang-select" onchange="updateSheetPreview()">
-            <option value="it">Italiano</option>
-            <option value="en">English</option>
-            <option value="ja">日本語</option>
-          </select>
-          <button class="btn btn-primary btn-sm" onclick="printAllSheets()" id="dash-print-all-btn"></button>
-        </div>
-      </div>
-      <div class="sheets-grid" id="dash-sheets-grid"></div>
-    </div>
-
-    <!-- Tab: Commercial View -->
-    <div class="dash-panel" id="panel-commercial">
-      <div class="panel-toolbar">
-        <div class="panel-title" id="panel-commercial-title"></div>
-      </div>
-      <div class="commercial-preview" id="dash-commercial-preview"></div>
-    </div>
-
-    <!-- Tab: Exporters -->
-    <div class="dash-panel" id="panel-exporters">
-      <div class="panel-toolbar">
-        <div class="panel-title" id="panel-exporters-title"></div>
-        <button class="btn btn-primary btn-sm" onclick="openAddExporter()" id="dash-add-exporter-btn">+ </button>
-      </div>
-      <div class="exporters-list" id="dash-exporters-list"></div>
-    </div>
-  </div>
-</div>
-
-<!-- ─── MODAL: ADD/EDIT SAKE ─── -->
-<div class="modal-overlay" id="sake-modal">
-  <div class="modal modal-lg">
-    <h2 id="sake-modal-title"></h2>
-    <div class="sake-form" id="sake-form">
-      <div class="sake-form-grid">
-        <div class="form-group full">
-          <label>Name (JP)</label>
-          <input type="text" id="sf-name-jp" placeholder="純米大吟醸 ...">
-        </div>
-        <div class="form-group full">
-          <label>Name (EN)</label>
-          <input type="text" id="sf-name-en" placeholder="Junmai Daiginjo ...">
-        </div>
-        <div class="form-group">
-          <label>Type</label>
-          <select id="sf-type">
-            <option value="Junmai Daiginjo">Junmai Daiginjo</option>
-            <option value="Junmai Ginjo">Junmai Ginjo</option>
-            <option value="Daiginjo">Daiginjo</option>
-            <option value="Ginjo">Ginjo</option>
-            <option value="Tokubetsu Junmai">Tokubetsu Junmai</option>
-            <option value="Junmai">Junmai</option>
-            <option value="Honjozo">Honjozo</option>
-            <option value="Futsu-shu">Futsu-shu</option>
-            <option value="Nigori">Nigori</option>
-            <option value="Sparkling">Sparkling</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label>Type Detail (JP)</label>
-          <input type="text" id="sf-type-detail" placeholder="純米大吟醸">
-        </div>
-        <div class="form-group">
-          <label>Rice</label>
-          <input type="text" id="sf-rice" placeholder="山田錦 100%">
-        </div>
-        <div class="form-group">
-          <label>Polishing Rate</label>
-          <input type="text" id="sf-polish" placeholder="50%">
-        </div>
-        <div class="form-group">
-          <label>Alcohol %</label>
-          <input type="text" id="sf-alcohol" placeholder="15%">
-        </div>
-        <div class="form-group">
-          <label>SMV</label>
-          <input type="text" id="sf-smv" placeholder="+3">
-        </div>
-        <div class="form-group">
-          <label>Acidity</label>
-          <input type="text" id="sf-acidity" placeholder="1.4">
-        </div>
-        <div class="form-group">
-          <label>Yeast</label>
-          <input type="text" id="sf-yeast" placeholder="協会9号">
-        </div>
-        <div class="form-group full">
-          <label>Volumes (size:price, comma separated)</label>
-          <input type="text" id="sf-volumes" placeholder="720ml:¥3,300, 1800ml:¥6,600">
-        </div>
-        <div class="form-group full">
-          <label>Tasting Notes</label>
-          <textarea id="sf-notes" rows="3" placeholder="..."></textarea>
-        </div>
-        <div class="form-group full">
-          <label>Awards</label>
-          <input type="text" id="sf-awards" placeholder="IWC Gold 2023">
-        </div>
-      </div>
-    </div>
-    <div class="modal-actions">
-      <button class="btn btn-secondary" onclick="closeSakeModal()">Cancel</button>
-      <button class="btn btn-primary" onclick="saveSake()" id="sake-save-btn">Save</button>
-    </div>
-  </div>
-</div>
-
-<!-- ─── MODAL: DOMAIN VERIFICATION ─── -->
-<div class="modal-overlay" id="domain-modal">
-  <div class="modal">
-    <h2 id="domain-modal-title">Domain Verification</h2>
-    <div class="domain-verify-flow" id="domain-verify-flow"></div>
-    <div class="modal-actions">
-      <button class="btn btn-secondary" onclick="closeDomainModal()">Close</button>
-    </div>
-  </div>
-</div>
-
-<!-- ─── MODAL: INVITE STAFF ─── -->
-<div class="modal-overlay" id="invite-modal">
-  <div class="modal">
-    <h2 id="invite-modal-title">Invite Staff</h2>
-    <div class="invite-flow" id="invite-flow">
-      <label>Email</label>
-      <input type="email" id="invite-email" placeholder="colleague@brewery.com">
-      <label>Role</label>
-      <select id="invite-role">
-        <option value="staff">Staff</option>
-        <option value="manager">Manager</option>
-      </select>
-      <button class="btn btn-primary btn-full" style="margin-top:16px" onclick="sendInvite()">Send Invite</button>
-    </div>
-    <div class="modal-actions">
-      <button class="btn btn-secondary" onclick="closeInviteModal()">Close</button>
-    </div>
-  </div>
-</div>
-
-<!-- ─── SETTINGS MODAL ─── -->
-<div class="modal-overlay" id="settings-modal">
-  <div class="modal">
-    <h2 id="settings-title"></h2>
-    <p id="settings-desc"></p>
-    <label id="settings-api-label"></label>
-    <input type="password" id="api-key-input" placeholder="sk-ant-...">
-    <label id="settings-email-label"></label>
-    <input type="text" id="user-email-input" placeholder="name@company.com">
-    <div class="modal-actions">
-      <button class="btn btn-secondary" id="settings-cancel-btn" onclick="closeSettings()"></button>
-      <button class="btn btn-primary" id="settings-save-btn" onclick="saveSettings()"></button>
+    <div class="uploaded-files" id="uploaded-files"></div>
+    <div class="dash-section" id="products-section" style="display:none">
+      <div class="dash-section-header"><div class="dash-section-title" id="products-title"></div></div>
+      <div id="products-list"></div>
     </div>
   </div>
 </div>
 
 <script>
-// ─────────────────────────────────────────
-//  i18n TRANSLATIONS
-// ─────────────────────────────────────────
 const I18N = {
   it: {
-    // Nav
-    nav_discover: 'Scopri',
-    nav_products: 'Prodotti',
-    nav_sheets: 'Schede',
-    // Hero
-    hero_title: '酒蔵を探す',
-    hero_sub: 'TROVA LA TUA SAKAGURA',
-    search_placeholder: 'Nome della sakagura...',
-    search_hint: 'Demo: <strong>Tatenokawa, Koikawa, Amabuki, Dassai, Kubota</strong> — oppure aggiungi API key per qualsiasi sakagura.',
-    search_hint_ai: 'Scrivi il nome e la piattaforma troverà <strong>azienda, prodotti e specifiche tecniche</strong> automaticamente.',
-    // Discovery
-    disc_subtitle: 'Analisi in corso',
-    step_0: 'Cerco il sito ufficiale',
-    step_1: 'Analizzo le pagine prodotto',
-    step_2: 'Estraggo le specifiche tecniche',
-    step_3: 'Cerco informazioni aggiuntive',
-    step_4: 'Preparo i risultati',
-    step_detail_0: 'Ricerca web in corso...',
-    step_detail_4: 'Organizzazione dati...',
-    cancel: 'Annulla',
-    // Discovery sim details
-    sim_found: 'Trovato:',
-    sim_pages: 'pagine analizzate',
-    sim_products: 'prodotti trovati',
-    sim_extra: 'Rating e note aggiunte',
-    sim_ready: 'Pronto!',
-    sim_reading: 'Lettura pagine prodotto...',
-    sim_parsing: 'Parsing delle specifiche...',
-    sim_searching: 'Saketime, rivenditori...',
-    sim_organizing: 'Organizzazione dati...',
-    ai_asking: 'Chiedo a Claude di cercare...',
-    ai_found: 'Informazioni base trovate',
-    ai_analyzing: 'Analisi prodotti in corso...',
-    ai_extracted: 'Specifiche estratte',
-    ai_integrating: 'Integrazione dati...',
-    ai_integrated: 'Dati integrati',
-    ai_preparing: 'Preparazione risultati...',
-    ai_error: 'Errore:',
-    ai_error_msg: 'Errore nella ricerca:',
-    ai_error_check: 'Controlla la API key nelle impostazioni.',
-    // Results
-    new_search: '← Nuova ricerca',
-    import_selected: 'Importa selezionati',
-    profile_title: 'Profilo Sakagura',
-    auto_filled: 'Auto-compilato',
-    label_name: 'Nome',
-    label_name_en: 'Nome (EN)',
-    label_prefecture: 'Prefettura',
-    label_address: 'Indirizzo',
-    label_phone: 'Telefono',
-    label_fax: 'Fax',
-    label_website: 'Sito web',
-    label_philosophy: 'Filosofia',
-    label_speciality: 'Specialità',
-    label_rice_types: 'Varietà di riso',
-    products: 'Prodotti',
-    found: 'trovati',
-    all_filter: 'Tutti',
-    other_type: 'Altro',
-    products_selected: 'prodotti selezionati',
-    deselect_all: 'Deseleziona tutti',
-    import_btn: 'Importa →',
-    import_n: 'Importa {n} prodotti',
-    import_success: '{n} prodotti importati con successo!',
-    // Spec labels
-    spec_polishing: '精米歩合',
-    spec_alc: 'ALC',
-    spec_smv: '日本酒度',
-    spec_acidity: '酸度',
-    spec_yeast: '酵母',
-    spec_volumes: 'Formati',
-    // Settings
-    settings_title: 'Impostazioni',
-    settings_desc: 'Configura la tua API key per abilitare la scoperta intelligente.',
-    settings_api_label: 'Anthropic API Key',
-    settings_gmaps_label: 'Google Maps API Key',
-    settings_email_label: 'Email (per salvare i dati)',
-    save: 'Salva',
-    settings_tooltip: 'Impostazioni',
-    demo_notfound_title: 'Sakagura non trovata nella demo',
-    demo_notfound_desc: '"{name}" non è disponibile nella modalità demo. Puoi provare una delle sakagura demo oppure aggiungere la tua API key per cercare qualsiasi sakagura.',
-    demo_available: 'Sakagura disponibili nella demo:',
-    demo_unlock: 'Aggiungi la tua API key Anthropic per sbloccare la ricerca intelligente su qualsiasi sakagura',
-    demo_add_key: 'Aggiungi API Key',
-    gmaps_searching: 'Verifica su Google Maps...',
-    gmaps_verified: 'Verificato',
-    gmaps_not_found: 'Non trovato su Google Maps',
-    gmaps_rating: 'Valutazione Google',
-    gmaps_view_map: 'Vedi su Google Maps',
-    gmaps_verified_badge: 'Verificato Google Maps',
-    // Confirm
-    confirm_title: 'Abbiamo trovato questa sakagura',
-    confirm_question: 'È la tua sakagura?',
-    confirm_no: 'No, cerca di nuovo',
-    confirm_yes: 'Sì, è la mia!',
-    // Register
-    register_title: 'Registrati come referente',
-    register_desc: 'Crea il tuo account per gestire la sakagura e le schede tecniche.',
-    reg_name: 'Nome e cognome',
-    reg_role: 'Ruolo',
-    reg_role_owner: 'Proprietario / Kuramoto',
-    reg_role_manager: 'Manager',
-    reg_role_exporter: 'Esportatore / Importatore',
-    reg_role_staff: 'Staff',
-    reg_email: 'Email aziendale',
-    reg_pass: 'Password',
-    reg_domain_match: 'Il dominio email corrisponde alla sakagura — otterrai la spunta verificata!',
-    reg_submit: 'Crea Account e Accedi',
-    // Dashboard
-    dash_tab_products: 'Prodotti',
-    dash_tab_sheets: 'Schede Tecniche',
-    dash_tab_commercial: 'Vista Commerciale',
-    dash_tab_exporters: 'Esportatori',
-    dash_add: 'Aggiungi Sake',
-    dash_edit: 'Modifica',
-    dash_delete: 'Elimina',
-    dash_verify: 'Verifica Dominio',
-    dash_invite: 'Invita Staff',
-    dash_verified_owner: '✓ Owner Verificato',
-    dash_unverified: 'Non verificato — verifica il dominio',
-    dash_print_all: 'Stampa Tutte',
-    dash_print_sheet: 'Scheda Tecnica',
-    dash_print_commercial: 'Scheda Commerciale',
-    dash_no_exporters: 'Nessun esportatore collegato. Aggiungi il tuo primo esportatore.',
-    dash_add_exporter: 'Aggiungi Esportatore',
-    commercial_tagline: 'Tradizione e Innovazione',
-    sake_modal_add: 'Aggiungi Nuovo Sake',
-    sake_modal_edit: 'Modifica Sake',
-    domain_title: 'Verifica Dominio',
-    domain_desc: 'Per ottenere il badge "Owner Verificato", invia una email di conferma dal dominio della tua sakagura.',
-    domain_step1: 'Il dominio del tuo sito è:',
-    domain_step2: 'Invia una email a verify@sakeplatform.com da un indirizzo @',
-    domain_step3: 'Riceverai la spunta verde entro 24 ore.',
-    domain_alt: 'Metodo alternativo: inserisci il codice TXT nel DNS del tuo dominio.',
-    invite_title: 'Invita Staff',
+    hero_title:'酒蔵を探す', hero_sub:'TROVA LA TUA SAKAGURA',
+    search_placeholder:'Nome della sakagura...',
+    search_hint:'Inserisci il nome della tua sakagura. Cercheremo nel web <strong>dominio, prodotti e fonti</strong>.',
+    disc_sub:'Ricerca in corso',
+    step_0:'Ricerca del dominio e presenza web', step_1:'Ricerca fonti con prodotti', step_2:'Conteggio prodotti trovati',
+    sd_0:'Cerco dominio e sito ufficiale...', cancel:'Annulla',
+    res_title:'Abbiamo trovato risultati', res_desc:'Conferma quale è la tua sakagura per procedere alla registrazione.',
+    res_back:'← Cerca di nuovo', res_select:'Questa è la mia sakagura →', res_products:'prodotti trovati',
+    reg_title:'Registra la tua sakagura', reg_desc:'Crea il tuo account per gestire le schede tecniche.',
+    lbl_name:'Nome e cognome', lbl_email:'Email aziendale', lbl_pass:'Password',
+    domain_match:'✓ Il dominio email corrisponde — otterrai il badge verificato!',
+    btn_register:'Registrati e verifica email →',
+    verif_title:'Email di verifica inviata!',
+    verif_desc:'Abbiamo inviato un link di conferma a {email}. Controlla la tua casella.',
+    btn_enter:'Entra nella dashboard →',
+    upload_title:'Carica le tue schede tecniche',
+    upload_desc:'Carica i documenti che hai oggi — PDF, Excel, Word, o anche foto.\nNoi li leggiamo e strutturiamo automaticamente.',
+    upload_formats:'Formati: <strong>PDF, XLSX, CSV, DOCX, JPG, PNG</strong>',
+    upload_processing:'Elaborazione...', upload_done:'Elaborato',
+    products_title:'Prodotti trovati nei tuoi documenti',
+    verified_owner:'✓ Owner Verificato', pending_verif:'⏳ Verifica email in corso',
+    logout:'Esci',
   },
   en: {
-    nav_discover: 'Discover',
-    nav_products: 'Products',
-    nav_sheets: 'Sheets',
-    hero_title: '酒蔵を探す',
-    hero_sub: 'FIND YOUR SAKAGURA',
-    search_placeholder: 'Brewery name...',
-    search_hint: 'Demo: <strong>Tatenokawa, Koikawa, Amabuki, Dassai, Kubota</strong> — or add API key to search any brewery.',
-    search_hint_ai: 'Type any brewery name and the platform will find <strong>company, products and specs</strong> automatically.',
-    disc_subtitle: 'Analysis in progress',
-    step_0: 'Searching for official website',
-    step_1: 'Analyzing product pages',
-    step_2: 'Extracting technical specs',
-    step_3: 'Searching for additional info',
-    step_4: 'Preparing results',
-    step_detail_0: 'Web search in progress...',
-    step_detail_4: 'Organizing data...',
-    cancel: 'Cancel',
-    sim_found: 'Found:',
-    sim_pages: 'pages analyzed',
-    sim_products: 'products found',
-    sim_extra: 'Ratings and notes added',
-    sim_ready: 'Ready!',
-    sim_reading: 'Reading product pages...',
-    sim_parsing: 'Parsing specs...',
-    sim_searching: 'Saketime, retailers...',
-    sim_organizing: 'Organizing data...',
-    ai_asking: 'Asking Claude to search...',
-    ai_found: 'Basic info found',
-    ai_analyzing: 'Analyzing products...',
-    ai_extracted: 'Specs extracted',
-    ai_integrating: 'Integrating data...',
-    ai_integrated: 'Data integrated',
-    ai_preparing: 'Preparing results...',
-    ai_error: 'Error:',
-    ai_error_msg: 'Search error:',
-    ai_error_check: 'Check your API key in settings.',
-    new_search: '← New search',
-    import_selected: 'Import selected',
-    profile_title: 'Sakagura Profile',
-    auto_filled: 'Auto-filled',
-    label_name: 'Name',
-    label_name_en: 'Name (EN)',
-    label_prefecture: 'Prefecture',
-    label_address: 'Address',
-    label_phone: 'Phone',
-    label_fax: 'Fax',
-    label_website: 'Website',
-    label_philosophy: 'Philosophy',
-    label_speciality: 'Speciality',
-    label_rice_types: 'Rice varieties',
-    products: 'Products',
-    found: 'found',
-    all_filter: 'All',
-    other_type: 'Other',
-    products_selected: 'products selected',
-    deselect_all: 'Deselect all',
-    import_btn: 'Import →',
-    import_n: 'Import {n} products',
-    import_success: '{n} products imported successfully!',
-    spec_polishing: 'Polish',
-    spec_alc: 'ALC',
-    spec_smv: 'SMV',
-    spec_acidity: 'Acidity',
-    spec_yeast: 'Yeast',
-    spec_volumes: 'Sizes',
-    settings_title: 'Settings',
-    settings_desc: 'Set your API key to enable intelligent discovery.',
-    settings_api_label: 'Anthropic API Key',
-    settings_gmaps_label: 'Google Maps API Key',
-    settings_email_label: 'Email (to save data)',
-    save: 'Save',
-    settings_tooltip: 'Settings',
-    demo_notfound_title: 'Brewery not found in demo',
-    demo_notfound_desc: '"{name}" is not available in demo mode. Try one of the demo breweries below or add your API key to search any brewery.',
-    demo_available: 'Available in demo:',
-    demo_unlock: 'Add your Anthropic API key to unlock intelligent search for any brewery',
-    demo_add_key: 'Add API Key',
-    gmaps_searching: 'Verifying on Google Maps...',
-    gmaps_verified: 'Verified',
-    gmaps_not_found: 'Not found on Google Maps',
-    gmaps_rating: 'Google Rating',
-    gmaps_view_map: 'View on Google Maps',
-    gmaps_verified_badge: 'Google Maps Verified',
-    confirm_title: 'We found this brewery',
-    confirm_question: 'Is this your brewery?',
-    confirm_no: 'No, search again',
-    confirm_yes: 'Yes, it\'s mine!',
-    register_title: 'Register as representative',
-    register_desc: 'Create your account to manage the brewery and technical sheets.',
-    reg_name: 'Full name',
-    reg_role: 'Role',
-    reg_role_owner: 'Owner / Kuramoto',
-    reg_role_manager: 'Manager',
-    reg_role_exporter: 'Exporter / Importer',
-    reg_role_staff: 'Staff',
-    reg_email: 'Business email',
-    reg_pass: 'Password',
-    reg_domain_match: 'Your email domain matches the brewery — you\'ll get the verified badge!',
-    reg_submit: 'Create Account & Enter',
-    dash_tab_products: 'Products',
-    dash_tab_sheets: 'Technical Sheets',
-    dash_tab_commercial: 'Commercial View',
-    dash_tab_exporters: 'Exporters',
-    dash_add: 'Add Sake',
-    dash_edit: 'Edit',
-    dash_delete: 'Delete',
-    dash_verify: 'Verify Domain',
-    dash_invite: 'Invite Staff',
-    dash_verified_owner: '✓ Verified Owner',
-    dash_unverified: 'Unverified — verify your domain',
-    dash_print_all: 'Print All',
-    dash_print_sheet: 'Technical Sheet',
-    dash_print_commercial: 'Commercial Sheet',
-    dash_no_exporters: 'No exporters connected. Add your first exporter.',
-    dash_add_exporter: 'Add Exporter',
-    commercial_tagline: 'Tradition & Innovation',
-    sake_modal_add: 'Add New Sake',
-    sake_modal_edit: 'Edit Sake',
-    domain_title: 'Domain Verification',
-    domain_desc: 'To get the "Verified Owner" badge, send a confirmation email from your brewery\'s domain.',
-    domain_step1: 'Your website domain is:',
-    domain_step2: 'Send an email to verify@sakeplatform.com from an @',
-    domain_step3: 'You\'ll receive the green badge within 24 hours.',
-    domain_alt: 'Alternative: add a TXT record to your domain\'s DNS.',
-    invite_title: 'Invite Staff',
+    hero_title:'酒蔵を探す', hero_sub:'FIND YOUR SAKAGURA',
+    search_placeholder:'Brewery name...',
+    search_hint:'Enter your brewery name. We\'ll search the web for <strong>domain, products and sources</strong>.',
+    disc_sub:'Search in progress',
+    step_0:'Searching for domain and web presence', step_1:'Searching product sources', step_2:'Counting products found',
+    sd_0:'Searching for domain and website...', cancel:'Cancel',
+    res_title:'We found results', res_desc:'Confirm which is your brewery to proceed.',
+    res_back:'← Search again', res_select:'This is my brewery →', res_products:'products found',
+    reg_title:'Register your brewery', reg_desc:'Create your account to manage technical sheets.',
+    lbl_name:'Full name', lbl_email:'Business email', lbl_pass:'Password',
+    domain_match:'✓ Email domain matches — you\'ll get the verified badge!',
+    btn_register:'Register & verify email →',
+    verif_title:'Verification email sent!',
+    verif_desc:'We sent a confirmation link to {email}. Check your inbox.',
+    btn_enter:'Enter the dashboard →',
+    upload_title:'Upload your technical sheets',
+    upload_desc:'Upload your current documents — PDF, Excel, Word, or even photos.\nWe\'ll read and structure them automatically.',
+    upload_formats:'Formats: <strong>PDF, XLSX, CSV, DOCX, JPG, PNG</strong>',
+    upload_processing:'Processing...', upload_done:'Processed',
+    products_title:'Products found in your documents',
+    verified_owner:'✓ Verified Owner', pending_verif:'⏳ Email verification pending',
+    logout:'Logout',
   },
   ja: {
-    nav_discover: '検索',
-    nav_products: '商品',
-    nav_sheets: '技術シート',
-    hero_title: '酒蔵を探す',
-    hero_sub: 'あなたの酒蔵を見つける',
-    search_placeholder: '酒蔵の名前...',
-    search_hint: 'デモ: <strong>楯の川、鯉川、天吹、獺祭、久保田</strong> — APIキーを追加すると全酒蔵を検索可能。',
-    search_hint_ai: '酒蔵名を入力すると、<strong>会社情報、商品、技術仕様</strong>を自動で取得します。',
-    disc_subtitle: '分析中',
-    step_0: '公式サイトを検索中',
-    step_1: '商品ページを分析中',
-    step_2: '技術仕様を抽出中',
-    step_3: '追加情報を検索中',
-    step_4: '結果を準備中',
-    step_detail_0: 'ウェブ検索中...',
-    step_detail_4: 'データ整理中...',
-    cancel: 'キャンセル',
-    sim_found: '発見:',
-    sim_pages: 'ページ分析済み',
-    sim_products: '商品発見',
-    sim_extra: '評価とメモ追加済み',
-    sim_ready: '完了！',
-    sim_reading: '商品ページ読み込み中...',
-    sim_parsing: '仕様解析中...',
-    sim_searching: 'Saketime、販売店...',
-    sim_organizing: 'データ整理中...',
-    ai_asking: 'Claudeに検索を依頼中...',
-    ai_found: '基本情報取得済み',
-    ai_analyzing: '商品分析中...',
-    ai_extracted: '仕様抽出済み',
-    ai_integrating: 'データ統合中...',
-    ai_integrated: 'データ統合済み',
-    ai_preparing: '結果準備中...',
-    ai_error: 'エラー:',
-    ai_error_msg: '検索エラー:',
-    ai_error_check: '設定でAPIキーを確認してください。',
-    new_search: '← 新しい検索',
-    import_selected: '選択をインポート',
-    profile_title: '酒蔵プロフィール',
-    auto_filled: '自動入力',
-    label_name: '名前',
-    label_name_en: '名前（英語）',
-    label_prefecture: '都道府県',
-    label_address: '住所',
-    label_phone: '電話番号',
-    label_fax: 'FAX',
-    label_website: 'ウェブサイト',
-    label_philosophy: '理念',
-    label_speciality: '特徴',
-    label_rice_types: '使用米品種',
-    products: '商品',
-    found: '件',
-    all_filter: '全て',
-    other_type: 'その他',
-    products_selected: '商品選択済み',
-    deselect_all: '全て解除',
-    import_btn: 'インポート →',
-    import_n: '{n}商品をインポート',
-    import_success: '{n}商品をインポートしました！',
-    spec_polishing: '精米歩合',
-    spec_alc: 'ALC',
-    spec_smv: '日本酒度',
-    spec_acidity: '酸度',
-    spec_yeast: '酵母',
-    spec_volumes: '容量',
-    settings_title: '設定',
-    settings_desc: 'インテリジェント検索を有効にするAPIキーを設定してください。',
-    settings_api_label: 'Anthropic APIキー',
-    settings_gmaps_label: 'Google Maps APIキー',
-    settings_email_label: 'メール（データ保存用）',
-    save: '保存',
-    settings_tooltip: '設定',
-    demo_notfound_title: 'デモに酒蔵が見つかりません',
-    demo_notfound_desc: '「{name}」はデモモードでは利用できません。デモ酒蔵を試すか、APIキーを追加してすべての酒蔵を検索できます。',
-    demo_available: 'デモで利用可能:',
-    demo_unlock: 'Anthropic APIキーを追加して、すべての酒蔵のインテリジェント検索を有効にしてください',
-    demo_add_key: 'APIキーを追加',
-    gmaps_searching: 'Googleマップで確認中...',
-    gmaps_verified: '確認済み',
-    gmaps_not_found: 'Googleマップで見つかりません',
-    gmaps_rating: 'Google評価',
-    gmaps_view_map: 'Googleマップで見る',
-    gmaps_verified_badge: 'Googleマップ確認済み',
-    confirm_title: 'この酒蔵を見つけました',
-    confirm_question: 'あなたの酒蔵ですか？',
-    confirm_no: 'いいえ、再検索',
-    confirm_yes: 'はい、私の酒蔵です！',
-    register_title: '担当者として登録',
-    register_desc: '酒蔵と技術シートを管理するアカウントを作成してください。',
-    reg_name: '氏名',
-    reg_role: '役割',
-    reg_role_owner: 'オーナー / 蔵元',
-    reg_role_manager: 'マネージャー',
-    reg_role_exporter: '輸出業者 / 輸入業者',
-    reg_role_staff: 'スタッフ',
-    reg_email: 'ビジネスメール',
-    reg_pass: 'パスワード',
-    reg_domain_match: 'メールドメインが酒蔵と一致 — 認証バッジが取得できます！',
-    reg_submit: 'アカウント作成してログイン',
-    dash_tab_products: '商品',
-    dash_tab_sheets: '技術シート',
-    dash_tab_commercial: '商用ビュー',
-    dash_tab_exporters: '輸出業者',
-    dash_add: '日本酒を追加',
-    dash_edit: '編集',
-    dash_delete: '削除',
-    dash_verify: 'ドメイン認証',
-    dash_invite: 'スタッフ招待',
-    dash_verified_owner: '✓ 認証済みオーナー',
-    dash_unverified: '未認証 — ドメインを認証してください',
-    dash_print_all: '全て印刷',
-    dash_print_sheet: '技術シート',
-    dash_print_commercial: '商用シート',
-    dash_no_exporters: '輸出業者が接続されていません。最初の輸出業者を追加してください。',
-    dash_add_exporter: '輸出業者を追加',
-    commercial_tagline: '伝統と革新',
-    sake_modal_add: '新しい日本酒を追加',
-    sake_modal_edit: '日本酒を編集',
-    domain_title: 'ドメイン認証',
-    domain_desc: '「認証済みオーナー」バッジを取得するには、酒蔵のドメインから確認メールを送信してください。',
-    domain_step1: 'ウェブサイトのドメイン:',
-    domain_step2: 'verify@sakeplatform.com にメールを送信（@',
-    domain_step3: '24時間以内に緑のバッジが付与されます。',
-    domain_alt: '代替方法：ドメインのDNSにTXTレコードを追加。',
-    invite_title: 'スタッフ招待',
+    hero_title:'酒蔵を探す', hero_sub:'あなたの酒蔵を見つける',
+    search_placeholder:'酒蔵の名前...',
+    search_hint:'酒蔵名を入力。<strong>ドメイン、商品、情報源</strong>をウェブで検索します。',
+    disc_sub:'検索中',
+    step_0:'ドメインとウェブプレゼンスの検索', step_1:'商品情報源の検索', step_2:'見つかった商品の集計',
+    sd_0:'ドメインと公式サイトを検索中...', cancel:'キャンセル',
+    res_title:'結果が見つかりました', res_desc:'登録に進むため、あなたの酒蔵を確認してください。',
+    res_back:'← もう一度検索', res_select:'これは私の酒蔵です →', res_products:'件の商品',
+    reg_title:'酒蔵を登録', reg_desc:'技術シートを管理するアカウントを作成。',
+    lbl_name:'氏名', lbl_email:'ビジネスメール', lbl_pass:'パスワード',
+    domain_match:'✓ メールドメインが一致 — 認証バッジ取得可能！',
+    btn_register:'登録してメール確認 →',
+    verif_title:'確認メール送信済み！',
+    verif_desc:'{email}に確認リンクを送信しました。受信トレイを確認してください。',
+    btn_enter:'ダッシュボードへ →',
+    upload_title:'技術シートをアップロード',
+    upload_desc:'今お持ちの書類をアップロード — PDF、Excel、Word、写真でもOK。\n自動で読み取り・構造化します。',
+    upload_formats:'対応形式: <strong>PDF、XLSX、CSV、DOCX、JPG、PNG</strong>',
+    upload_processing:'処理中...', upload_done:'処理済み',
+    products_title:'ドキュメントから見つかった商品',
+    verified_owner:'✓ 認証済みオーナー', pending_verif:'⏳ メール確認待ち',
+    logout:'ログアウト',
   }
 };
 
-// ─────────────────────────────────────────
-//  STATE
-// ─────────────────────────────────────────
 let state = {
-  lang: localStorage.getItem('sp_lang') || 'it',
-  apiKey: localStorage.getItem('sp_api_key') || '',
-  gmapsKey: localStorage.getItem('sp_gmaps_key') || '',
-  email: localStorage.getItem('sp_email') || '',
-  breweries: JSON.parse(localStorage.getItem('sp_breweries') || '[]'),
-  currentBrewery: null,
-  discoveryAborted: false,
-  timerInterval: null,
-  recentSearches: JSON.parse(localStorage.getItem('sp_recent') || '[]'),
+  lang: localStorage.getItem('sp_lang')||'it',
+  apiKey: localStorage.getItem('sp_api_key')||'',
+  user: JSON.parse(localStorage.getItem('sp_user')||'null'),
+  brewery: JSON.parse(localStorage.getItem('sp_brewery')||'null'),
+  files: JSON.parse(localStorage.getItem('sp_files')||'[]'),
+  aborted:false, timerInterval:null
 };
 
-function t(key) { return (I18N[state.lang] || I18N.it)[key] || key; }
+function t(k){return(I18N[state.lang]||I18N.it)[k]||k}
+function esc(s){if(!s)return'';const d=document.createElement('div');d.textContent=s;return d.innerHTML}
 
-// ─────────────────────────────────────────
-//  LANGUAGE SWITCH
-// ─────────────────────────────────────────
-function switchLang(lang) {
-  state.lang = lang;
-  localStorage.setItem('sp_lang', lang);
-  applyLang();
+function switchLang(l){state.lang=l;localStorage.setItem('sp_lang',l);applyLang();}
+function applyLang(){
+  document.querySelectorAll('.lang-btn').forEach(b=>b.classList.toggle('active',b.dataset.lang===state.lang));
+  document.getElementById('hero-kanji').textContent=t('hero_title');
+  document.getElementById('hero-sub').textContent=t('hero_sub');
+  document.getElementById('search-input').placeholder=t('search_placeholder');
+  document.getElementById('search-hint').innerHTML=t('search_hint');
+  document.getElementById('disc-sub').textContent=t('disc_sub');
+  document.getElementById('sl-0').textContent=t('step_0');
+  document.getElementById('sl-1').textContent=t('step_1');
+  document.getElementById('sl-2').textContent=t('step_2');
+  document.getElementById('sd-0').textContent=t('sd_0');
+  document.getElementById('disc-cancel').textContent=t('cancel');
+  document.getElementById('res-title').textContent=t('res_title');
+  document.getElementById('res-desc').textContent=t('res_desc');
+  document.getElementById('res-back-btn').textContent=t('res_back');
+  document.getElementById('reg-title').textContent=t('reg_title');
+  document.getElementById('reg-desc').textContent=t('reg_desc');
+  document.getElementById('lbl-name').textContent=t('lbl_name');
+  document.getElementById('lbl-email').textContent=t('lbl_email');
+  document.getElementById('lbl-pass').textContent=t('lbl_pass');
+  document.getElementById('domain-hint').textContent=t('domain_match');
+  document.getElementById('btn-register').textContent=t('btn_register');
+  document.getElementById('btn-enter-dash').textContent=t('btn_enter');
+  document.getElementById('upload-title').textContent=t('upload_title');
+  document.getElementById('upload-desc').textContent=t('upload_desc');
+  document.getElementById('upload-formats').innerHTML=t('upload_formats');
+  document.getElementById('btn-logout').textContent=t('logout');
 }
 
-function applyLang() {
-  // Active button
-  document.querySelectorAll('.lang-btn').forEach(b => {
-    b.classList.toggle('active', b.dataset.lang === state.lang);
-  });
-  // Nav buttons
-  const navMap = ['search', 'products-list', 'sheets'];
-  const navLabels = [t('nav_discover'), t('nav_products'), t('nav_sheets')];
-  document.querySelectorAll('.topbar-nav button').forEach((b, i) => {
-    b.textContent = navLabels[i];
-  });
-  // Hero
-  document.getElementById('hero-kanji').textContent = t('hero_title');
-  document.getElementById('hero-sub').textContent = t('hero_sub');
-  document.getElementById('brewery-input').placeholder = t('search_placeholder');
-  document.getElementById('search-hint').innerHTML = state.apiKey ? t('search_hint_ai') : t('search_hint');
-  // Discovery
-  document.getElementById('disc-subtitle').textContent = t('disc_subtitle');
-  for (let i = 0; i < 5; i++) {
-    document.getElementById('step-label-' + i).textContent = t('step_' + i);
-  }
-  document.getElementById('step-detail-0').textContent = t('step_detail_0');
-  document.getElementById('step-detail-4').textContent = t('step_detail_4');
-  document.getElementById('disc-cancel').textContent = t('cancel');
-  // Settings
-  document.getElementById('settings-title').textContent = t('settings_title');
-  document.getElementById('settings-desc').textContent = t('settings_desc');
-  document.getElementById('settings-api-label').textContent = t('settings_api_label');
-  document.getElementById('settings-email-label').textContent = t('settings_email_label');
-  document.getElementById('settings-cancel-btn').textContent = t('cancel');
-  document.getElementById('settings-save-btn').textContent = t('save');
-  document.getElementById('settings-btn-top').title = t('settings_tooltip');
-  // Re-render results if visible
-  if (state.currentBrewery && document.getElementById('screen-results').classList.contains('active')) {
-    renderResults(state.currentBrewery);
-  }
+function showPage(n){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  const el=document.getElementById('page-'+n);
+  if(el)el.classList.add('active');
+  document.getElementById('btn-logout').style.display=(n==='dashboard')?'block':'none';
 }
+function goHome(){showPage(state.user&&state.brewery?'dashboard':'search');}
 
-// ─────────────────────────────────────────
-//  NAVIGATION
-// ─────────────────────────────────────────
-function showScreen(name) {
-  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-  const el = document.getElementById('screen-' + name);
-  if (el) el.classList.add('active');
-  // Highlight nav
-  const navScreenMap = { search: 0, results: 0, confirm: 0, register: 0, discovery: 0, dashboard: -1, 'products-list': 1, sheets: 2 };
-  const idx = navScreenMap[name] ?? -1;
-  document.querySelectorAll('.topbar-nav button').forEach((b, i) => {
-    b.classList.toggle('active', i === idx);
-  });
+// SEARCH & DISCOVERY
+let timer=0;
+function startTimer(){timer=0;const el=document.getElementById('disc-timer');state.timerInterval=setInterval(()=>{timer++;el.textContent=String(Math.floor(timer/60)).padStart(2,'0')+':'+String(timer%60).padStart(2,'0');},1000);}
+function stopTimer(){if(state.timerInterval)clearInterval(state.timerInterval);}
+function setStep(i,st,detail){
+  document.querySelectorAll('.progress-step').forEach((s,idx)=>{s.classList.remove('active','done');if(idx<i)s.classList.add('done');if(idx===i&&st==='active')s.classList.add('active');if(idx===i&&st==='done')s.classList.add('done');});
+  if(detail){const el=document.getElementById('sd-'+i);if(el)el.textContent=detail;}
 }
+function cancelSearch(){state.aborted=true;stopTimer();showPage('search');}
 
-// ─────────────────────────────────────────
-//  SETTINGS
-// ─────────────────────────────────────────
-function openSettings() {
-  document.getElementById('api-key-input').value = state.apiKey;
-  document.getElementById('user-email-input').value = state.email;
-  document.getElementById('settings-modal').classList.add('active');
-}
-function closeSettings() {
-  document.getElementById('settings-modal').classList.remove('active');
-}
-function saveSettings() {
-  state.apiKey = document.getElementById('api-key-input').value.trim();
-  state.email = document.getElementById('user-email-input').value.trim();
-  localStorage.setItem('sp_api_key', state.apiKey);
-  localStorage.setItem('sp_email', state.email);
-  closeSettings();
-  applyLang(); // refresh hint
-}
-
-// ─────────────────────────────────────────
-//  RECENT SEARCHES
-// ─────────────────────────────────────────
-function renderRecent() {
-  const c = document.getElementById('recent-searches');
-  c.innerHTML = '';
-  state.recentSearches.slice(0, 5).forEach(name => {
-    const tag = document.createElement('div');
-    tag.className = 'recent-tag';
-    tag.textContent = name;
-    tag.onclick = () => {
-      document.getElementById('brewery-input').value = name;
-      startDiscovery();
-    };
-    c.appendChild(tag);
-  });
-}
-
-// ─────────────────────────────────────────
-//  DISCOVERY ENGINE
-// ─────────────────────────────────────────
-let discoveryTimer = 0;
-
-function startTimer() {
-  discoveryTimer = 0;
-  const el = document.getElementById('disc-timer');
-  state.timerInterval = setInterval(() => {
-    discoveryTimer++;
-    const m = String(Math.floor(discoveryTimer / 60)).padStart(2, '0');
-    const s = String(discoveryTimer % 60).padStart(2, '0');
-    el.textContent = m + ':' + s;
-  }, 1000);
-}
-
-function stopTimer() {
-  if (state.timerInterval) clearInterval(state.timerInterval);
-}
-
-function setStep(index, status, detail) {
-  const steps = document.querySelectorAll('.progress-step');
-  steps.forEach((step, i) => {
-    step.classList.remove('active', 'done');
-    if (i < index) step.classList.add('done');
-    if (i === index && status === 'active') step.classList.add('active');
-    if (i === index && status === 'done') step.classList.add('done');
-  });
-  if (detail && document.getElementById('step-detail-' + index)) {
-    document.getElementById('step-detail-' + index).textContent = detail;
-  }
-}
-
-function cancelDiscovery() {
-  state.discoveryAborted = true;
-  stopTimer();
-  showScreen('search');
-}
-
-async function startDiscovery() {
-  const name = document.getElementById('brewery-input').value.trim();
-  if (!name) return;
-
-  state.recentSearches = [name, ...state.recentSearches.filter(n => n !== name)].slice(0, 8);
-  localStorage.setItem('sp_recent', JSON.stringify(state.recentSearches));
-
-  state.discoveryAborted = false;
-  state.googlePlace = null;
-  document.getElementById('disc-name').textContent = name;
-  document.querySelectorAll('.progress-step').forEach(s => s.classList.remove('active', 'done'));
-  document.getElementById('disc-timer').textContent = '00:00';
-  showScreen('discovery');
+async function startSearch(){
+  const name=document.getElementById('search-input').value.trim();
+  if(!name)return;
+  state.aborted=false;
+  document.getElementById('disc-name').textContent=name;
+  document.getElementById('disc-timer').textContent='00:00';
+  document.querySelectorAll('.progress-step').forEach(s=>s.classList.remove('active','done'));
+  document.querySelectorAll('.step-detail').forEach(s=>s.textContent='');
+  showPage('discovery');
   startTimer();
+  const delay=ms=>new Promise(r=>setTimeout(r,ms));
 
-  // Always verify via free Nominatim/OSM — no API key needed
-  setStep(0, 'active', t('gmaps_searching'));
-  const place = await geocodeLookup(name);
-  if (state.discoveryAborted) return;
-  if (place) {
-    state.googlePlace = place;
-    setStep(0, 'done', '✓ ' + t('gmaps_verified') + ': ' + (place.displayName || name));
-    document.getElementById('disc-name').textContent = place.displayName || name;
-  } else {
-    setStep(0, 'done', t('gmaps_not_found'));
-  }
+  // Step 1: domain
+  setStep(0,'active',t('sd_0'));
+  const geo=await geocodeLookup(name);
+  if(state.aborted)return;
+  let displayName=name,domain='';
+  if(geo){displayName=geo.displayName||name;domain=geo.website||'';
+    setStep(0,'done','✓ '+displayName+(domain?' — '+domain:''));
+    document.getElementById('disc-name').textContent=displayName;
+  } else { setStep(0,'done','✓ '+name); }
+  await delay(600);
 
-  if (!state.apiKey) {
-    await simulateDiscovery(name);
-    return;
-  }
-  await aiDiscovery(name);
-}
-
-// ─────────────────────────────────────────
-//  GEOCODE LOOKUP (Free — Nominatim / OSM)
-// ─────────────────────────────────────────
-async function geocodeLookup(name) {
-  try {
-    // Search Nominatim for the brewery — add 酒造 to improve Japanese results
-    const queries = [
-      name + ' 酒造',
-      name + ' sake brewery',
-      name
-    ];
-    for (const query of queries) {
-      const url = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(query)}&format=json&addressdetails=1&limit=3&accept-language=ja`;
-      const resp = await fetch(url, {
-        headers: { 'User-Agent': 'SakePlatform/1.0 (sakeplatform.com)' }
-      });
-      if (!resp.ok) continue;
-      const results = await resp.json();
-      if (!results || results.length === 0) continue;
-
-      // Find best result — prefer ones in Japan
-      const best = results.find(r => r.address?.country_code === 'jp') || results[0];
-      const addr = best.address || {};
-      const prefecture = addr.province || addr.state || addr.county || '';
-      const fullAddress = best.display_name || '';
-      const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${best.lat},${best.lon}`;
-
-      return {
-        displayName: best.name || best.display_name?.split(',')[0] || '',
-        address: fullAddress,
-        lat: parseFloat(best.lat),
-        lng: parseFloat(best.lon),
-        prefecture: prefecture,
-        mapsUrl: mapsUrl,
-        osmType: best.type,
-        osmClass: best.class,
-        importance: best.importance
-      };
-    }
-    return null;
-  } catch (err) {
-    console.warn('Geocode lookup failed:', err);
-    return null;
-  }
-}
-
-async function simulateDiscovery(name) {
-  const delay = ms => new Promise(r => setTimeout(r, ms));
-  if (state.discoveryAborted) return;
-  const brewery = getDemoBrewery(name);
-
-  // Not found in demo mode — show prompt to add API key
-  if (!brewery) {
-    stopTimer();
-    showScreen('search');
-    showDemoNotFound(name);
-    return;
-  }
-
-  const site = brewery.company.website;
-  const prodCount = brewery.products.length;
-  // Step 0 already done by geocode in startDiscovery
-  setStep(1, 'active', t('sim_reading'));
-  await delay(1500);
-  if (state.discoveryAborted) return;
-  setStep(1, 'done', '3 ' + t('sim_pages'));
-  setStep(2, 'active', t('sim_parsing'));
-  await delay(2500);
-  if (state.discoveryAborted) return;
-  setStep(2, 'done', prodCount + ' ' + t('sim_products'));
-  setStep(3, 'active', t('sim_searching'));
-  await delay(1500);
-  if (state.discoveryAborted) return;
-  setStep(3, 'done', t('sim_extra'));
-  setStep(4, 'active', t('sim_organizing'));
-  await delay(1000);
-  if (state.discoveryAborted) return;
-  setStep(4, 'done', t('sim_ready'));
-  stopTimer();
+  // Step 2: products
+  if(state.aborted)return;
+  setStep(1,'active',state.lang==='it'?'Cerco fonti con prodotti...':state.lang==='ja'?'商品のある情報源を検索中...':'Searching product sources...');
+  let data=null;
+  if(state.apiKey){data=await aiSearch(name);} else {data=getDemoBrewery(name);await delay(2000);}
+  if(state.aborted)return;
+  if(!data)data={company:{name_jp:displayName,name_en:'',website:domain,prefecture:geo?.prefecture||''},products:[]};
+  const pc=data.products?.length||0;
+  setStep(1,'done','✓ '+pc+' '+t('res_products'));
   await delay(500);
 
-  state.currentBrewery = brewery;
-  showConfirmScreen(brewery);
+  // Step 3: finalize
+  if(state.aborted)return;
+  setStep(2,'active',state.lang==='it'?'Preparo risultati...':state.lang==='ja'?'結果を準備中...':'Preparing results...');
+  await delay(600);
+  setStep(2,'done','✓');
+  stopTimer();
+  await delay(400);
+  if(geo){if(!data.company.address&&geo.address)data.company.address=geo.address;if(!data.company.prefecture&&geo.prefecture)data.company.prefecture=geo.prefecture;data._geo=geo;}
+  showResults(data);
 }
 
-function showDemoNotFound(name) {
-  const demoNames = ['楯の川 (Tatenokawa)', '鯉川 (Koikawa)', '天吹 (Amabuki)', '獺祭 / 旭酒造 (Dassai)', '久保田 / 朝日酒造 (Kubota)'];
-  const modal = document.createElement('div');
-  modal.className = 'demo-modal-overlay';
-  modal.innerHTML = `
-    <div class="demo-modal">
-      <div class="demo-modal-icon">🔑</div>
-      <h3>${esc(t('demo_notfound_title'))}</h3>
-      <p>${t('demo_notfound_desc').replace('{name}', esc(name))}</p>
-      <div class="demo-modal-section">
-        <div class="demo-modal-label">${esc(t('demo_available'))}</div>
-        <div class="demo-tags">${demoNames.map(n => `<span class="demo-tag" onclick="this.closest('.demo-modal-overlay').remove(); document.getElementById('brewery-input').value='${n.split(' (')[0]}'; startDiscovery();">${n}</span>`).join('')}</div>
-      </div>
-      <div class="demo-modal-divider"></div>
-      <p class="demo-modal-hint">${esc(t('demo_unlock'))}</p>
-      <div class="demo-modal-actions">
-        <button class="btn btn-secondary" onclick="this.closest('.demo-modal-overlay').remove()">${esc(t('cancel'))}</button>
-        <button class="btn btn-primary" onclick="this.closest('.demo-modal-overlay').remove(); openSettings();">🔑 ${esc(t('demo_add_key'))}</button>
-      </div>
-    </div>
-  `;
-  document.body.appendChild(modal);
-}
-
-// ─────────────────────────────────────────
-//  AI DISCOVERY
-// ─────────────────────────────────────────
-async function aiDiscovery(name) {
-  const delay = ms => new Promise(r => setTimeout(r, ms));
-  // Step 0 already done by geocode in startDiscovery
-  setStep(1, 'active', t('ai_asking'));
-
-  try {
-    const searchPrompt = `Search for the Japanese sake brewery "${name}". Find:
-1. Official website URL
-2. Company details: full name (JP + EN), prefecture, address, phone, founding year, philosophy
-3. ALL products with: name (JP), type (Junmai Daiginjo/Ginjo/etc), rice variety, polishing rate %, alcohol %, SMV, acidity, volumes, prices
-4. Tasting notes for each product
-
-Return ONLY valid JSON:
-{
-  "company": { "name_jp": "", "name_en": "", "prefecture": "", "address": "", "phone": "", "fax": "", "founded": "", "website": "", "philosophy": "", "speciality": "", "rice_types": [] },
-  "products": [{ "name_jp": "", "name_en": "", "type": "", "type_detail": "", "rice": "", "polishing_rate": "", "alcohol": "", "smv": "", "acidity": "", "yeast": "", "volumes": [{"size":"","price":""}], "tasting_notes": "", "awards": "" }]
-}`;
-
-    const resp = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'x-api-key': state.apiKey,
-        'anthropic-version': '2023-06-01',
-        'anthropic-dangerous-direct-browser-access': 'true'
-      },
-      body: JSON.stringify({
-        model: 'claude-sonnet-4-20250514',
-        max_tokens: 8000,
-        messages: [{ role: 'user', content: searchPrompt }]
-      })
-    });
-
-    if (!resp.ok) {
-      const err = await resp.json();
-      throw new Error(err.error?.message || 'API error');
+async function geocodeLookup(name){
+  try{const qs=[name+' 酒造',name+' sake brewery',name];
+    for(const q of qs){const r=await fetch(`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(q)}&format=json&addressdetails=1&limit=3&accept-language=ja`,{headers:{'User-Agent':'SakePlatform/2.0'}});
+      if(!r.ok)continue;const res=await r.json();if(!res.length)continue;
+      const b=res.find(r=>r.address?.country_code==='jp')||res[0];const a=b.address||{};
+      return{displayName:b.name||'',address:b.display_name||'',lat:+b.lat,lng:+b.lon,prefecture:a.province||a.state||'',mapsUrl:`https://www.google.com/maps/search/?api=1&query=${b.lat},${b.lon}`};
     }
-
-    setStep(1, 'done', t('ai_found'));
-    setStep(2, 'active', t('ai_analyzing'));
-    await delay(500);
-
-    const data = await resp.json();
-    const text = data.content[0].text;
-    const jsonMatch = text.match(/\{[\s\S]*\}/);
-    if (!jsonMatch) throw new Error('No JSON in response');
-
-    const brewery = JSON.parse(jsonMatch[0]);
-
-    setStep(2, 'done', `${brewery.products?.length || 0} ${t('sim_products')}`);
-    setStep(3, 'active', t('ai_integrating'));
-    await delay(600);
-    setStep(3, 'done', t('ai_integrated'));
-    setStep(4, 'active', t('ai_preparing'));
-    await delay(400);
-    setStep(4, 'done', t('sim_ready'));
-    stopTimer();
-    await delay(500);
-
-    state.currentBrewery = brewery;
-    showConfirmScreen(brewery);
-
-  } catch (err) {
-    stopTimer();
-    setStep(0, 'done', t('ai_error') + ' ' + err.message);
-    alert(t('ai_error_msg') + ' ' + err.message + '\n\n' + t('ai_error_check'));
-    showScreen('search');
-  }
+  }catch(e){}return null;
 }
 
-// ─────────────────────────────────────────
-//  DEMO DATA
-// ─────────────────────────────────────────
-function getDemoBrewery(name) {
-  const q = name.toLowerCase();
-  if (q.includes('楯') || q.includes('tatenokawa') || q.includes('tateno')) {
-    return getTatenokawaDemo();
-  }
-  if (q.includes('鯉') || q.includes('koikawa') || q.includes('koika')) {
-    return getKoikawaDemo();
-  }
-  if (q.includes('天吹') || q.includes('amabuki')) {
-    return getAmabukiDemo();
-  }
-  if (q.includes('獺祭') || q.includes('dassai') || q.includes('旭酒造') || q.includes('asahi')) {
-    return getDassaiDemo();
-  }
-  if (q.includes('久保田') || q.includes('kubota') || q.includes('朝日酒造') || q.includes('asahi shuzo')) {
-    return getKubotaDemo();
-  }
-  return null; // Not found in demo
+async function aiSearch(name){
+  try{const p=`Search for Japanese sake brewery "${name}". Return ONLY valid JSON:\n{"company":{"name_jp":"","name_en":"","prefecture":"","address":"","phone":"","website":""},"products":[{"name_jp":"","name_en":"","type":"","type_detail":"","rice":"","polishing_rate":"","alcohol":"","smv":"","acidity":""}]}`;
+    const r=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json','x-api-key':state.apiKey,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:6000,messages:[{role:'user',content:p}]})});
+    if(!r.ok)return null;const d=await r.json();const txt=d.content[0].text;const m=txt.match(/\{[\s\S]*\}/);if(!m)return null;return JSON.parse(m[0]);
+  }catch(e){return null;}
 }
 
-function getTatenokawaDemo() {
-  return {
-    company: {
-      name_jp: '楯の川酒造 株式会社',
-      name_en: 'Tatenokawa Sake Brewery Co., Ltd.',
-      prefecture: '山形県 (Yamagata)',
-      address: '〒999-6724 山形県酒田市山楯字清水田27',
-      phone: '0234-52-2323',
-      fax: '0234-52-2322',
-      founded: '1832',
-      website: 'tatenokawa.com',
-      philosophy: '全量純米大吟醸蔵 — 全ての日本酒を純米大吟醸で醸す',
-      speciality: '精米歩合1%の光明、全量純米大吟醸',
-      rice_types: ['山田錦', '出羽燦々', '美山錦', '雪女神', '亀の尾', '惣兵衛早生', '酒未来']
-    },
-    products: [
-      { name_jp: '楯野川 光明 山田錦', name_en: 'Koumyou Yamada Nishiki', type: 'Junmai Daiginjo', type_detail: '純米大吟醸', rice: '山田錦 100% (兵庫県産)', polishing_rate: '1%', alcohol: '15%', smv: '-2', acidity: '1.3', yeast: '山形KA, 協会1801号', volumes: [{size:'720ml', price:'¥308,000'}], tasting_notes: '日本初の精米歩合1%の純米大吟醸。究極の透明感。', awards: '' },
-      { name_jp: '楯野川 光明 出羽燦々', name_en: 'Koumyou Dewa Sansan', type: 'Junmai Daiginjo', type_detail: '純米大吟醸', rice: '出羽燦々 (山形県産)', polishing_rate: '1%', alcohol: '15%', smv: '+3', acidity: '1.5', yeast: '山形KA', volumes: [{size:'720ml', price:'¥165,000'}], tasting_notes: '出羽燦々で挑む精米歩合1%。繊細かつ力強い。', awards: '' },
-      { name_jp: '楯野川 極限', name_en: 'Kyokugen (Ultimate)', type: 'Junmai Daiginjo', type_detail: '純米大吟醸', rice: '山田錦', polishing_rate: '8%', alcohol: '15%', smv: '-2', acidity: '1.2', yeast: '山形KA, 協会1801', volumes: [{size:'720ml', price:'¥38,500'}], tasting_notes: '精米歩合8%の極限。圧倒的な透明感と余韻。', awards: '' },
-      { name_jp: '楯野川 十八', name_en: 'Jyuuhachi (Eighteen)', type: 'Junmai Daiginjo', type_detail: '純米大吟醸', rice: '雪女神', polishing_rate: '18%', alcohol: '15%', smv: '-9', acidity: '1.4', yeast: '山形KA, M310', volumes: [{size:'720ml', price:'¥19,800'}], tasting_notes: '雪女神18%磨き。華やかな香りと上品な甘み。', awards: 'IWC Silver 2016-2018' },
-      { name_jp: '楯野川 清流', name_en: 'Seiryu (Clear Stream)', type: 'Junmai Daiginjo', type_detail: '純米大吟醸', rice: '出羽燦々 100%', polishing_rate: '50%', alcohol: '14-15%', smv: '-2', acidity: '1.4', yeast: '山形KA, 協会1801号', volumes: [{size:'300ml', price:'¥990'}, {size:'720ml', price:'¥2,420'}, {size:'1800ml', price:'¥4,180'}], tasting_notes: 'フラッグシップ。梨とメロンの華やかな香り、クリアで爽やかな余韻。', awards: '' },
-      { name_jp: '楯野川 主流', name_en: 'Shuryu (Mainstream)', type: 'Junmai Daiginjo', type_detail: '純米大吟醸', rice: '山田錦', polishing_rate: '50%', alcohol: '15-16%', smv: '-1', acidity: '1.3', yeast: '山形KA, 協会1801号', volumes: [{size:'720ml', price:'¥2,860'}, {size:'1800ml', price:'¥5,060'}], tasting_notes: '山田錦の旨味を引き出した王道。バランス抜群。', awards: '' },
-      { name_jp: '楯野川 本流辛口', name_en: 'Honryu Karakuchi (Dry)', type: 'Junmai Daiginjo', type_detail: '純米大吟醸', rice: '出羽燦々 (契約栽培米)', polishing_rate: '50%', alcohol: '15-16%', smv: '+8', acidity: '1.6', yeast: '山形KA', volumes: [{size:'720ml', price:'¥2,750'}, {size:'1800ml', price:'¥4,840'}], tasting_notes: 'キレのある辛口。食中酒として最適。', awards: '' },
-      { name_jp: '楯野川 渓流 中取り', name_en: 'Keiryu Nakadori', type: 'Junmai Daiginjo', type_detail: '純米大吟醸', rice: '美山錦 (山形県産)', polishing_rate: '50%', alcohol: '15%', smv: '+1', acidity: '1.5', yeast: '山形KA', volumes: [{size:'720ml', price:'¥2,750'}, {size:'1800ml', price:'¥4,840'}], tasting_notes: '美山錦の中取り。澄んだ味わいと穏やかな香り。', awards: '' },
-      { name_jp: '楯野川無我 ゴールド', name_en: 'Muga Gold', type: 'Junmai Daiginjo', type_detail: '純米大吟醸', rice: '山田錦 100%', polishing_rate: '50%', alcohol: '14%', smv: '-7', acidity: '1.5', yeast: 'K601', volumes: [{size:'720ml', price:'¥3,080'}, {size:'1800ml', price:'¥5,390'}], tasting_notes: '山田錦の甘みと華やかさ。ワイングラスで。', awards: '' },
-      { name_jp: '楯野川無我 レッド', name_en: 'Muga Red', type: 'Junmai Daiginjo', type_detail: '純米大吟醸', rice: '雪女神 100% (山形県産)', polishing_rate: '50%', alcohol: '14%', smv: '-5', acidity: '1.5', yeast: 'K601', volumes: [{size:'720ml', price:'¥3,080'}, {size:'1800ml', price:'¥5,390'}], tasting_notes: '雪女神の上品な甘みとフルーティーさ。', awards: '' },
-      { name_jp: '楯野川 Shield 亀の尾', name_en: 'Shield Kamenoo', type: 'Junmai Daiginjo', type_detail: '純米大吟醸', rice: '亀の尾 (山形県産)', polishing_rate: '50%', alcohol: '15%', smv: '-1', acidity: '1.5', yeast: '山形KA', volumes: [{size:'720ml', price:'¥2,475'}, {size:'1800ml', price:'¥4,400'}], tasting_notes: '亀の尾の独特な味わい。コクと爽やかさの共存。', awards: '' },
-      { name_jp: '楯野川 凌冴 +10', name_en: 'Ryouga +10', type: 'Junmai Daiginjo', type_detail: '純米大吟醸', rice: '美山錦', polishing_rate: '50%', alcohol: '15%', smv: '+10', acidity: '1.1', yeast: '山形KA', volumes: [{size:'720ml', price:'¥2,420'}, {size:'1800ml', price:'¥4,037'}], tasting_notes: 'シャープな辛口。山形県内限定。', awards: '' },
-    ]
-  };
-}
+const demoData={
+  tatenokawa:{company:{name_jp:'楯の川酒造',name_en:'Tatenokawa Sake Brewery',prefecture:'山形県',website:'tatenokawa.com',address:'山形県酒田市山楯字清水田27',phone:'0234-52-2323'},products:[
+    {name_jp:'楯野川 清流',name_en:'Seiryu',type:'Junmai Daiginjo',type_detail:'純米大吟醸',rice:'出羽燦々',polishing_rate:'50%',alcohol:'14-15%',smv:'-2',acidity:'1.4'},
+    {name_jp:'楯野川 光明',name_en:'Koumyou',type:'Junmai Daiginjo',type_detail:'純米大吟醸',rice:'山田錦',polishing_rate:'1%',alcohol:'15%',smv:'-2',acidity:'1.3'},
+    {name_jp:'楯野川 極限',name_en:'Kyokugen',type:'Junmai Daiginjo',type_detail:'純米大吟醸',rice:'山田錦',polishing_rate:'8%',alcohol:'15%'},
+    {name_jp:'楯野川 主流',name_en:'Shuryu',type:'Junmai Daiginjo',type_detail:'純米大吟醸',rice:'山田錦',polishing_rate:'50%',alcohol:'15-16%'},
+    {name_jp:'楯野川 本流辛口',name_en:'Honryu Karakuchi',type:'Junmai Daiginjo',type_detail:'純米大吟醸',rice:'出羽燦々',polishing_rate:'50%',alcohol:'15-16%',smv:'+8'},
+  ]},
+  koikawa:{company:{name_jp:'鯉川酒造',name_en:'Koikawa Sake Brewery',prefecture:'山形県',website:'sake-koikawa.jp',address:'山形県東田川郡庄内町余目字興野42'},products:[
+    {name_jp:'純米大吟醸 亀の尾',name_en:'Junmai Daiginjo Kamenoo',type:'Junmai Daiginjo',type_detail:'純米大吟醸',rice:'亀の尾 100%',polishing_rate:'45%',alcohol:'16.6%'},
+    {name_jp:'純米吟醸 亀治好日',name_en:'Kameji Kojitsu',type:'Junmai Ginjo',type_detail:'純米吟醸',rice:'亀の尾',polishing_rate:'55%',alcohol:'15.3%'},
+    {name_jp:'特別純米 鯉川',name_en:'Koikawa Tokubetsu',type:'Tokubetsu Junmai',type_detail:'特別純米',rice:'山形県産米',polishing_rate:'55%',alcohol:'15.3%'},
+  ]},
+  amabuki:{company:{name_jp:'天吹酒造',name_en:'Amabuki Sake Brewery',prefecture:'佐賀県',website:'amabuki.co.jp',address:'佐賀県三養基郡みやき町東尾2894'},products:[
+    {name_jp:'天吹 大吟醸 りんごの花酵母',name_en:'Amabuki Apple Blossom',type:'Daiginjo',type_detail:'大吟醸',rice:'山田錦 100%',polishing_rate:'35%',alcohol:'16%'},
+    {name_jp:'天吹 純米大吟醸 バラの花酵母',name_en:'Amabuki Rose',type:'Junmai Daiginjo',type_detail:'純米大吟醸',rice:'雄町 100%',polishing_rate:'50%',alcohol:'16%'},
+    {name_jp:'天吹 純米吟醸 コスモスの花酵母',name_en:'Amabuki Cosmos',type:'Junmai Ginjo',type_detail:'純米吟醸',rice:'佐賀の華',polishing_rate:'55%',alcohol:'15%'},
+    {name_jp:'天吹 純米 月下美人',name_en:'Amabuki Gekka Bijin',type:'Junmai',type_detail:'純米',rice:'雄町',polishing_rate:'65%',alcohol:'15%'},
+  ]},
+  dassai:{company:{name_jp:'旭酒造（獺祭）',name_en:'Asahi Shuzo (Dassai)',prefecture:'山口県',website:'asahishuzo.ne.jp'},products:[
+    {name_jp:'獺祭 磨き その先へ',name_en:'Dassai Beyond',type:'Junmai Daiginjo',type_detail:'純米大吟醸',rice:'山田錦 100%',polishing_rate:'非公開',alcohol:'16%'},
+    {name_jp:'獺祭 純米大吟醸 23',name_en:'Dassai 23',type:'Junmai Daiginjo',type_detail:'純米大吟醸',rice:'山田錦 100%',polishing_rate:'23%',alcohol:'16%'},
+    {name_jp:'獺祭 純米大吟醸 45',name_en:'Dassai 45',type:'Junmai Daiginjo',type_detail:'純米大吟醸',rice:'山田錦 100%',polishing_rate:'45%',alcohol:'16%'},
+  ]},
+  kubota:{company:{name_jp:'朝日酒造（久保田）',name_en:'Asahi-Shuzo (Kubota)',prefecture:'新潟県',website:'asahi-shuzo.co.jp'},products:[
+    {name_jp:'久保田 萬寿',name_en:'Kubota Manju',type:'Junmai Daiginjo',type_detail:'純米大吟醸',rice:'五百万石',polishing_rate:'33%',alcohol:'15%'},
+    {name_jp:'久保田 千寿',name_en:'Kubota Senju',type:'Ginjo',type_detail:'吟醸',rice:'五百万石',polishing_rate:'55%',alcohol:'15%'},
+  ]}
+};
+function getDemoBrewery(n){const q=n.toLowerCase();if(q.includes('楯')||q.includes('tatenokawa'))return demoData.tatenokawa;if(q.includes('鯉')||q.includes('koikawa'))return demoData.koikawa;if(q.includes('天吹')||q.includes('amabuki'))return demoData.amabuki;if(q.includes('獺祭')||q.includes('dassai'))return demoData.dassai;if(q.includes('久保田')||q.includes('kubota'))return demoData.kubota;return null;}
 
-function getKoikawaDemo() {
-  return {
-    company: {
-      name_jp: '鯉川酒造 株式会社',
-      name_en: 'Koikawa Sake Brewery Co., Ltd.',
-      prefecture: '山形県 (Yamagata)',
-      address: '〒999-7781 山形県東田川郡庄内町余目字興野42',
-      phone: '0234-43-2005',
-      fax: '0234-43-2007',
-      founded: '',
-      website: 'sake-koikawa.jp',
-      philosophy: '2015年より全量純米蔵 — 蔵人自ら酒米を育て、庄内の地下水で醸す正真正銘の地酒',
-      speciality: '旨辛熟成純米酒 / 亀の尾の発祥地で亀の尾を醸す',
-      rice_types: ['亀の尾', '雪女神', '出羽燦々', '五百万石', '美山錦', '出羽の里', '森多早生', '山田錦']
-    },
-    products: [
-      { name_jp: '純米大吟醸 亀の尾 しずく生原酒', name_en: 'J. Daiginjo Kamenoo Shizuku', type: 'Junmai Daiginjo', type_detail: '純米大吟醸', rice: '亀の尾 100%', polishing_rate: '40%', alcohol: '16%', smv: '+4', acidity: '1.4', yeast: 'YK009', volumes: [{size:'720ml', price:'¥4,840'}], tasting_notes: 'Solo 100-150 bottiglie per vasca. Wine Advocate 93 punti, 5° su 800 sake.', awards: 'Wine Advocate 93pt' },
-      { name_jp: '純米大吟醸 亀の尾', name_en: 'Junmai Daiginjo Kamenoo', type: 'Junmai Daiginjo', type_detail: '純米大吟醸', rice: '亀の尾 100%', polishing_rate: '45%', alcohol: '16.6%', smv: '+5', acidity: '1.7', yeast: '山形酵母', volumes: [{size:'720ml', price:'¥3,410'}, {size:'1800ml', price:'¥7,150'}], tasting_notes: '', awards: '' },
-      { name_jp: '別嬪 純米大吟醸 雪女神', name_en: 'Beppin Daiginjo Yukimegami', type: 'Junmai Daiginjo', type_detail: '純米大吟醸', rice: '雪女神 (井上農場)', polishing_rate: '40%', alcohol: '16.3%', smv: '+4', acidity: '1.5', yeast: 'YK009', volumes: [{size:'720ml', price:'¥4,180'}, {size:'1800ml', price:'¥6,600'}], tasting_notes: 'Texture leggera e rinfrescante, finish pulito, accessibile ai neofiti.', awards: '' },
-      { name_jp: '純米大吟醸 森屋多郎左ェ門', name_en: 'Moriya Tarozaemon Daiginjo', type: 'Junmai Daiginjo', type_detail: '純米大吟醸 生原酒', rice: '森多早生 (庄内産)', polishing_rate: '40%', alcohol: '16.3%', smv: '+10', acidity: '1.8', yeast: 'NF-KA', volumes: [{size:'500ml', price:'¥2,420'}, {size:'1800ml', price:'¥4,400'}], tasting_notes: 'Antenato del Sasanishiki e Koshihikari. Complessità bilanciata con carattere maturo.', awards: '' },
-      { name_jp: '純米大吟醸 阿波山田錦', name_en: 'Daiginjo Awa Yamada Nishiki', type: 'Junmai Daiginjo', type_detail: '純米大吟醸', rice: '山田錦 (徳島産)', polishing_rate: '48%', alcohol: '16.3%', smv: '+3', acidity: '1.7', yeast: '山形酵母', volumes: [{size:'720ml', price:'¥3,080'}, {size:'1800ml', price:'¥5,500'}], tasting_notes: 'Note di melone, agrumi e ananas. Apertura dolce-acidula, finish secco.', awards: '' },
-      { name_jp: '純米吟醸 亀治好日', name_en: 'Kameji Kojitsu Ginjo', type: 'Junmai Ginjo', type_detail: '純米吟醸', rice: '亀の尾 100%', polishing_rate: '55%', alcohol: '15.3%', smv: '+6', acidity: '1.4', yeast: 'NF-KA', volumes: [{size:'720ml', price:'¥2,420'}, {size:'1800ml', price:'¥3,960'}], tasting_notes: 'Umami profondo. L\'acidità si ammorbidisce scaldandolo. Perfetto con il cibo.', awards: '' },
-      { name_jp: '純米吟醸 鉄人 うすにごり', name_en: 'Tetsujin Usunigori Ginjo', type: 'Junmai Ginjo', type_detail: '純米吟醸 うすにごり', rice: '五百万石', polishing_rate: '50%', alcohol: '16.1%', smv: '+6', acidity: '1.7', yeast: '山形酵母', volumes: [{size:'720ml', price:'¥2,145'}, {size:'1800ml', price:'¥3,685'}], tasting_notes: 'Secco e cremoso allo stesso tempo. Due stili di bere in una bottiglia.', awards: '' },
-      { name_jp: '純米吟醸 中取り 生酒', name_en: 'Nakadori Nama Ginjo', type: 'Junmai Ginjo', type_detail: '純米吟醸 生酒', rice: '山形県産酒造好適米', polishing_rate: '50%', alcohol: '15.3%', smv: '+6', acidity: '1.5', yeast: 'NF-KA', volumes: [{size:'720ml', price:'¥2,145'}, {size:'1800ml', price:'¥3,685'}], tasting_notes: 'Bilanciato, classico. Aroma morbido, perfetto compagno a tavola.', awards: '' },
-      { name_jp: '純米吟醸 あたためますよ', name_en: 'Atatamemasyo (Warm-it-up) Ginjo', type: 'Junmai Ginjo', type_detail: '純米吟醸', rice: '山形県産酒造好適米', polishing_rate: '50%', alcohol: '15.3%', smv: '+7', acidity: '1.4', yeast: 'NF-KA', volumes: [{size:'720ml', price:'¥1,957'}, {size:'1800ml', price:'¥3,308'}], tasting_notes: 'Scaldandolo l\'acidità si ammorbidisce. Leggero aroma fruttato.', awards: '' },
-      { name_jp: '特別純米 ブラック鯉川', name_en: 'Black Koikawa Tokubetsu', type: 'Tokubetsu Junmai', type_detail: '特別純米', rice: '非公開', polishing_rate: '60%', alcohol: '16-17%', smv: '—', acidity: '—', yeast: '非公開', volumes: [{size:'720ml', price:'¥2,035'}, {size:'1800ml', price:'¥3,410'}], tasting_notes: 'Secco, impegnativo. Il test del presidente per i veri amanti del sake.', awards: '' },
-      { name_jp: '特別純米 鯉川', name_en: 'Koikawa Tokubetsu Junmai', type: 'Tokubetsu Junmai', type_detail: '特別純米', rice: '山形県産米', polishing_rate: '55%', alcohol: '15.3%', smv: '+12', acidity: '1.4', yeast: 'NF-KA', volumes: [{size:'720ml', price:'¥1,870'}, {size:'1800ml', price:'¥3,080'}], tasting_notes: 'Secco e pulito, leggero carattere maturo. Profilo complesso per intenditori.', awards: '' },
-      { name_jp: '純米 完全発酵', name_en: 'Kanzen Hakko (Full Fermentation)', type: 'Junmai', type_detail: '純米', rice: '出羽の里', polishing_rate: '60%', alcohol: '16%', smv: '+22', acidity: '1.8', yeast: '山形酵母', volumes: [{size:'720ml', price:'¥1,980'}, {size:'1800ml', price:'¥3,300'}], tasting_notes: 'Ultra-secco, potente. Presenza alcolica forte, finish pulito. Ottimo caldo.', awards: '' },
-      { name_jp: '純米 鯉川', name_en: 'Koikawa Junmai', type: 'Junmai', type_detail: '純米', rice: '山形県産米', polishing_rate: '60%', alcohol: '15.3%', smv: '+6', acidity: '1.6', yeast: '協会7号', volumes: [{size:'720ml', price:'¥1,540'}, {size:'1800ml', price:'¥2,640'}], tasting_notes: 'Umami del riso preservato. Gusto tradizionale e sostanzioso. Ottimo caldo.', awards: '' },
-      { name_jp: '別嬪 純米', name_en: 'Beppin Junmai', type: 'Junmai', type_detail: '純米', rice: '山形県産米', polishing_rate: '65%', alcohol: '15.3%', smv: '+8', acidity: '1.6', yeast: '協会7号', volumes: [{size:'720ml', price:'¥1,320'}, {size:'1800ml', price:'¥2,530'}], tasting_notes: 'Secco con acidità marcata. Controtendenza rispetto al sake moderno.', awards: '' },
-      { name_jp: '純米吟醸 美山錦', name_en: 'Miyama Nishiki Ginjo', type: 'Junmai Ginjo', type_detail: '純米吟醸', rice: '美山錦', polishing_rate: '50%', alcohol: '15.3%', smv: '+4', acidity: '1.4', yeast: 'NF-KA', volumes: [{size:'720ml', price:'¥1,782'}, {size:'1800ml', price:'¥3,080'}], tasting_notes: 'Aromatico per Koikawa. Texture leggera, poi acidità e secchezza emergono.', awards: '' },
-      { name_jp: '純米吟醸 庄内の風', name_en: 'Shonai no Kaze Ginjo', type: 'Junmai Ginjo', type_detail: '純米吟醸', rice: '山形県産米', polishing_rate: '50%', alcohol: '15.3%', smv: '', acidity: '', yeast: '', volumes: [{size:'720ml', price:'¥1,980'}, {size:'1800ml', price:'¥3,300'}], tasting_notes: '', awards: '' },
-      { name_jp: '純米吟醸 亀の尾', name_en: 'Kamenoo Ginjo', type: 'Junmai Ginjo', type_detail: '純米吟醸', rice: '亀の尾 100%', polishing_rate: '55%', alcohol: '17.3%', smv: '+6', acidity: '1.5', yeast: 'NF-KA', volumes: [{size:'720ml', price:'¥2,750'}, {size:'1800ml', price:'¥5,170'}], tasting_notes: 'Dolcezza aromatica del riso, piena. Rapporto qualità-prezzo raro per un genshu.', awards: '' },
-      { name_jp: '琥珀酒 純米にごり', name_en: 'Kohakushu Nigori', type: 'Junmai', type_detail: '純米にごり', rice: '—', polishing_rate: '—', alcohol: '—', smv: '', acidity: '', yeast: '', volumes: [{size:'720ml', price:'¥1,100'}, {size:'1800ml', price:'¥2,200'}], tasting_notes: '', awards: '' },
-      { name_jp: '純米大吟醸 若き鯉ヶ龍', name_en: 'Wakaki Koigaryuu Daiginjo', type: 'Junmai Daiginjo', type_detail: '純米大吟醸', rice: '—', polishing_rate: '—', alcohol: '—', smv: '', acidity: '', yeast: '', volumes: [{size:'720ml', price:'¥2,420'}], tasting_notes: '', awards: '' }
-    ]
-  };
-}
-
-function getAmabukiDemo() {
-  return {
-    company: {
-      name_jp: '天吹酒造 合資会社',
-      name_en: 'Amabuki Sake Brewery Co., Ltd.',
-      prefecture: '佐賀県 (Saga)',
-      address: '〒849-0124 佐賀県三養基郡みやき町東尾2894',
-      phone: '0942-89-2001',
-      fax: '0942-89-2002',
-      founded: '1688 (元禄元年)',
-      website: 'amabuki.co.jp',
-      philosophy: '花酵母仕込み — 自然の花から分離した酵母で醸す、花と酒の融合',
-      speciality: '花酵母の先駆者。すべての酒を花酵母で醸造。',
-      rice_types: ['山田錦', '雄町', '佐賀の華', '壽限無']
-    },
-    products: [
-      { name_jp: '天吹 大吟醸 りんごの花酵母', name_en: 'Amabuki Daiginjo Apple Blossom', type: 'Daiginjo', type_detail: '大吟醸', rice: '山田錦 100%', polishing_rate: '35%', alcohol: '16%', smv: '+2', acidity: '1.3', yeast: 'りんごの花酵母', volumes: [{size:'720ml', price:'¥5,500'}], tasting_notes: 'りんごの花酵母による華やかなアロマ。上品で繊細な味わい。', awards: 'IWC Gold 2008' },
-      { name_jp: '天吹 純米大吟醸 いちごの花酵母', name_en: 'Amabuki J. Daiginjo Strawberry Blossom', type: 'Junmai Daiginjo', type_detail: '純米大吟醸', rice: '山田錦 100%', polishing_rate: '45%', alcohol: '16%', smv: '-1', acidity: '1.5', yeast: 'いちごの花酵母', volumes: [{size:'720ml', price:'¥3,300'}, {size:'1800ml', price:'¥6,050'}], tasting_notes: 'いちごの花酵母由来のフルーティーな香り。柔らかく優しい口当たり。', awards: '' },
-      { name_jp: '天吹 純米大吟醸 バラの花酵母', name_en: 'Amabuki J. Daiginjo Rose', type: 'Junmai Daiginjo', type_detail: '純米大吟醸', rice: '雄町 100%', polishing_rate: '50%', alcohol: '16%', smv: '+1', acidity: '1.4', yeast: 'バラの花酵母', volumes: [{size:'720ml', price:'¥2,750'}, {size:'1800ml', price:'¥5,500'}], tasting_notes: 'バラの花酵母が織りなす芳醇な香り。雄町のコクとのバランスが秀逸。', awards: '' },
-      { name_jp: '天吹 純米吟醸 コスモスの花酵母', name_en: 'Amabuki J. Ginjo Cosmos', type: 'Junmai Ginjo', type_detail: '純米吟醸', rice: '佐賀の華', polishing_rate: '55%', alcohol: '15%', smv: '+2', acidity: '1.5', yeast: 'コスモスの花酵母', volumes: [{size:'720ml', price:'¥1,650'}, {size:'1800ml', price:'¥3,300'}], tasting_notes: 'コスモスの花酵母による清楚な香り。さっぱりとした飲み口。', awards: '' },
-      { name_jp: '天吹 純米吟醸 ひまわりの花酵母', name_en: 'Amabuki J. Ginjo Sunflower', type: 'Junmai Ginjo', type_detail: '純米吟醸', rice: '山田錦', polishing_rate: '55%', alcohol: '15%', smv: '+3', acidity: '1.4', yeast: 'ひまわりの花酵母', volumes: [{size:'720ml', price:'¥1,760'}, {size:'1800ml', price:'¥3,520'}], tasting_notes: 'ひまわりのような明るく力強い香り。爽やかな酸味とキレ。', awards: '' },
-      { name_jp: '天吹 純米 雄町 月下美人の花酵母', name_en: 'Amabuki Junmai Omachi Dutchman\'s Pipe', type: 'Junmai', type_detail: '純米', rice: '雄町 100%', polishing_rate: '65%', alcohol: '15%', smv: '+3', acidity: '1.8', yeast: '月下美人の花酵母', volumes: [{size:'720ml', price:'¥1,540'}, {size:'1800ml', price:'¥2,970'}], tasting_notes: '雄町の濃醇な味わいと月下美人酵母の妖艶な香り。燗でも冷やでも。', awards: '' },
-      { name_jp: '天吹 特別純米 辛口 マリーゴールドの花酵母', name_en: 'Amabuki Tokubetsu Junmai Dry Marigold', type: 'Tokubetsu Junmai', type_detail: '特別純米', rice: '壽限無', polishing_rate: '60%', alcohol: '15%', smv: '+7', acidity: '1.6', yeast: 'マリーゴールドの花酵母', volumes: [{size:'720ml', price:'¥1,430'}, {size:'1800ml', price:'¥2,640'}], tasting_notes: '佐賀県オリジナル酒米「壽限無」使用。キレのある辛口。食中酒に最適。', awards: '' },
-    ]
-  };
-}
-
-function getDassaiDemo() {
-  return {
-    company: {
-      name_jp: '旭酒造 株式会社',
-      name_en: 'Asahi Shuzo Co., Ltd.',
-      prefecture: '山口県 (Yamaguchi)',
-      address: '〒742-0422 山口県岩国市周東町獺越2167-4',
-      phone: '0827-86-0120',
-      fax: '0827-86-0071',
-      founded: '1948',
-      website: 'asahishuzo.ne.jp',
-      philosophy: '酔うため、売るための酒ではなく、味わう酒を求めて',
-      speciality: '山田錦100%、純米大吟醸のみに特化。データ駆動型の品質管理。',
-      rice_types: ['山田錦']
-    },
-    products: [
-      { name_jp: '獺祭 磨き その先へ', name_en: 'Dassai Beyond', type: 'Junmai Daiginjo', type_detail: '純米大吟醸', rice: '山田錦 100%', polishing_rate: '非公開', alcohol: '16%', smv: '', acidity: '', yeast: '非公開', volumes: [{size:'720ml', price:'¥38,500'}], tasting_notes: '獺祭の最高峰。精米歩合の数字を超えた、究極の味わいを追求。', awards: '' },
-      { name_jp: '獺祭 純米大吟醸 磨き二割三分', name_en: 'Dassai 23', type: 'Junmai Daiginjo', type_detail: '純米大吟醸', rice: '山田錦 100%', polishing_rate: '23%', alcohol: '16%', smv: '+4', acidity: '1.1', yeast: '自社酵母', volumes: [{size:'300ml', price:'¥2,860'}, {size:'720ml', price:'¥5,830'}, {size:'1800ml', price:'¥11,550'}], tasting_notes: '華やかな上立ち香と蜂蜜のような甘み。繊細で綿のように柔らかな飲み口。', awards: '' },
-      { name_jp: '獺祭 純米大吟醸 磨き三割九分', name_en: 'Dassai 39', type: 'Junmai Daiginjo', type_detail: '純米大吟醸', rice: '山田錦 100%', polishing_rate: '39%', alcohol: '16%', smv: '+5', acidity: '1.1', yeast: '自社酵母', volumes: [{size:'300ml', price:'¥1,265'}, {size:'720ml', price:'¥2,640'}, {size:'1800ml', price:'¥5,170'}], tasting_notes: '華やかでフルーティーな香り。口当たりは軽く、飲みやすい仕上がり。', awards: '' },
-      { name_jp: '獺祭 純米大吟醸 45', name_en: 'Dassai 45', type: 'Junmai Daiginjo', type_detail: '純米大吟醸', rice: '山田錦 100%', polishing_rate: '45%', alcohol: '16%', smv: '+3', acidity: '1.5', yeast: '自社酵母', volumes: [{size:'300ml', price:'¥825'}, {size:'720ml', price:'¥1,650'}, {size:'1800ml', price:'¥3,300'}], tasting_notes: '米の甘みと爽やかな酸味の調和。獺祭の入門編として最適。', awards: '' },
-      { name_jp: '獺祭 純米大吟醸 スパークリング45', name_en: 'Dassai 45 Sparkling', type: 'Junmai Daiginjo', type_detail: '純米大吟醸 発泡にごり酒', rice: '山田錦 100%', polishing_rate: '45%', alcohol: '14%', smv: '', acidity: '', yeast: '自社酵母', volumes: [{size:'360ml', price:'¥935'}, {size:'720ml', price:'¥1,870'}], tasting_notes: '瓶内二次発酵の自然な泡。りんごやメロンの香り、爽やかな甘みと微炭酸。', awards: '' },
-    ]
-  };
-}
-
-function getKubotaDemo() {
-  return {
-    company: {
-      name_jp: '朝日酒造 株式会社',
-      name_en: 'Asahi-Shuzo Sake Brewing Co., Ltd.',
-      prefecture: '新潟県 (Niigata)',
-      address: '〒949-5494 新潟県長岡市朝日880-1',
-      phone: '0258-92-3181',
-      fax: '0258-92-4373',
-      founded: '1830 (天保元年)',
-      website: 'asahi-shuzo.co.jp',
-      philosophy: '品質を追求した「久保田」で新潟清酒の品格を築く',
-      speciality: '「久保田」ブランドで知られる。淡麗辛口の先駆者。',
-      rice_types: ['五百万石', '千秋楽', '越淡麗', '越路早生']
-    },
-    products: [
-      { name_jp: '久保田 萬寿', name_en: 'Kubota Manju', type: 'Junmai Daiginjo', type_detail: '純米大吟醸', rice: '五百万石', polishing_rate: '33%', alcohol: '15%', smv: '+2', acidity: '1.2', yeast: '自社酵母', volumes: [{size:'720ml', price:'¥4,004'}, {size:'1800ml', price:'¥8,800'}], tasting_notes: '久保田の最高峰。華やかな香りと柔らかな口当たり。余韻は上品で長い。', awards: '' },
-      { name_jp: '久保田 碧寿', name_en: 'Kubota Hekiju', type: 'Junmai Daiginjo', type_detail: '純米大吟醸 山廃', rice: '五百万石', polishing_rate: '50%', alcohol: '15%', smv: '+2', acidity: '1.2', yeast: '自社酵母', volumes: [{size:'720ml', price:'¥2,640'}, {size:'1800ml', price:'¥5,720'}], tasting_notes: '山廃仕込みによる深みのある味わい。どっしりとしたコク。燗で一段と旨い。', awards: '' },
-      { name_jp: '久保田 千寿', name_en: 'Kubota Senju', type: 'Ginjo', type_detail: '吟醸', rice: '五百万石', polishing_rate: '55%', alcohol: '15%', smv: '+5', acidity: '1.0', yeast: '自社酵母', volumes: [{size:'300ml', price:'¥572'}, {size:'720ml', price:'¥1,166'}, {size:'1800ml', price:'¥2,530'}], tasting_notes: '淡麗辛口の代名詞。穏やかな香り、すっきりとした切れ味。食中酒の定番。', awards: '' },
-      { name_jp: '久保田 紅寿', name_en: 'Kubota Kouju', type: 'Junmai Ginjo', type_detail: '純米吟醸', rice: '五百万石', polishing_rate: '55%', alcohol: '15%', smv: '+2', acidity: '1.1', yeast: '自社酵母', volumes: [{size:'720ml', price:'¥1,551'}, {size:'1800ml', price:'¥3,388'}], tasting_notes: '口当たりが柔らかく、上品な甘みとコクが広がる。バランスの良い味わい。', awards: '' },
-      { name_jp: '久保田 百寿', name_en: 'Kubota Hyakuju', type: 'Tokubetsu Honjozo', type_detail: '特別本醸造', rice: '五百万石', polishing_rate: '60%', alcohol: '15%', smv: '+5', acidity: '1.0', yeast: '自社酵母', volumes: [{size:'720ml', price:'¥990'}, {size:'1800ml', price:'¥2,145'}], tasting_notes: '久保田の原点。辛口ながらほのかな旨味。日常の食中酒として愛される。', awards: '' },
-      { name_jp: '久保田 スパークリング', name_en: 'Kubota Sparkling', type: 'Junmai Daiginjo', type_detail: '純米大吟醸 スパークリング', rice: '五百万石', polishing_rate: '50%', alcohol: '13%', smv: '-15', acidity: '1.6', yeast: '自社酵母', volumes: [{size:'720ml', price:'¥2,200'}], tasting_notes: '瓶内二次発酵の自然な泡。甘酸っぱくフルーティーな味わい。乾杯にぴったり。', awards: '' },
-    ]
-  };
-}
-
-// ─────────────────────────────────────────
-//  RENDER RESULTS
-// ─────────────────────────────────────────
-function renderResults(data) {
-  const c = data.company;
-  const p = data.products || [];
-  const gp = state.googlePlace;
-  const types = [...new Set(p.map(x => getTypeCategory(x.type)))];
-  let selectedIds = new Set(p.map((_, i) => i));
-
-  // If Google Place data available, enrich company data
-  if (gp) {
-    if (gp.address && !c.address) c.address = gp.address;
-    if (gp.phone && !c.phone) c.phone = gp.phone;
-    if (gp.website && !c.website) c.website = gp.website;
-  }
-
-  // Location verification section
-  let gmapsHtml = '';
-  if (gp) {
-    // OpenStreetMap embed — free, no API key
-    const osmEmbed = gp.lat && gp.lng
-      ? `https://www.openstreetmap.org/export/embed.html?bbox=${gp.lng-0.005},${gp.lat-0.003},${gp.lng+0.005},${gp.lat+0.003}&layer=mapnik&marker=${gp.lat},${gp.lng}`
-      : '';
-    gmapsHtml = `
-      <div class="gmaps-card slide-up">
-        <div class="gmaps-header">
-          <div class="gmaps-badge">✓ ${esc(t('gmaps_verified_badge'))}</div>
-          ${gp.prefecture ? `<div class="gmaps-rating">${esc(gp.prefecture)}</div>` : ''}
-        </div>
-        ${gp.address ? `<div class="gmaps-address">${esc(gp.address)}</div>` : ''}
-        ${osmEmbed ? `<div class="gmaps-map"><iframe src="${osmEmbed}" width="100%" height="250" style="border:0;border-radius:12px" allowfullscreen loading="lazy"></iframe></div>` : ''}
-        <div class="gmaps-links">
-          ${gp.mapsUrl ? `<a href="${esc(gp.mapsUrl)}" target="_blank" class="gmaps-link">${esc(t('gmaps_view_map'))} →</a>` : ''}
-          ${gp.lat ? `<a href="https://www.openstreetmap.org/?mlat=${gp.lat}&mlon=${gp.lng}#map=16/${gp.lat}/${gp.lng}" target="_blank" class="gmaps-link">OpenStreetMap →</a>` : ''}
-        </div>
+function showResults(data){
+  const c=data.company,geo=data._geo,pc=data.products?.length||0;
+  const mapHtml=geo&&geo.lat?`<div class="rc-map"><iframe src="https://www.openstreetmap.org/export/embed.html?bbox=${geo.lng-0.006},${geo.lat-0.004},${geo.lng+0.006},${geo.lat+0.004}&layer=mapnik&marker=${geo.lat},${geo.lng}" width="100%" height="180" style="border:0;border-radius:10px" loading="lazy"></iframe></div>`:'';
+  document.getElementById('results-list').innerHTML=`
+    <div class="result-card" onclick="selectBrewery(this)" data-brewery='${JSON.stringify(data).replace(/'/g,"&#39;")}'>
+      <div class="rc-name">${esc(c.name_jp)}</div>
+      <div class="rc-name-en">${esc(c.name_en||'')}</div>
+      <div class="rc-details">
+        ${c.prefecture?`<div>📍 ${esc(c.prefecture)}</div>`:''}
+        ${c.website?`<div>🌐 ${esc(c.website)}</div>`:''}
+        ${c.phone?`<div>📞 ${esc(c.phone)}</div>`:''}
       </div>
-    `;
+      ${pc?`<div class="rc-products">🍶 ${pc} ${esc(t('res_products'))}</div>`:''}
+      ${mapHtml}
+      <div style="margin-top:16px;text-align:center"><button class="btn btn-primary btn-lg">${esc(t('res_select'))}</button></div>
+    </div>`;
+  showPage('results');
+}
+
+function selectBrewery(card){
+  const data=JSON.parse(card.dataset.brewery);
+  state.brewery=data;localStorage.setItem('sp_brewery',JSON.stringify(data));
+  const c=data.company;
+  document.getElementById('reg-brewery').textContent='🏯 '+c.name_jp+(c.name_en?' — '+c.name_en:'');
+  document.getElementById('inp-email').placeholder='you@'+(c.website||'brewery.co.jp');
+  const ei=document.getElementById('inp-email');
+  ei.oninput=()=>{const d=(ei.value.split('@')[1]||'').toLowerCase();const bd=(c.website||'').replace(/^https?:\/\//,'').replace(/^www\./,'').split('/')[0].toLowerCase();document.getElementById('domain-hint').style.display=(d&&bd&&d===bd)?'block':'none';};
+  document.getElementById('reg-form').style.display='';
+  document.getElementById('verification-sent').style.display='none';
+  showPage('register');
+}
+
+function register(){
+  const name=document.getElementById('inp-name').value.trim(),email=document.getElementById('inp-email').value.trim(),pass=document.getElementById('inp-pass').value.trim();
+  if(!name||!email||!pass)return;
+  const c=state.brewery.company;
+  const d=(email.split('@')[1]||'').toLowerCase(),bd=(c.website||'').replace(/^https?:\/\//,'').replace(/^www\./,'').split('/')[0].toLowerCase();
+  const dm=d&&bd&&d===bd;
+  state.user={name,email,domainMatch:dm};
+  localStorage.setItem('sp_user',JSON.stringify(state.user));
+  document.getElementById('reg-form').style.display='none';
+  document.getElementById('verification-sent').style.display='';
+  document.getElementById('verif-title').textContent=t('verif_title');
+  document.getElementById('verif-desc').textContent=t('verif_desc').replace('{email}',email);
+}
+
+function enterDashboard(){
+  if(!state.brewery||!state.user){showPage('search');return;}
+  const c=state.brewery.company;
+  document.getElementById('dash-name').innerHTML=esc(c.name_jp)+(state.user.domainMatch?` <span style="display:inline-flex;width:22px;height:22px;border-radius:50%;background:#34a853;color:#fff;font-size:12px;align-items:center;justify-content:center">✓</span>`:'');
+  const b=document.getElementById('dash-badge');
+  if(state.user.domainMatch){b.className='dash-verified-badge verified';b.textContent=t('verified_owner');}
+  else{b.className='dash-verified-badge pending';b.textContent=t('pending_verif');}
+  renderUploaded();renderProducts();
+  showPage('dashboard');
+}
+
+function handleFiles(files){
+  for(const f of files){state.files.push({name:f.name,size:(f.size/1024).toFixed(0)+'KB',type:f.name.split('.').pop().toUpperCase(),status:'processing'});
+    setTimeout(()=>{const entry=state.files.find(e=>e.name===f.name&&e.status==='processing');if(entry)entry.status='done';localStorage.setItem('sp_files',JSON.stringify(state.files));renderUploaded();},2000+Math.random()*2000);
   }
-
-  const container = document.getElementById('results-container');
-  container.innerHTML = `
-    <div class="results-header fade-in">
-      <div class="results-header-left">
-        <div class="results-brewery">${esc(c.name_jp)}${gp ? ' <span class="verified-check" title="' + esc(t('gmaps_verified_badge')) + '">✓</span>' : ''}</div>
-        <div class="results-brewery-en">${esc(c.name_en)}</div>
-        <div class="results-meta">
-          <div class="results-meta-item"><span class="icon">◉</span> ${esc(c.prefecture)}</div>
-          ${c.website ? `<div class="results-meta-item"><span class="icon">◎</span> ${esc(c.website)}</div>` : ''}
-          ${c.phone ? `<div class="results-meta-item"><span class="icon">☎</span> ${esc(c.phone)}</div>` : ''}
-        </div>
-      </div>
-      <div class="results-header-actions">
-        <button class="btn btn-secondary" onclick="showScreen('search')">${esc(t('new_search'))}</button>
-        <button class="btn btn-primary" id="import-btn" onclick="importSelected()">${esc(t('import_selected'))}</button>
-      </div>
-    </div>
-
-    ${gmapsHtml}
-
-    <div class="company-card slide-up">
-      <h3>${esc(t('profile_title'))} <span class="badge">${esc(t('auto_filled'))}</span></h3>
-      <div class="detail-row"><div class="detail-label">${esc(t('label_name'))}</div><div class="detail-value serif" contenteditable="true">${esc(c.name_jp)}</div></div>
-      <div class="detail-row"><div class="detail-label">${esc(t('label_name_en'))}</div><div class="detail-value" contenteditable="true">${esc(c.name_en)}</div></div>
-      <div class="detail-row"><div class="detail-label">${esc(t('label_prefecture'))}</div><div class="detail-value" contenteditable="true">${esc(c.prefecture)}</div></div>
-      <div class="detail-row"><div class="detail-label">${esc(t('label_address'))}</div><div class="detail-value" contenteditable="true">${esc(c.address)}</div></div>
-      <div class="detail-row"><div class="detail-label">${esc(t('label_phone'))}</div><div class="detail-value" contenteditable="true">${esc(c.phone)}</div></div>
-      <div class="detail-row"><div class="detail-label">${esc(t('label_fax'))}</div><div class="detail-value" contenteditable="true">${esc(c.fax || '')}</div></div>
-      <div class="detail-row"><div class="detail-label">${esc(t('label_website'))}</div><div class="detail-value highlight" contenteditable="true">${esc(c.website)}</div></div>
-      <div class="detail-row"><div class="detail-label">${esc(t('label_philosophy'))}</div><div class="detail-value" contenteditable="true">${esc(c.philosophy)}</div></div>
-      <div class="detail-row"><div class="detail-label">${esc(t('label_speciality'))}</div><div class="detail-value" contenteditable="true">${esc(c.speciality || '')}</div></div>
-      <div class="detail-row"><div class="detail-label">${esc(t('label_rice_types'))}</div><div class="detail-value" contenteditable="true">${esc((c.rice_types || []).join(', '))}</div></div>
-    </div>
-
-    <div class="products-header slide-up">
-      <div style="display:flex;align-items:center;gap:12px">
-        <div class="products-title">${esc(t('products'))}</div>
-        <div class="products-count">${p.length} ${esc(t('found'))}</div>
-      </div>
-      <div class="products-filters" id="type-filters"></div>
-    </div>
-    <div class="products-grid slide-up" id="products-grid"></div>
-    <div class="select-bar visible" id="select-bar">
-      <div class="select-bar-left"><strong id="selected-count">${p.length}</strong> ${esc(t('products_selected'))}</div>
-      <div class="select-bar-right">
-        <button class="btn btn-secondary" onclick="toggleSelectAll()">${esc(t('deselect_all'))}</button>
-        <button class="btn btn-primary" onclick="importSelected()">${esc(t('import_btn'))}</button>
-      </div>
-    </div>
-  `;
-
-  const filtersEl = document.getElementById('type-filters');
-  const allPill = document.createElement('div');
-  allPill.className = 'filter-pill active';
-  allPill.textContent = t('all_filter');
-  allPill.onclick = () => filterProducts('all');
-  filtersEl.appendChild(allPill);
-  types.forEach(tp => {
-    const pill = document.createElement('div');
-    pill.className = 'filter-pill';
-    pill.textContent = tp;
-    pill.dataset.type = tp;
-    pill.onclick = () => filterProducts(tp);
-    filtersEl.appendChild(pill);
-  });
-
-  renderProductCards(p, selectedIds);
-
-  window._selectedIds = selectedIds;
-  window._products = p;
-  window._brewery = data;
-  updateSelectBar();
+  localStorage.setItem('sp_files',JSON.stringify(state.files));renderUploaded();
 }
 
-function renderProductCards(products, selectedIds) {
-  const grid = document.getElementById('products-grid');
-  grid.innerHTML = '';
-  products.forEach((prod, i) => {
-    const cat = getTypeCategory(prod.type);
-    const badge = getBadgeClass(cat);
-    const vols = (prod.volumes || []).map(v => `${v.size} ${v.price}`).join(' · ');
-    const card = document.createElement('div');
-    card.className = 'product-card' + (selectedIds.has(i) ? ' selected' : '');
-    card.dataset.index = i;
-    card.dataset.type = cat;
-    card.innerHTML = `
-      <div class="select-check">${selectedIds.has(i) ? '✓' : ''}</div>
-      <div class="product-type-badge ${badge}">${esc(prod.type_detail || prod.type)}</div>
-      <div class="product-name">${esc(prod.name_jp)}</div>
-      <div class="product-name-en">${esc(prod.name_en || '')}</div>
-      <div class="product-specs">
-        <div class="spec"><div class="spec-label">${esc(t('spec_polishing'))}</div><div class="spec-value ${!prod.polishing_rate || prod.polishing_rate === '—' ? 'na' : ''}">${esc(prod.polishing_rate || '—')}</div></div>
-        <div class="spec"><div class="spec-label">${esc(t('spec_alc'))}</div><div class="spec-value ${!prod.alcohol || prod.alcohol === '—' ? 'na' : ''}">${esc(prod.alcohol || '—')}</div></div>
-        <div class="spec"><div class="spec-label">${esc(t('spec_smv'))}</div><div class="spec-value ${!prod.smv || prod.smv === '—' ? 'na' : ''}">${esc(prod.smv || '—')}</div></div>
-        <div class="spec"><div class="spec-label">${esc(t('spec_acidity'))}</div><div class="spec-value ${!prod.acidity || prod.acidity === '—' ? 'na' : ''}">${esc(prod.acidity || '—')}</div></div>
-        <div class="spec"><div class="spec-label">${esc(t('spec_yeast'))}</div><div class="spec-value ${!prod.yeast || prod.yeast === '—' ? 'na' : ''}">${esc(prod.yeast || '—')}</div></div>
-        <div class="spec"><div class="spec-label">${esc(t('spec_volumes'))}</div><div class="spec-value" style="font-size:11px">${esc(vols || '—')}</div></div>
-      </div>
-      ${prod.rice ? `<div class="product-rice"><span class="rice-icon">⬡</span> ${esc(prod.rice)}</div>` : ''}
-      ${prod.tasting_notes ? `<div class="product-notes">${esc(prod.tasting_notes)}</div>` : ''}
-      ${prod.awards ? `<div class="product-rice" style="color:var(--gold)"><span>★</span> ${esc(prod.awards)}</div>` : ''}
-    `;
-    card.onclick = () => {
-      if (selectedIds.has(i)) selectedIds.delete(i);
-      else selectedIds.add(i);
-      card.classList.toggle('selected');
-      card.querySelector('.select-check').textContent = selectedIds.has(i) ? '✓' : '';
-      updateSelectBar();
-    };
-    grid.appendChild(card);
-  });
+function renderUploaded(){
+  const el=document.getElementById('uploaded-files');
+  if(!state.files.length){el.innerHTML='';return;}
+  const ic={PDF:'📕',XLSX:'📗',XLS:'📗',CSV:'📊',DOCX:'📘',DOC:'📘',JPG:'🖼',JPEG:'🖼',PNG:'🖼'};
+  el.innerHTML=state.files.map(f=>`<div class="uploaded-file"><div class="uf-info"><div class="uf-icon">${ic[f.type]||'📄'}</div><div><div class="uf-name">${esc(f.name)}</div><div class="uf-meta">${esc(f.size)} · ${esc(f.type)}</div></div></div><div class="uf-status ${f.status}">${f.status==='done'?esc(t('upload_done')):esc(t('upload_processing'))}</div></div>`).join('');
 }
 
-function filterProducts(type) {
-  document.querySelectorAll('.filter-pill').forEach(p => p.classList.remove('active'));
-  if (type === 'all') {
-    document.querySelector('.filter-pill').classList.add('active');
-    document.querySelectorAll('.product-card').forEach(c => c.style.display = '');
-  } else {
-    document.querySelector(`.filter-pill[data-type="${type}"]`).classList.add('active');
-    document.querySelectorAll('.product-card').forEach(c => {
-      c.style.display = c.dataset.type === type ? '' : 'none';
-    });
-  }
+function renderProducts(){
+  const prods=state.brewery?.products||[];
+  const sec=document.getElementById('products-section'),list=document.getElementById('products-list');
+  if(!prods.length){sec.style.display='none';return;}
+  sec.style.display='';document.getElementById('products-title').textContent=t('products_title');
+  list.innerHTML=prods.map(p=>`<div class="product-row"><div><div class="pr-name">${esc(p.name_jp)}</div><div class="pr-type">${esc(p.type_detail||p.type||'')} ${p.polishing_rate?'· '+esc(p.polishing_rate):''} ${p.alcohol?'· '+esc(p.alcohol):''}</div></div></div>`).join('');
 }
 
-function updateSelectBar() {
-  const count = window._selectedIds?.size || 0;
-  const el = document.getElementById('selected-count');
-  if (el) el.textContent = count;
-  const bar = document.getElementById('select-bar');
-  if (bar) bar.classList.toggle('visible', count > 0);
-  const btn = document.getElementById('import-btn');
-  if (btn) btn.textContent = t('import_n').replace('{n}', count);
-}
+function logout(){state.user=null;state.brewery=null;state.files=[];localStorage.removeItem('sp_user');localStorage.removeItem('sp_brewery');localStorage.removeItem('sp_files');showPage('search');}
 
-function toggleSelectAll() {
-  const all = window._selectedIds.size === window._products.length;
-  if (all) {
-    window._selectedIds.clear();
-  } else {
-    window._products.forEach((_, i) => window._selectedIds.add(i));
-  }
-  document.querySelectorAll('.product-card').forEach(c => {
-    const i = parseInt(c.dataset.index);
-    const sel = window._selectedIds.has(i);
-    c.classList.toggle('selected', sel);
-    c.querySelector('.select-check').textContent = sel ? '✓' : '';
-  });
-  updateSelectBar();
-}
-
-function importSelected() {
-  const count = window._selectedIds?.size || 0;
-  if (count === 0) return;
-  const brewery = window._brewery;
-  const selectedProducts = [...window._selectedIds].map(i => window._products[i]);
-  const saved = {
-    company: brewery.company,
-    products: selectedProducts,
-    importedAt: new Date().toISOString()
-  };
-  state.breweries.push(saved);
-  localStorage.setItem('sp_breweries', JSON.stringify(state.breweries));
-  alert(t('import_success').replace('{n}', count));
-}
-
-// ─────────────────────────────────────────
-//  HELPERS
-// ─────────────────────────────────────────
-function esc(s) {
-  if (!s) return '';
-  const d = document.createElement('div');
-  d.textContent = s;
-  return d.innerHTML;
-}
-
-function getTypeCategory(type) {
-  if (!type) return t('other_type');
-  const tp = type.toLowerCase();
-  if (tp.includes('daiginjo')) return 'Daiginjo';
-  if (tp.includes('ginjo')) return 'Ginjo';
-  if (tp.includes('tokubetsu')) return 'Tokubetsu';
-  if (tp.includes('junmai')) return 'Junmai';
-  return t('other_type');
-}
-
-function getBadgeClass(cat) {
-  const map = { 'Daiginjo': 'badge-daiginjo', 'Ginjo': 'badge-ginjo', 'Junmai': 'badge-junmai', 'Tokubetsu': 'badge-tokubetsu' };
-  return map[cat] || 'badge-other';
-}
-
-// ─────────────────────────────────────────
-//  CONFIRM FLOW
-// ─────────────────────────────────────────
-function showConfirmScreen(data) {
-  const c = data.company;
-  const gp = state.googlePlace;
-  document.getElementById('confirm-title').textContent = t('confirm_title');
-  document.getElementById('confirm-brewery-name').textContent = c.name_jp;
-  document.getElementById('confirm-brewery-en').textContent = c.name_en || '';
-  document.getElementById('confirm-question').textContent = t('confirm_question');
-  document.getElementById('confirm-no-btn').textContent = t('confirm_no');
-  document.getElementById('confirm-yes-btn').textContent = t('confirm_yes');
-
-  // Details
-  let details = '';
-  if (c.prefecture) details += `📍 ${c.prefecture}\n`;
-  if (c.address) details += `🏠 ${c.address}\n`;
-  if (c.phone) details += `📞 ${c.phone}\n`;
-  if (c.website) details += `🌐 ${c.website}\n`;
-  if (c.founded) details += `📅 ${c.founded}\n`;
-  if (data.products) details += `🍶 ${data.products.length} ${t('found')}`;
-  document.getElementById('confirm-details').innerText = details;
-
-  // Map
-  const mapEl = document.getElementById('confirm-map');
-  if (gp && gp.lat && gp.lng) {
-    mapEl.innerHTML = `<iframe src="https://www.openstreetmap.org/export/embed.html?bbox=${gp.lng-0.008},${gp.lat-0.005},${gp.lng+0.008},${gp.lat+0.005}&layer=mapnik&marker=${gp.lat},${gp.lng}" width="100%" height="200" style="border:0;border-radius:12px" loading="lazy"></iframe>`;
-  } else {
-    mapEl.innerHTML = '';
-  }
-
-  state.currentBrewery = data;
-  showScreen('confirm');
-}
-
-// ─────────────────────────────────────────
-//  CLAIM / REGISTER FLOW
-// ─────────────────────────────────────────
-function showClaimFlow() {
-  const c = state.currentBrewery.company;
-  document.getElementById('register-title').textContent = t('register_title');
-  document.getElementById('register-desc').textContent = t('register_desc');
-  document.getElementById('register-brewery-badge').textContent = '🏯 ' + c.name_jp;
-  document.getElementById('reg-name-label').textContent = t('reg_name');
-  document.getElementById('reg-role-label').textContent = t('reg_role');
-  document.getElementById('reg-role-owner').textContent = t('reg_role_owner');
-  document.getElementById('reg-role-manager').textContent = t('reg_role_manager');
-  document.getElementById('reg-role-exporter').textContent = t('reg_role_exporter');
-  document.getElementById('reg-role-staff').textContent = t('reg_role_staff');
-  document.getElementById('reg-email-label').textContent = t('reg_email');
-  document.getElementById('reg-pass-label').textContent = t('reg_pass');
-  document.getElementById('reg-submit-btn').textContent = t('reg_submit');
-  document.getElementById('reg-name').placeholder = 'Tanaka Taro';
-  document.getElementById('reg-email').placeholder = 'you@' + (c.website || 'brewery.co.jp');
-  document.getElementById('reg-pass').placeholder = '••••••••';
-
-  // Domain match hint
-  const emailInput = document.getElementById('reg-email');
-  const hintEl = document.getElementById('reg-domain-hint');
-  hintEl.textContent = t('reg_domain_match');
-  emailInput.oninput = () => {
-    const email = emailInput.value;
-    const domain = email.split('@')[1] || '';
-    const breweryDomain = (c.website || '').replace(/^https?:\/\//, '').replace(/^www\./, '').split('/')[0];
-    if (domain && breweryDomain && domain.toLowerCase() === breweryDomain.toLowerCase()) {
-      hintEl.style.display = 'block';
-    } else {
-      hintEl.style.display = 'none';
-    }
-  };
-  hintEl.style.display = 'none';
-  showScreen('register');
-}
-
-function completeRegistration() {
-  const name = document.getElementById('reg-name').value.trim();
-  const email = document.getElementById('reg-email').value.trim();
-  const pass = document.getElementById('reg-pass').value.trim();
-  const role = document.getElementById('reg-role').value;
-  if (!name || !email || !pass) {
-    alert(state.lang === 'ja' ? '全項目を入力してください' : state.lang === 'en' ? 'Please fill all fields' : 'Compila tutti i campi');
-    return;
-  }
-
-  // Check domain match for verified status
-  const c = state.currentBrewery.company;
-  const domain = email.split('@')[1] || '';
-  const breweryDomain = (c.website || '').replace(/^https?:\/\//, '').replace(/^www\./, '').split('/')[0];
-  const domainMatch = domain && breweryDomain && domain.toLowerCase() === breweryDomain.toLowerCase();
-
-  // Save user session
-  state.user = { name, email, role, domainMatch };
-  state.email = email;
-  localStorage.setItem('sp_email', email);
-  localStorage.setItem('sp_user', JSON.stringify(state.user));
-  localStorage.setItem('sp_brewery_data', JSON.stringify(state.currentBrewery));
-
-  // Enter dashboard
-  enterDashboard();
-}
-
-// ─────────────────────────────────────────
-//  DASHBOARD
-// ─────────────────────────────────────────
-let editingSakeIndex = -1;
-
-function enterDashboard() {
-  const c = state.currentBrewery.company;
-  const user = state.user || {};
-  document.getElementById('logout-btn').style.display = 'flex';
-
-  // Header
-  document.getElementById('dash-brewery-name').innerHTML = esc(c.name_jp) + (user.domainMatch ? ' <span class="verified-check" title="Verified">✓</span>' : '');
-  document.getElementById('dash-brewery-en').textContent = c.name_en || '';
-  const verEl = document.getElementById('dash-verified');
-  if (user.domainMatch) {
-    verEl.className = 'dash-verified verified';
-    verEl.textContent = t('dash_verified_owner');
-  } else {
-    verEl.className = 'dash-verified unverified';
-    verEl.textContent = t('dash_unverified');
-  }
-  document.getElementById('dash-verify-btn').textContent = t('dash_verify');
-  document.getElementById('dash-invite-btn').textContent = t('dash_invite');
-
-  // Tabs
-  const tabKeys = ['products', 'sheets', 'commercial', 'exporters'];
-  document.querySelectorAll('.dash-tab').forEach((tab, i) => {
-    tab.textContent = t('dash_tab_' + tabKeys[i]);
-  });
-  document.getElementById('dash-add-btn').textContent = '+ ' + t('dash_add');
-  document.getElementById('panel-products-title').textContent = t('dash_tab_products');
-  document.getElementById('panel-sheets-title').textContent = t('dash_tab_sheets');
-  document.getElementById('panel-commercial-title').textContent = t('dash_tab_commercial');
-  document.getElementById('panel-exporters-title').textContent = t('dash_tab_exporters');
-  document.getElementById('dash-print-all-btn').textContent = t('dash_print_all');
-  document.getElementById('dash-add-exporter-btn').textContent = '+ ' + t('dash_add_exporter');
-
-  renderDashProducts();
-  renderDashSheets();
-  renderCommercialView();
-  renderExporters();
-  switchDashTab('products');
-  showScreen('dashboard');
-}
-
-function switchDashTab(tab) {
-  document.querySelectorAll('.dash-tab').forEach(t => t.classList.remove('active'));
-  document.querySelectorAll('.dash-panel').forEach(p => p.classList.remove('active'));
-  document.querySelector(`.dash-tab[data-tab="${tab}"]`).classList.add('active');
-  document.getElementById('panel-' + tab).classList.add('active');
-}
-
-function renderDashProducts() {
-  const products = state.currentBrewery.products || [];
-  const grid = document.getElementById('dash-products-grid');
-  grid.innerHTML = '';
-  products.forEach((p, i) => {
-    const cat = getTypeCategory(p.type);
-    const badge = getBadgeClass(cat);
-    const card = document.createElement('div');
-    card.className = 'dash-product-card';
-    card.innerHTML = `
-      <div class="dash-product-actions">
-        <button onclick="event.stopPropagation();openEditSake(${i})" title="${esc(t('dash_edit'))}">✎</button>
-        <button onclick="event.stopPropagation();deleteSake(${i})" title="${esc(t('dash_delete'))}">✕</button>
-      </div>
-      <div class="dpc-badge ${badge}">${esc(p.type_detail || p.type)}</div>
-      <div class="dpc-name">${esc(p.name_jp)}</div>
-      <div class="dpc-name-en">${esc(p.name_en || '')}</div>
-      <div class="dpc-specs">
-        <div><div class="dpc-spec-label">${esc(t('spec_polishing'))}</div><div class="dpc-spec-value">${esc(p.polishing_rate || '—')}</div></div>
-        <div><div class="dpc-spec-label">${esc(t('spec_alc'))}</div><div class="dpc-spec-value">${esc(p.alcohol || '—')}</div></div>
-        <div><div class="dpc-spec-label">${esc(t('spec_smv'))}</div><div class="dpc-spec-value">${esc(p.smv || '—')}</div></div>
-      </div>
-    `;
-    grid.appendChild(card);
-  });
-}
-
-// ─────────────────────────────────────────
-//  ADD / EDIT SAKE
-// ─────────────────────────────────────────
-function openAddSake() {
-  editingSakeIndex = -1;
-  document.getElementById('sake-modal-title').textContent = t('sake_modal_add');
-  clearSakeForm();
-  document.getElementById('sake-modal').classList.add('active');
-}
-
-function openEditSake(index) {
-  editingSakeIndex = index;
-  const p = state.currentBrewery.products[index];
-  document.getElementById('sake-modal-title').textContent = t('sake_modal_edit');
-  document.getElementById('sf-name-jp').value = p.name_jp || '';
-  document.getElementById('sf-name-en').value = p.name_en || '';
-  document.getElementById('sf-type').value = p.type || 'Junmai';
-  document.getElementById('sf-type-detail').value = p.type_detail || '';
-  document.getElementById('sf-rice').value = p.rice || '';
-  document.getElementById('sf-polish').value = p.polishing_rate || '';
-  document.getElementById('sf-alcohol').value = p.alcohol || '';
-  document.getElementById('sf-smv').value = p.smv || '';
-  document.getElementById('sf-acidity').value = p.acidity || '';
-  document.getElementById('sf-yeast').value = p.yeast || '';
-  document.getElementById('sf-volumes').value = (p.volumes || []).map(v => v.size + ':' + v.price).join(', ');
-  document.getElementById('sf-notes').value = p.tasting_notes || '';
-  document.getElementById('sf-awards').value = p.awards || '';
-  document.getElementById('sake-modal').classList.add('active');
-}
-
-function clearSakeForm() {
-  ['sf-name-jp','sf-name-en','sf-type-detail','sf-rice','sf-polish','sf-alcohol','sf-smv','sf-acidity','sf-yeast','sf-volumes','sf-notes','sf-awards'].forEach(id => {
-    const el = document.getElementById(id);
-    if (el.tagName === 'SELECT') el.selectedIndex = 0;
-    else el.value = '';
-  });
-}
-
-function closeSakeModal() {
-  document.getElementById('sake-modal').classList.remove('active');
-}
-
-function saveSake() {
-  const product = {
-    name_jp: document.getElementById('sf-name-jp').value.trim(),
-    name_en: document.getElementById('sf-name-en').value.trim(),
-    type: document.getElementById('sf-type').value,
-    type_detail: document.getElementById('sf-type-detail').value.trim(),
-    rice: document.getElementById('sf-rice').value.trim(),
-    polishing_rate: document.getElementById('sf-polish').value.trim(),
-    alcohol: document.getElementById('sf-alcohol').value.trim(),
-    smv: document.getElementById('sf-smv').value.trim(),
-    acidity: document.getElementById('sf-acidity').value.trim(),
-    yeast: document.getElementById('sf-yeast').value.trim(),
-    volumes: document.getElementById('sf-volumes').value.split(',').map(v => {
-      const parts = v.trim().split(':');
-      return { size: parts[0]?.trim() || '', price: parts[1]?.trim() || '' };
-    }).filter(v => v.size),
-    tasting_notes: document.getElementById('sf-notes').value.trim(),
-    awards: document.getElementById('sf-awards').value.trim()
-  };
-  if (!product.name_jp) return;
-
-  if (editingSakeIndex >= 0) {
-    state.currentBrewery.products[editingSakeIndex] = product;
-  } else {
-    state.currentBrewery.products.push(product);
-  }
-  localStorage.setItem('sp_brewery_data', JSON.stringify(state.currentBrewery));
-  closeSakeModal();
-  renderDashProducts();
-  renderDashSheets();
-  renderCommercialView();
-}
-
-function deleteSake(index) {
-  const name = state.currentBrewery.products[index]?.name_jp || '';
-  if (!confirm(`${t('dash_delete')}: ${name}?`)) return;
-  state.currentBrewery.products.splice(index, 1);
-  localStorage.setItem('sp_brewery_data', JSON.stringify(state.currentBrewery));
-  renderDashProducts();
-  renderDashSheets();
-  renderCommercialView();
-}
-
-// ─────────────────────────────────────────
-//  TECHNICAL SHEETS
-// ─────────────────────────────────────────
-function renderDashSheets() {
-  const products = state.currentBrewery.products || [];
-  const grid = document.getElementById('dash-sheets-grid');
-  grid.innerHTML = '';
-  products.forEach((p, i) => {
-    const card = document.createElement('div');
-    card.className = 'sheet-card';
-    card.innerHTML = `
-      <div class="sheet-card-name">${esc(p.name_jp)}</div>
-      <div class="sheet-card-type">${esc(p.type_detail || p.type)}</div>
-      <div class="sheet-card-actions">
-        <button class="btn btn-primary btn-sm" onclick="generateSheet(${i},'technical')">${esc(t('dash_print_sheet'))}</button>
-        <button class="btn btn-secondary btn-sm" onclick="generateSheet(${i},'commercial')">${esc(t('dash_print_commercial'))}</button>
-      </div>
-    `;
-    grid.appendChild(card);
-  });
-}
-
-function generateSheet(index, type) {
-  const p = state.currentBrewery.products[index];
-  const c = state.currentBrewery.company;
-  const lang = document.getElementById('sheet-lang-select').value;
-
-  // Generate printable HTML sheet
-  const w = window.open('', '_blank');
-  if (!w) { alert('Please allow popups'); return; }
-
-  const isCommercial = type === 'commercial';
-  const title = isCommercial ? (p.name_en || p.name_jp) : p.name_jp;
-  const specs = isCommercial ? '' : `
-    <table class="specs-table">
-      <tr><td>Rice</td><td>${esc(p.rice || '—')}</td><td>Polishing</td><td>${esc(p.polishing_rate || '—')}</td></tr>
-      <tr><td>Alcohol</td><td>${esc(p.alcohol || '—')}</td><td>SMV</td><td>${esc(p.smv || '—')}</td></tr>
-      <tr><td>Acidity</td><td>${esc(p.acidity || '—')}</td><td>Yeast</td><td>${esc(p.yeast || '—')}</td></tr>
-    </table>
-    <p class="volumes">${(p.volumes||[]).map(v=>`${v.size} ${v.price}`).join(' · ')}</p>`;
-
-  w.document.write(`<!DOCTYPE html><html><head><meta charset="UTF-8">
-    <title>${esc(title)} — Technical Sheet</title>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;600&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
-    <style>
-      @page { size: A4; margin: 0; }
-      * { margin:0; padding:0; box-sizing:border-box; }
-      body { font-family:'Inter',sans-serif; color:#1a2a44; width:210mm; min-height:297mm; margin:0 auto; position:relative; }
-      .header { background:#1a2a44; color:#fff; padding:24px 32px; display:flex; justify-content:space-between; align-items:center; }
-      .header h1 { font-family:'Noto Serif JP',serif; font-size:18px; }
-      .header .sub { color:#c8a45e; font-size:11px; }
-      .body { padding:32px; }
-      .product-title { font-family:'Noto Serif JP',serif; font-size:${isCommercial?'28px':'24px'}; margin-bottom:4px; ${isCommercial?'text-align:center;':''} }
-      .product-en { font-size:13px; color:#666; margin-bottom:${isCommercial?'20px':'16px'}; ${isCommercial?'text-align:center;':''} }
-      .type-badge { display:inline-block; background:rgba(58,110,165,0.1); color:#3a6ea5; padding:4px 12px; border-radius:12px; font-size:12px; font-weight:500; margin-bottom:20px; ${isCommercial?'text-align:center;display:block;width:fit-content;margin:0 auto 20px;':''} }
-      .specs-table { width:100%; border-collapse:collapse; margin:20px 0; }
-      .specs-table td { padding:10px 16px; border:1px solid #e0d9cc; font-size:13px; }
-      .specs-table td:nth-child(odd) { background:#f5f0e8; font-weight:500; width:25%; }
-      .volumes { font-size:12px; color:#666; margin:12px 0; }
-      .notes { margin:20px 0; padding:16px; background:#faf7f2; border-radius:8px; font-size:13px; line-height:1.7; ${isCommercial?'font-style:italic;text-align:center;font-size:15px;':''} }
-      .awards { color:#c8a45e; font-size:13px; margin:12px 0; }
-      .footer { position:absolute; bottom:0; left:0; right:0; background:#1a2a44; color:rgba(255,255,255,0.6); padding:16px 32px; font-size:10px; display:flex; justify-content:space-between; }
-      ${isCommercial ? '.commercial-desc { text-align:center; font-size:14px; color:#666; line-height:1.8; margin:20px 40px; } .commercial-highlight { font-family:"Noto Serif JP",serif; font-size:20px; color:#c8a45e; text-align:center; margin:32px 0; }' : ''}
-      @media print { body { width:210mm; height:297mm; } }
-    </style></head><body>
-    <div class="header">
-      <div><h1>${esc(c.name_jp)}</h1><div class="sub">${esc(c.name_en || '')}</div></div>
-      <div style="text-align:right"><div class="sub">${esc(c.prefecture || '')}</div><div class="sub">${esc(c.website || '')}</div></div>
-    </div>
-    <div class="body">
-      <div class="type-badge">${esc(p.type_detail || p.type)}</div>
-      <div class="product-title">${esc(p.name_jp)}</div>
-      <div class="product-en">${esc(p.name_en || '')}</div>
-      ${isCommercial && p.tasting_notes ? `<div class="commercial-highlight">"</div><div class="commercial-desc">${esc(p.tasting_notes)}</div>` : ''}
-      ${specs}
-      ${!isCommercial && p.tasting_notes ? `<div class="notes">${esc(p.tasting_notes)}</div>` : ''}
-      ${p.awards ? `<div class="awards">★ ${esc(p.awards)}</div>` : ''}
-    </div>
-    <div class="footer">
-      <div>${esc(c.name_jp)} — ${esc(c.address || '')}</div>
-      <div>sakeplatform.com</div>
-    </div>
-  </body></html>`);
-  w.document.close();
-  setTimeout(() => w.print(), 500);
-}
-
-function printAllSheets() {
-  const products = state.currentBrewery.products || [];
-  products.forEach((_, i) => generateSheet(i, 'technical'));
-}
-
-// ─────────────────────────────────────────
-//  COMMERCIAL VIEW
-// ─────────────────────────────────────────
-function renderCommercialView() {
-  const c = state.currentBrewery.company;
-  const products = state.currentBrewery.products || [];
-  const el = document.getElementById('dash-commercial-preview');
-  el.innerHTML = `
-    <div class="commercial-hero">
-      <h2>${esc(c.name_jp)}</h2>
-      <p>${esc(c.name_en || '')} — ${esc(t('commercial_tagline'))}</p>
-      ${c.philosophy ? `<p style="margin-top:12px;font-style:italic;color:var(--text3);font-size:13px">${esc(c.philosophy)}</p>` : ''}
-    </div>
-    <div class="commercial-products">
-      ${products.map(p => `
-        <div class="commercial-product">
-          <div class="commercial-product-type">${esc(p.type_detail || p.type)}</div>
-          <div class="commercial-product-name">${esc(p.name_jp)}</div>
-          ${p.tasting_notes ? `<div class="commercial-product-desc">${esc(p.tasting_notes)}</div>` : ''}
-        </div>
-      `).join('')}
-    </div>
-  `;
-}
-
-// ─────────────────────────────────────────
-//  EXPORTERS
-// ─────────────────────────────────────────
-function renderExporters() {
-  const exporters = state.currentBrewery.exporters || [];
-  const el = document.getElementById('dash-exporters-list');
-  if (exporters.length === 0) {
-    el.innerHTML = `<div style="text-align:center;padding:40px;color:var(--text3)">${esc(t('dash_no_exporters'))}</div>`;
-    return;
-  }
-  el.innerHTML = exporters.map((exp, i) => `
-    <div class="exporter-card">
-      <div class="exporter-info">
-        <div class="exporter-name">${esc(exp.name)}</div>
-        <div class="exporter-detail">${esc(exp.country || '')} · ${esc(exp.email || '')}</div>
-      </div>
-      <button class="btn btn-secondary btn-sm" onclick="removeExporter(${i})">✕</button>
-    </div>
-  `).join('');
-}
-
-function openAddExporter() {
-  const name = prompt(state.lang === 'it' ? 'Nome esportatore:' : state.lang === 'ja' ? '輸出業者名:' : 'Exporter name:');
-  if (!name) return;
-  const country = prompt(state.lang === 'it' ? 'Paese:' : state.lang === 'ja' ? '国:' : 'Country:') || '';
-  const email = prompt('Email:') || '';
-  if (!state.currentBrewery.exporters) state.currentBrewery.exporters = [];
-  state.currentBrewery.exporters.push({ name, country, email });
-  localStorage.setItem('sp_brewery_data', JSON.stringify(state.currentBrewery));
-  renderExporters();
-}
-
-function removeExporter(index) {
-  state.currentBrewery.exporters.splice(index, 1);
-  localStorage.setItem('sp_brewery_data', JSON.stringify(state.currentBrewery));
-  renderExporters();
-}
-
-// ─────────────────────────────────────────
-//  DOMAIN VERIFICATION
-// ─────────────────────────────────────────
-function openDomainVerify() {
-  const c = state.currentBrewery.company;
-  const domain = (c.website || '').replace(/^https?:\/\//, '').replace(/^www\./, '').split('/')[0];
-  document.getElementById('domain-modal-title').textContent = t('domain_title');
-  document.getElementById('domain-verify-flow').innerHTML = `
-    <p style="margin-bottom:16px;font-size:14px;color:var(--text2)">${esc(t('domain_desc'))}</p>
-    <div style="background:var(--surface2);padding:16px;border-radius:8px;margin-bottom:16px">
-      <div style="font-size:12px;color:var(--text3);margin-bottom:4px">${esc(t('domain_step1'))}</div>
-      <div style="font-size:18px;font-weight:600;color:var(--accent)">${esc(domain || '—')}</div>
-    </div>
-    <ol style="padding-left:20px;font-size:13px;color:var(--text2);line-height:2">
-      <li>${esc(t('domain_step2'))}${esc(domain)}</li>
-      <li>${esc(t('domain_step3'))}</li>
-    </ol>
-    <p style="margin-top:16px;font-size:11px;color:var(--text3)">${esc(t('domain_alt'))}</p>
-  `;
-  document.getElementById('domain-modal').classList.add('active');
-}
-
-function closeDomainModal() {
-  document.getElementById('domain-modal').classList.remove('active');
-}
-
-// ─────────────────────────────────────────
-//  INVITE STAFF
-// ─────────────────────────────────────────
-function openInviteStaff() {
-  document.getElementById('invite-modal-title').textContent = t('invite_title');
-  document.getElementById('invite-modal').classList.add('active');
-}
-
-function closeInviteModal() {
-  document.getElementById('invite-modal').classList.remove('active');
-}
-
-function sendInvite() {
-  const email = document.getElementById('invite-email').value.trim();
-  if (!email) return;
-  alert(state.lang === 'it' ? `Invito inviato a ${email}!` : state.lang === 'ja' ? `${email}に招待を送信しました！` : `Invitation sent to ${email}!`);
-  closeInviteModal();
-}
-
-// ─────────────────────────────────────────
-//  LOGOUT
-// ─────────────────────────────────────────
-function logoutUser() {
-  state.user = null;
-  state.currentBrewery = null;
-  localStorage.removeItem('sp_user');
-  localStorage.removeItem('sp_brewery_data');
-  document.getElementById('logout-btn').style.display = 'none';
-  showScreen('search');
-}
-
-// ─────────────────────────────────────────
-//  MODIFY RESULT FLOW — go to confirm instead of old results
-// ─────────────────────────────────────────
-// Override the screen-results display to route to confirm
-function showDiscoveryResults(data) {
-  state.currentBrewery = data;
-  showConfirmScreen(data);
-}
-
-// ─────────────────────────────────────────
-//  NAVIGATION UPDATE
-// ─────────────────────────────────────────
-function updateNavForDashboard() {
-  // Once logged in, highlight dashboard-related tabs
-}
-
-// ─────────────────────────────────────────
-//  INIT
-// ─────────────────────────────────────────
-// Check if user has saved session
-(function initSession() {
-  const savedUser = localStorage.getItem('sp_user');
-  const savedBrewery = localStorage.getItem('sp_brewery_data');
-  if (savedUser && savedBrewery) {
-    try {
-      state.user = JSON.parse(savedUser);
-      state.currentBrewery = JSON.parse(savedBrewery);
-      // Auto-enter dashboard
-      applyLang();
-      renderRecent();
-      enterDashboard();
-      return;
-    } catch(e) {}
-  }
-  applyLang();
-  renderRecent();
-})();
+applyLang();
+if(state.user&&state.brewery)enterDashboard();
 </script>
 </body>
 </html>
