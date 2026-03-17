@@ -14,7 +14,7 @@
   --text: #1a2a44; --text2: #4a5568; --text3: #8a8070;
   --accent: #3a6ea5; --accent2: #2d5a8a; --accent-glow: rgba(58,110,165,0.12);
   --gold: #c8a45e; --green: #34a853; --green2: rgba(52,168,83,0.1);
-  --navy: #1a2a44; --red: #d93025;
+  --navy: #1a2a44; --orange: #e67e22; --orange2: rgba(230,126,34,0.1);
   --radius: 12px; --radius-sm: 8px; --radius-lg: 20px;
   --font: 'Inter','Noto Sans JP',sans-serif; --font-serif: 'Noto Serif JP',serif;
   --shadow: 0 4px 24px rgba(26,42,68,0.08); --shadow-lg: 0 8px 48px rgba(26,42,68,0.12);
@@ -44,7 +44,6 @@ body { font-family:var(--font); background:var(--bg); color:var(--text); min-hei
 
 .screen { display:none; min-height:100vh; padding-top:56px; }
 .screen.active { display:block; }
-@keyframes fadeIn { from{opacity:0} to{opacity:1} }
 
 .btn { display:inline-flex; align-items:center; justify-content:center; gap:6px; padding:10px 20px; border:none; border-radius:var(--radius-sm); font:500 13px var(--font); cursor:pointer; transition:var(--transition); text-decoration:none; }
 .btn-primary { background:var(--accent); color:#fff; }
@@ -64,24 +63,34 @@ body { font-family:var(--font); background:var(--bg); color:var(--text); min-hei
 .search-box { position:relative; width:100%; max-width:520px; }
 .search-box input { width:100%; height:58px; background:var(--surface); border:1px solid var(--border); border-radius:16px; padding:0 58px 0 22px; font:400 16px var(--font); color:var(--text); outline:none; transition:var(--transition); }
 .search-box input:focus { border-color:var(--accent); box-shadow:0 0 0 3px var(--accent-glow); }
-.search-box input:disabled { opacity:0.5; }
 .search-go { position:absolute; right:7px; top:50%; transform:translateY(-50%); width:44px; height:44px; border-radius:12px; background:var(--accent); border:none; color:#fff; font-size:18px; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:var(--transition); }
 .search-go:hover { background:var(--accent2); }
 .search-go:disabled { opacity:0.4; cursor:not-allowed; }
 .search-hint { margin-top:18px; font-size:12px; color:var(--text3); max-width:520px; text-align:center; line-height:1.6; }
 .search-hint strong { color:var(--text2); font-weight:500; }
 
-/* INLINE RESULT */
+/* PROGRESS TIMELINE */
 .inline-result { width:100%; max-width:580px; margin-top:24px; }
-.search-status { display:flex; align-items:center; gap:10px; padding:14px 18px; background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); font-size:13px; color:var(--text2); }
-.search-status .dot { width:8px; height:8px; border-radius:50%; background:var(--accent); animation:blink 1s ease infinite; flex-shrink:0; }
-@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
-.search-step { margin-top:2px; font-size:11px; color:var(--text3); }
+.progress-timeline { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:20px 22px; }
+.pt-step { display:flex; align-items:flex-start; gap:12px; padding:8px 0; position:relative; }
+.pt-step:not(:last-child) { padding-bottom:14px; }
+.pt-step:not(:last-child)::after { content:''; position:absolute; left:11px; top:28px; bottom:0; width:1.5px; background:var(--bg3); }
+.pt-step.done:not(:last-child)::after { background:var(--green); }
+.pt-step.active:not(:last-child)::after { background:linear-gradient(var(--accent),var(--bg3)); }
+.pt-icon { width:24px; height:24px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:11px; flex-shrink:0; transition:var(--transition); border:2px solid var(--bg3); color:var(--text3); background:var(--surface); }
+.pt-step.active .pt-icon { border-color:var(--accent); color:var(--accent); background:var(--accent-glow); animation:pulse 1.5s ease infinite; }
+.pt-step.done .pt-icon { border-color:var(--green); color:#fff; background:var(--green); font-size:10px; }
+.pt-step.waiting .pt-icon { border-color:var(--bg3); color:var(--text3); }
+@keyframes pulse { 0%,100%{box-shadow:0 0 0 0 rgba(58,110,165,0.2)} 50%{box-shadow:0 0 0 6px rgba(58,110,165,0)} }
+.pt-label { font-size:13px; font-weight:500; color:var(--text2); }
+.pt-step.active .pt-label { color:var(--accent); }
+.pt-step.done .pt-label { color:var(--green); }
+.pt-detail { font-size:11px; color:var(--text3); margin-top:2px; }
+.pt-step.done .pt-detail { color:var(--green); }
 
 /* BREWERY CARD */
 .brewery-card { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-lg); box-shadow:var(--shadow-lg); animation:slideUp 0.5s ease; overflow:hidden; }
 @keyframes slideUp { from{opacity:0;transform:translateY(16px)} to{opacity:1;transform:translateY(0)} }
-
 .bc-header { display:flex; align-items:center; gap:16px; padding:24px 24px 0; }
 .bc-logo { width:56px; height:56px; border-radius:14px; background:var(--bg2); border:1px solid var(--border); display:flex; align-items:center; justify-content:center; overflow:hidden; flex-shrink:0; }
 .bc-logo img { width:100%; height:100%; object-fit:contain; }
@@ -89,57 +98,73 @@ body { font-family:var(--font); background:var(--bg); color:var(--text); min-hei
 .bc-title { flex:1; }
 .bc-name-jp { font-family:var(--font-serif); font-size:22px; font-weight:600; line-height:1.3; }
 .bc-name-en { font-size:12px; color:var(--text3); margin-top:2px; }
-
 .bc-body { padding:20px 24px; }
 .bc-website { display:inline-flex; align-items:center; gap:6px; padding:6px 14px; background:var(--accent-glow); border:1px solid rgba(58,110,165,0.15); border-radius:20px; font-size:13px; font-weight:500; color:var(--accent); margin-bottom:16px; text-decoration:none; }
 .bc-website:hover { background:rgba(58,110,165,0.18); }
-
 .bc-info-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:16px; }
-.bc-info-item { display:flex; align-items:flex-start; gap:8px; font-size:12px; color:var(--text2); }
-.bc-info-item .icon { font-size:14px; flex-shrink:0; margin-top:1px; }
+.bc-info-item { display:flex; align-items:flex-start; gap:8px; }
 .bc-info-label { font-size:10px; color:var(--text3); text-transform:uppercase; letter-spacing:0.5px; font-weight:600; }
 .bc-info-value { font-size:12px; color:var(--text); margin-top:1px; }
-
 .bc-history { font-size:13px; color:var(--text2); line-height:1.7; margin-bottom:16px; padding:14px 16px; background:var(--surface2); border-radius:var(--radius-sm); border-left:3px solid var(--gold); }
-
 .bc-products-badge { display:flex; align-items:center; gap:10px; padding:14px 18px; background:linear-gradient(135deg, var(--green2), rgba(52,168,83,0.05)); border:1px solid rgba(52,168,83,0.2); border-radius:var(--radius); margin-bottom:4px; }
-.bc-products-number { font-size:28px; font-weight:700; color:var(--green); font-variant-numeric:tabular-nums; }
+.bc-products-number { font-size:28px; font-weight:700; color:var(--green); }
 .bc-products-label { font-size:13px; color:var(--green); font-weight:500; line-height:1.3; }
 .bc-products-sublabel { font-size:11px; color:var(--text3); font-weight:400; }
-
 .bc-map { border-top:1px solid var(--border); }
-
 .bc-sources { padding:10px 24px; background:var(--surface2); border-top:1px solid var(--border); font-size:10px; color:var(--text3); display:flex; align-items:center; gap:6px; flex-wrap:wrap; }
-.bc-source-tag { padding:2px 8px; background:var(--bg); border-radius:10px; font-size:10px; }
-
+.bc-source-tag { padding:2px 8px; background:var(--bg); border-radius:10px; }
 .bc-cta { padding:20px 24px; border-top:1px solid var(--border); text-align:center; }
 .bc-cta-text { font-size:14px; color:var(--text2); margin-bottom:14px; }
 .bc-cta-actions { display:flex; gap:10px; justify-content:center; align-items:center; }
 .bc-retry { font-size:12px; color:var(--text3); background:none; border:none; cursor:pointer; padding:8px 14px; }
 .bc-retry:hover { color:var(--accent); }
 
-/* REGISTER */
-.register-page { display:flex; align-items:center; justify-content:center; min-height:calc(100vh - 56px); padding:40px 24px; }
-.register-card { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-lg); padding:40px; max-width:480px; width:100%; box-shadow:var(--shadow-lg); }
-.reg-header { text-align:center; margin-bottom:24px; }
-.reg-header h2 { font-size:20px; font-weight:600; margin-bottom:6px; }
-.reg-header p { font-size:13px; color:var(--text3); }
-.reg-brewery-mini { display:flex; align-items:center; gap:10px; padding:12px 16px; background:var(--accent-glow); border:1px solid rgba(58,110,165,0.15); border-radius:var(--radius-sm); margin-bottom:24px; }
-.reg-brewery-mini img { width:28px; height:28px; border-radius:6px; }
-.reg-brewery-mini .fallback { width:28px; height:28px; border-radius:6px; background:var(--bg2); display:flex; align-items:center; justify-content:center; font-size:14px; }
-.reg-brewery-mini span { font-size:14px; font-weight:500; color:var(--accent); }
-.reg-form label { display:block; font-size:11px; font-weight:600; color:var(--text2); margin:16px 0 6px; text-transform:uppercase; letter-spacing:0.5px; }
-.reg-form label:first-child { margin-top:0; }
-.reg-form input { width:100%; height:44px; background:var(--surface2); border:1px solid var(--border); border-radius:var(--radius-sm); padding:0 14px; font:400 14px var(--font); color:var(--text); outline:none; transition:var(--transition); }
-.reg-form input:focus { border-color:var(--accent); }
-.domain-hint { margin-top:8px; padding:10px 14px; background:var(--green2); border:1px solid rgba(52,168,83,0.2); border-radius:var(--radius-sm); font-size:12px; color:var(--green); display:none; }
-.verification-sent { text-align:center; padding:32px; display:none; }
-.verification-sent .icon { font-size:48px; margin-bottom:12px; }
-.verification-sent h3 { font-size:18px; margin-bottom:8px; }
-.verification-sent p { font-size:13px; color:var(--text3); line-height:1.6; }
+/* CLAIM / REGISTER PAGE */
+.claim-page { max-width:560px; margin:0 auto; padding:32px 24px 60px; }
+.claim-breadcrumb { display:flex; align-items:center; gap:8px; font-size:12px; color:var(--text3); margin-bottom:24px; }
+.claim-breadcrumb a { color:var(--accent); cursor:pointer; text-decoration:none; }
+.claim-breadcrumb a:hover { text-decoration:underline; }
+.claim-breadcrumb .sep { color:var(--border2); }
+
+.claim-brewery { display:flex; align-items:center; gap:12px; padding:14px 18px; background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); margin-bottom:24px; }
+.claim-brewery-logo { width:36px; height:36px; border-radius:8px; background:var(--bg2); border:1px solid var(--border); display:flex; align-items:center; justify-content:center; overflow:hidden; flex-shrink:0; }
+.claim-brewery-logo img { width:100%; height:100%; object-fit:contain; }
+.claim-brewery-name { font-family:var(--font-serif); font-size:16px; font-weight:600; }
+.claim-brewery-site { font-size:11px; color:var(--text3); }
+
+.claim-section { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:24px; margin-bottom:16px; }
+.claim-section-title { font-size:15px; font-weight:600; margin-bottom:6px; }
+.claim-section-desc { font-size:13px; color:var(--text3); line-height:1.6; margin-bottom:20px; }
+
+/* Verification methods */
+.verif-methods { display:flex; flex-direction:column; gap:10px; margin-bottom:20px; }
+.verif-method { display:flex; align-items:flex-start; gap:12px; padding:14px 16px; background:var(--surface2); border:1px solid var(--bg2); border-radius:var(--radius-sm); transition:var(--transition); }
+.verif-method.recommended { border-color:var(--green); background:var(--green2); }
+.verif-method-icon { width:32px; height:32px; border-radius:8px; background:var(--bg); display:flex; align-items:center; justify-content:center; font-size:16px; flex-shrink:0; }
+.verif-method.recommended .verif-method-icon { background:var(--green); color:#fff; font-size:14px; }
+.verif-method-title { font-size:13px; font-weight:600; }
+.verif-method-desc { font-size:11px; color:var(--text3); margin-top:2px; line-height:1.5; }
+.verif-method-badge { display:inline-flex; padding:2px 8px; border-radius:10px; font-size:10px; font-weight:600; margin-top:4px; }
+.verif-method-badge.auto { background:var(--green2); color:var(--green); }
+.verif-method-badge.manual { background:var(--orange2); color:var(--orange); }
+
+/* Form inside claim */
+.claim-form label { display:block; font-size:11px; font-weight:600; color:var(--text2); margin:14px 0 6px; text-transform:uppercase; letter-spacing:0.5px; }
+.claim-form label:first-child { margin-top:0; }
+.claim-form input { width:100%; height:44px; background:var(--surface2); border:1px solid var(--border); border-radius:var(--radius-sm); padding:0 14px; font:400 14px var(--font); color:var(--text); outline:none; transition:var(--transition); }
+.claim-form input:focus { border-color:var(--accent); }
+.domain-match-alert { margin-top:10px; padding:12px 16px; border-radius:var(--radius-sm); font-size:12px; line-height:1.5; display:none; }
+.domain-match-alert.match { background:var(--green2); border:1px solid rgba(52,168,83,0.2); color:var(--green); }
+.domain-match-alert.no-match { background:var(--orange2); border:1px solid rgba(230,126,34,0.2); color:var(--orange); }
+
+/* Email sent state */
+.email-sent-card { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:32px; text-align:center; display:none; }
+.email-sent-icon { font-size:48px; margin-bottom:12px; }
+.email-sent-title { font-size:18px; font-weight:600; margin-bottom:8px; }
+.email-sent-desc { font-size:13px; color:var(--text3); line-height:1.6; margin-bottom:20px; }
 
 /* DASHBOARD */
-.dashboard { max-width:800px; margin:0 auto; padding:80px 24px 60px; }
+.dashboard { max-width:800px; margin:0 auto; padding:32px 24px 60px; }
 .dash-header { display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:16px; margin-bottom:32px; }
 .dash-brewery { font-family:var(--font-serif); font-size:24px; font-weight:600; display:flex; align-items:center; gap:8px; }
 .dash-verified-badge { display:inline-flex; align-items:center; gap:4px; padding:3px 10px; border-radius:20px; font-size:11px; font-weight:600; margin-top:4px; }
@@ -173,14 +198,13 @@ body { font-family:var(--font); background:var(--bg); color:var(--text); min-hei
   .bc-info-grid { grid-template-columns:1fr; }
   .bc-cta { padding:16px 18px; }
   .bc-cta-actions { flex-direction:column; }
-  .register-card { padding:24px; }
+  .claim-page { padding:20px 16px 40px; }
   .topbar-user-name { display:none; }
 }
 </style>
 </head>
 <body>
 
-<!-- TOPBAR -->
 <div class="topbar">
   <div class="topbar-left">
     <div class="topbar-logo" onclick="goHome()">酒蔵 <span class="logo-mark">PLATFORM</span></div>
@@ -217,28 +241,47 @@ body { font-family:var(--font); background:var(--bg); color:var(--text); min-hei
   </div>
 </div>
 
-<!-- PAGE: REGISTER -->
+<!-- PAGE: CLAIM / REGISTER -->
 <div class="screen" id="page-register">
-  <div class="register-page">
-    <div class="register-card">
-      <div class="reg-header"><h2 id="reg-title"></h2><p id="reg-desc"></p></div>
-      <div class="reg-brewery-mini" id="reg-brewery"></div>
-      <div class="reg-form" id="reg-form">
+  <div class="claim-page">
+    <div class="claim-breadcrumb">
+      <a onclick="navTo('search')" id="bc-search"></a>
+      <span class="sep">→</span>
+      <span id="bc-claim"></span>
+    </div>
+
+    <div class="claim-brewery" id="claim-brewery"></div>
+
+    <!-- Verification explanation -->
+    <div class="claim-section" id="claim-verification-section">
+      <div class="claim-section-title" id="claim-title"></div>
+      <div class="claim-section-desc" id="claim-desc"></div>
+
+      <div class="verif-methods" id="verif-methods"></div>
+    </div>
+
+    <!-- Registration form -->
+    <div class="claim-section" id="claim-form-section">
+      <div class="claim-section-title" id="form-title"></div>
+      <div class="claim-form" id="claim-form">
         <label id="lbl-name"></label>
         <input type="text" id="inp-name">
         <label id="lbl-email"></label>
-        <input type="email" id="inp-email">
-        <div class="domain-hint" id="domain-hint"></div>
+        <input type="email" id="inp-email" oninput="checkDomainMatch()">
+        <div class="domain-match-alert match" id="domain-match"></div>
+        <div class="domain-match-alert no-match" id="domain-no-match"></div>
         <label id="lbl-pass"></label>
         <input type="password" id="inp-pass">
-        <button class="btn btn-primary btn-lg btn-full" style="margin-top:24px" onclick="register()" id="btn-register"></button>
+        <button class="btn btn-gold btn-lg btn-full" style="margin-top:24px" onclick="register()" id="btn-register"></button>
       </div>
-      <div class="verification-sent" id="verification-sent">
-        <div class="icon">📧</div>
-        <h3 id="verif-title"></h3>
-        <p id="verif-desc"></p>
-        <button class="btn btn-primary btn-lg" style="margin-top:20px" onclick="enterDashboard()" id="btn-enter-dash"></button>
-      </div>
+    </div>
+
+    <!-- Email sent -->
+    <div class="email-sent-card" id="email-sent">
+      <div class="email-sent-icon">📧</div>
+      <div class="email-sent-title" id="email-sent-title"></div>
+      <div class="email-sent-desc" id="email-sent-desc"></div>
+      <button class="btn btn-primary btn-lg" onclick="enterDashboard()" id="btn-enter-dash"></button>
     </div>
   </div>
 </div>
@@ -246,6 +289,11 @@ body { font-family:var(--font); background:var(--bg); color:var(--text); min-hei
 <!-- PAGE: DASHBOARD -->
 <div class="screen" id="page-dashboard">
   <div class="dashboard">
+    <div class="claim-breadcrumb">
+      <a onclick="navTo('search')" id="dash-bc-search"></a>
+      <span class="sep">→</span>
+      <span id="dash-bc-name"></span>
+    </div>
     <div class="dash-header">
       <div>
         <div class="dash-brewery" id="dash-name"></div>
@@ -268,65 +316,112 @@ body { font-family:var(--font); background:var(--bg); color:var(--text); min-hei
 </div>
 
 <script>
-// ==================== I18N ====================
 const I18N = {
   it: {
     hero_title:'酒蔵を探す', hero_sub:'TROVA LA TUA SAKAGURA',
     search_placeholder:'Nome della sakagura...',
     search_hint:'Inserisci il nome. Cercheremo nel web <strong>dominio, storia, dati aziendali e prodotti</strong> da fonti internazionali.',
-    searching:'Sto cercando nel web...',
-    step_geo:'Ricerca posizione e dominio...',
-    step_wiki:'Ricerca storia e informazioni aziendali...',
-    step_products:'Ricerca prodotti da fonti internazionali...',
-    step_done:'Risultati pronti',
+    // Progress steps
+    ps_geo:'Ricerca posizione e dominio',
+    ps_geo_detail:'Cerco sito web ufficiale...',
+    ps_wiki:'Raccolta storia e dati aziendali',
+    ps_wiki_detail:'Navigo siti e fonti pubbliche...',
+    ps_products:'Ricerca prodotti da fonti internazionali',
+    ps_products_detail:'Cerco su importatori, database e retailers...',
+    ps_merge:'Unione e verifica informazioni',
+    ps_merge_detail:'Unisco le fonti e preparo la scheda...',
+    ps_found_domain:'Trovato: {domain}',
+    ps_found_sources:'Raccolte {n} fonti',
+    ps_found_products:'Trovati {n} prodotti',
+    ps_done:'Scheda pronta',
+    // Result
     found_confirm:'È la tua sakagura?',
-    btn_confirm:'Sì, registra questa sakagura →',
+    btn_confirm:'Sì, registra e fai il claim →',
     btn_not_me:'Non è questa',
     products_found:'prodotti trovati',
     products_sublabel:'da sito ufficiale, importatori e database internazionali',
-    not_found:'Nessun risultato. Prova con un altro nome o con il nome in giapponese.',
-    nav_search:'Cerca', nav_register:'Registra', nav_dashboard:'Dashboard',
-    reg_title:'Registra la tua sakagura', reg_desc:'Crea il tuo account per gestire le schede tecniche.',
+    not_found:'Nessun risultato. Prova con un altro nome o in giapponese.',
+    // Nav
+    nav_search:'Cerca', nav_register:'Claim', nav_dashboard:'Dashboard',
+    bc_search:'Cerca', bc_claim:'Claim sakagura',
+    // Claim page
+    claim_title:'Come dimostrare che è la tua sakagura',
+    claim_desc:'Per proteggere le sakagura da claim non autorizzati, verifichiamo la tua identità. Il modo più veloce è usare un\'email con lo stesso dominio del sito ufficiale.',
+    verif_email_title:'Email con dominio ufficiale',
+    verif_email_desc:'Se il sito è {domain} e la tua email è nome@{domain}, ricevi automaticamente il badge verificato.',
+    verif_email_badge:'Verifica automatica',
+    verif_doc_title:'Documento ufficiale',
+    verif_doc_desc:'Invia visura camerale, certificato di registrazione o documento che attesti la proprietà.',
+    verif_doc_badge:'Verifica manuale (24-48h)',
+    verif_phone_title:'Verifica telefonica',
+    verif_phone_desc:'Ti chiamiamo al numero ufficiale della sakagura per confermare la tua identità.',
+    verif_phone_badge:'Verifica manuale',
+    verif_social_title:'Social media ufficiali',
+    verif_social_desc:'Pubblica un codice di verifica dall\'account social ufficiale della sakagura.',
+    verif_social_badge:'Verifica manuale',
+    // Form
+    form_title:'Registrati e fai il claim',
     lbl_name:'Nome e cognome', lbl_email:'Email aziendale', lbl_pass:'Password',
-    domain_match:'✓ Il dominio email corrisponde — otterrai il badge verificato!',
+    domain_match_yes:'✓ Dominio email verificato — riceverai il badge automaticamente!',
+    domain_match_no:'Il dominio email non corrisponde a {domain}. Potrai verificare con un metodo alternativo dopo la registrazione.',
     btn_register:'Registrati e verifica email →',
-    verif_title:'Email di verifica inviata!',
-    verif_desc:'Abbiamo inviato un link di conferma a {email}.',
+    email_sent_title:'Controlla la tua email!',
+    email_sent_desc:'Abbiamo inviato un link di conferma a {email}. Clicca il link per attivare il tuo account e completare il claim.',
     btn_enter:'Entra nella dashboard →',
+    // Dashboard
     upload_title:'Carica le tue schede tecniche',
     upload_desc:'Carica i documenti che hai oggi — PDF, Excel, Word, o foto.\nLi leggiamo e strutturiamo automaticamente.',
     upload_formats:'Formati: <strong>PDF, XLSX, CSV, DOCX, JPG, PNG</strong>',
     upload_processing:'Elaborazione...', upload_done:'Elaborato',
     verified_owner:'✓ Owner Verificato', pending_verif:'⏳ Verifica in corso',
     logout:'Esci',
-    history_label:'Storia',
-    founded_label:'Fondata',
-    address_label:'Indirizzo',
-    phone_label:'Telefono',
-    prefecture_label:'Prefettura',
+    founded_label:'Fondata', address_label:'Indirizzo', phone_label:'Telefono', prefecture_label:'Prefettura',
   },
   en: {
     hero_title:'酒蔵を探す', hero_sub:'FIND YOUR SAKAGURA',
     search_placeholder:'Brewery name...',
     search_hint:'Enter the name. We\'ll search the web for <strong>domain, history, company data and products</strong> from international sources.',
-    searching:'Searching the web...',
-    step_geo:'Searching location and domain...',
-    step_wiki:'Searching history and company info...',
-    step_products:'Searching products from international sources...',
-    step_done:'Results ready',
+    ps_geo:'Searching location and domain',
+    ps_geo_detail:'Looking for official website...',
+    ps_wiki:'Collecting history and company data',
+    ps_wiki_detail:'Navigating sites and public sources...',
+    ps_products:'Searching products from international sources',
+    ps_products_detail:'Searching importers, databases and retailers...',
+    ps_merge:'Merging and verifying information',
+    ps_merge_detail:'Combining sources and preparing profile...',
+    ps_found_domain:'Found: {domain}',
+    ps_found_sources:'Collected {n} sources',
+    ps_found_products:'Found {n} products',
+    ps_done:'Profile ready',
     found_confirm:'Is this your brewery?',
-    btn_confirm:'Yes, register this brewery →',
+    btn_confirm:'Yes, register and claim →',
     btn_not_me:'Not this one',
     products_found:'products found',
     products_sublabel:'from official site, importers and international databases',
     not_found:'No results found. Try a different name or in Japanese.',
-    nav_search:'Search', nav_register:'Register', nav_dashboard:'Dashboard',
-    reg_title:'Register your brewery', reg_desc:'Create your account to manage technical sheets.',
+    nav_search:'Search', nav_register:'Claim', nav_dashboard:'Dashboard',
+    bc_search:'Search', bc_claim:'Claim brewery',
+    claim_title:'How to prove this is your brewery',
+    claim_desc:'To protect breweries from unauthorized claims, we verify your identity. The fastest way is to use an email with the same domain as the official website.',
+    verif_email_title:'Email with official domain',
+    verif_email_desc:'If the website is {domain} and your email is name@{domain}, you automatically get the verified badge.',
+    verif_email_badge:'Automatic verification',
+    verif_doc_title:'Official document',
+    verif_doc_desc:'Send business registration certificate or ownership document.',
+    verif_doc_badge:'Manual verification (24-48h)',
+    verif_phone_title:'Phone verification',
+    verif_phone_desc:'We call the brewery\'s official phone number to confirm your identity.',
+    verif_phone_badge:'Manual verification',
+    verif_social_title:'Official social media',
+    verif_social_desc:'Post a verification code from the brewery\'s official social media account.',
+    verif_social_badge:'Manual verification',
+    form_title:'Register and claim',
     lbl_name:'Full name', lbl_email:'Business email', lbl_pass:'Password',
-    domain_match:'✓ Email domain matches — verified badge!',
+    domain_match_yes:'✓ Email domain verified — you\'ll get the badge automatically!',
+    domain_match_no:'Email domain doesn\'t match {domain}. You can verify with an alternative method after registration.',
     btn_register:'Register & verify email →',
-    verif_title:'Verification email sent!',
-    verif_desc:'We sent a confirmation link to {email}.',
+    email_sent_title:'Check your email!',
+    email_sent_desc:'We sent a confirmation link to {email}. Click the link to activate your account and complete the claim.',
     btn_enter:'Enter the dashboard →',
     upload_title:'Upload your technical sheets',
     upload_desc:'Upload your current docs — PDF, Excel, Word, or photos.\nWe\'ll read and structure them automatically.',
@@ -334,34 +429,53 @@ const I18N = {
     upload_processing:'Processing...', upload_done:'Processed',
     verified_owner:'✓ Verified Owner', pending_verif:'⏳ Verification pending',
     logout:'Logout',
-    history_label:'History',
-    founded_label:'Founded',
-    address_label:'Address',
-    phone_label:'Phone',
-    prefecture_label:'Prefecture',
+    founded_label:'Founded', address_label:'Address', phone_label:'Phone', prefecture_label:'Prefecture',
   },
   ja: {
     hero_title:'酒蔵を探す', hero_sub:'あなたの酒蔵を見つける',
     search_placeholder:'酒蔵の名前...',
     search_hint:'名前を入力。<strong>ドメイン、歴史、会社情報、商品</strong>を国際的な情報源から検索します。',
-    searching:'ウェブを検索中...',
-    step_geo:'位置とドメインを検索中...',
-    step_wiki:'歴史と会社情報を検索中...',
-    step_products:'国際的な情報源から商品を検索中...',
-    step_done:'結果の準備完了',
+    ps_geo:'位置とドメインの検索',
+    ps_geo_detail:'公式サイトを検索中...',
+    ps_wiki:'歴史と会社情報の収集',
+    ps_wiki_detail:'サイトと公開情報を調査中...',
+    ps_products:'国際情報源から商品検索',
+    ps_products_detail:'輸入業者、データベース、小売業者を検索中...',
+    ps_merge:'情報の統合と検証',
+    ps_merge_detail:'情報源を統合してプロフィールを作成中...',
+    ps_found_domain:'発見: {domain}',
+    ps_found_sources:'{n}件の情報源を収集',
+    ps_found_products:'{n}件の商品を発見',
+    ps_done:'プロフィール完成',
     found_confirm:'あなたの酒蔵ですか？',
-    btn_confirm:'はい、この酒蔵を登録 →',
+    btn_confirm:'はい、登録してクレーム →',
     btn_not_me:'違います',
     products_found:'件の商品',
     products_sublabel:'公式サイト、輸入業者、国際データベースより',
     not_found:'結果なし。別の名前か日本語で試してください。',
-    nav_search:'検索', nav_register:'登録', nav_dashboard:'ダッシュボード',
-    reg_title:'酒蔵を登録', reg_desc:'技術シートを管理するアカウントを作成。',
+    nav_search:'検索', nav_register:'クレーム', nav_dashboard:'ダッシュボード',
+    bc_search:'検索', bc_claim:'酒蔵クレーム',
+    claim_title:'あなたの酒蔵であることを証明する方法',
+    claim_desc:'不正なクレームから酒蔵を保護するため、本人確認を行います。最も速い方法は、公式サイトと同じドメインのメールを使用することです。',
+    verif_email_title:'公式ドメインのメール',
+    verif_email_desc:'サイトが{domain}で、メールがname@{domain}なら、自動的に認証バッジを取得できます。',
+    verif_email_badge:'自動認証',
+    verif_doc_title:'公式書類',
+    verif_doc_desc:'法人登記簿謄本または所有権を証明する書類を送信。',
+    verif_doc_badge:'手動認証（24-48時間）',
+    verif_phone_title:'電話認証',
+    verif_phone_desc:'酒蔵の公式電話番号に電話して本人確認。',
+    verif_phone_badge:'手動認証',
+    verif_social_title:'公式SNS',
+    verif_social_desc:'酒蔵の公式SNSアカウントから認証コードを投稿。',
+    verif_social_badge:'手動認証',
+    form_title:'登録してクレーム',
     lbl_name:'氏名', lbl_email:'ビジネスメール', lbl_pass:'パスワード',
-    domain_match:'✓ メールドメインが一致 — 認証バッジ取得！',
+    domain_match_yes:'✓ メールドメイン認証済み — 自動的にバッジを取得！',
+    domain_match_no:'メールドメインが{domain}と一致しません。登録後に代替方法で認証できます。',
     btn_register:'登録してメール確認 →',
-    verif_title:'確認メール送信済み！',
-    verif_desc:'{email}に確認リンクを送信しました。',
+    email_sent_title:'メールを確認してください！',
+    email_sent_desc:'{email}に確認リンクを送信しました。リンクをクリックしてアカウントを有効化し、クレームを完了してください。',
     btn_enter:'ダッシュボードへ →',
     upload_title:'技術シートをアップロード',
     upload_desc:'今お持ちの書類をアップロード — PDF、Excel、Word、写真でもOK。\n自動で読み取り・構造化します。',
@@ -369,15 +483,10 @@ const I18N = {
     upload_processing:'処理中...', upload_done:'処理済み',
     verified_owner:'✓ 認証済み', pending_verif:'⏳ メール確認待ち',
     logout:'ログアウト',
-    history_label:'歴史',
-    founded_label:'創業',
-    address_label:'住所',
-    phone_label:'電話',
-    prefecture_label:'都道府県',
+    founded_label:'創業', address_label:'住所', phone_label:'電話', prefecture_label:'都道府県',
   }
 };
 
-// ==================== STATE ====================
 let state = {
   lang: localStorage.getItem('sp_lang')||'it',
   apiKey: localStorage.getItem('sp_api_key')||'',
@@ -391,7 +500,6 @@ let state = {
 function t(k){return(I18N[state.lang]||I18N.it)[k]||k}
 function esc(s){if(!s)return'';const d=document.createElement('div');d.textContent=s;return d.innerHTML}
 
-// ==================== LANG & NAV ====================
 function switchLang(l){state.lang=l;localStorage.setItem('sp_lang',l);applyLang();}
 function applyLang(){
   document.querySelectorAll('.lang-btn').forEach(b=>b.classList.toggle('active',b.dataset.lang===state.lang));
@@ -402,38 +510,31 @@ function applyLang(){
   document.getElementById('nav-search').textContent=t('nav_search');
   document.getElementById('nav-register').textContent=t('nav_register');
   document.getElementById('nav-dashboard').textContent=t('nav_dashboard');
-  document.getElementById('reg-title').textContent=t('reg_title');
-  document.getElementById('reg-desc').textContent=t('reg_desc');
+  document.getElementById('bc-search').textContent=t('bc_search');
+  document.getElementById('bc-claim').textContent=t('bc_claim');
   document.getElementById('lbl-name').textContent=t('lbl_name');
   document.getElementById('lbl-email').textContent=t('lbl_email');
   document.getElementById('lbl-pass').textContent=t('lbl_pass');
-  document.getElementById('domain-hint').textContent=t('domain_match');
   document.getElementById('btn-register').textContent=t('btn_register');
   document.getElementById('btn-enter-dash').textContent=t('btn_enter');
   document.getElementById('upload-title').textContent=t('upload_title');
   document.getElementById('upload-desc').textContent=t('upload_desc');
   document.getElementById('upload-formats').innerHTML=t('upload_formats');
   document.getElementById('btn-logout').textContent=t('logout');
+  document.getElementById('dash-bc-search').textContent=t('bc_search');
 }
 
 function showPage(n){
   state.currentPage=n;
   document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
-  const el=document.getElementById('page-'+n);
-  if(el)el.classList.add('active');
-  // Nav
+  document.getElementById('page-'+n)?.classList.add('active');
   document.querySelectorAll('.topbar-nav a').forEach(a=>a.classList.remove('active'));
-  const navEl=document.getElementById('nav-'+n);
-  if(navEl)navEl.classList.add('active');
-  // Show/hide nav items
+  document.getElementById('nav-'+n)?.classList.add('active');
   document.getElementById('nav-register').style.display=state.brewery?'':'none';
   document.getElementById('nav-dashboard').style.display=(state.user&&state.brewery)?'':'none';
-  // User area
-  const userArea=document.getElementById('topbar-user');
-  if(state.user){
-    userArea.style.display='flex';
-    document.getElementById('topbar-user-name').textContent=state.user.name;
-  } else { userArea.style.display='none'; }
+  const u=document.getElementById('topbar-user');
+  if(state.user){u.style.display='flex';document.getElementById('topbar-user-name').textContent=state.user.name;}
+  else{u.style.display='none';}
 }
 function navTo(n){showPage(n);}
 function goHome(){showPage(state.user&&state.brewery?'dashboard':'search');}
@@ -444,13 +545,9 @@ const DEBOUNCE_MS=800, MIN_CHARS=3;
 function onSearchInput(){
   clearTimeout(state.debounceTimer);
   const val=document.getElementById('search-input').value.trim();
-  // If cleared, reset
-  if(!val && state.foundData){ resetSearch(); return; }
-  // Don't re-search same query
-  if(val===state.lastQuery) return;
-  // Wait for minimum chars
-  if(val.length<MIN_CHARS) return;
-  // Debounce
+  if(!val && state.foundData){resetSearch();return;}
+  if(val===state.lastQuery)return;
+  if(val.length<MIN_CHARS)return;
   state.debounceTimer=setTimeout(()=>startSearch(),DEBOUNCE_MS);
 }
 
@@ -458,165 +555,143 @@ async function startSearch(){
   const name=document.getElementById('search-input').value.trim();
   if(!name||name.length<MIN_CHARS)return;
   if(name===state.lastQuery&&state.foundData)return;
-  // Abort previous search
-  if(state.abortCtrl){state.abortCtrl.abort();state.abortCtrl=null;}
-  if(state.searching){state.searching=false;}
+  if(state.abortCtrl){state.abortCtrl.abort();}
   state.lastQuery=name;
   state.abortCtrl=new AbortController();
   const signal=state.abortCtrl.signal;
 
-  state.searching=true;
-  state.foundData=null;
+  state.searching=true;state.foundData=null;
   const hero=document.getElementById('hero');
   const ir=document.getElementById('inline-result');
-  const hint=document.getElementById('search-hint');
-
   hero.classList.add('has-results');
-  hint.style.display='none';
+  document.getElementById('search-hint').style.display='none';
   ir.style.display='block';
 
   function aborted(){return signal.aborted;}
-  function setStatus(text,step){
+
+  // Render progress timeline
+  function renderTimeline(steps){
     if(aborted())return;
-    ir.innerHTML=`<div class="search-status"><div class="dot"></div><div><div>${esc(text)}</div><div class="search-step">${esc(step)}</div></div></div>`;
+    ir.innerHTML=`<div class="progress-timeline">${steps.map((s,i)=>`
+      <div class="pt-step ${s.state}">
+        <div class="pt-icon">${s.state==='done'?'✓':s.state==='active'?'⟳':(i+1)}</div>
+        <div>
+          <div class="pt-label">${esc(s.label)}</div>
+          <div class="pt-detail">${esc(s.detail)}</div>
+        </div>
+      </div>`).join('')}</div>`;
   }
+
+  const steps=[
+    {label:t('ps_geo'),detail:t('ps_geo_detail'),state:'active'},
+    {label:t('ps_wiki'),detail:t('ps_wiki_detail'),state:'waiting'},
+    {label:t('ps_products'),detail:t('ps_products_detail'),state:'waiting'},
+    {label:t('ps_merge'),detail:t('ps_merge_detail'),state:'waiting'},
+  ];
+  renderTimeline(steps);
 
   try{
-  // Step 1: Geocode (Nominatim)
-  setStatus(t('searching'), t('step_geo'));
-  const geo = await geocodeLookup(name, signal);
+  // Step 1: Geocode
+  const geo=await geocodeLookup(name,signal);
   if(aborted())return;
-  let domain='', displayName=name, address='', prefecture='', lat=null, lng=null;
-  if(geo){
-    displayName=geo.displayName||name;
-    address=geo.address||'';
-    prefecture=geo.prefecture||'';
-    lat=geo.lat; lng=geo.lng;
-  }
+  let domain='',displayName=name,address='',prefecture='',lat=null,lng=null;
+  if(geo){displayName=geo.displayName||name;address=geo.address||'';prefecture=geo.prefecture||'';lat=geo.lat;lng=geo.lng;}
+  // Try domain guess
+  const slug=name.toLowerCase().replace(/[^a-z0-9]/g,'');
+  if(!domain && slug.length>2) domain=slug+'.co.jp';
+  steps[0]={label:t('ps_geo'),detail:domain?t('ps_found_domain').replace('{domain}',domain):'✓',state:'done'};
+  steps[1].state='active';
+  renderTimeline(steps);
 
-  // Step 2: Wikipedia (company info + history)
-  setStatus(t('searching'), t('step_wiki'));
-  const wiki = await wikiLookup(name, signal);
+  // Step 2: Wikipedia
+  const wiki=await wikiLookup(name,signal);
   if(aborted())return;
+  const srcCount=(wiki?1:0)+(geo?1:0);
+  steps[1]={label:t('ps_wiki'),detail:t('ps_found_sources').replace('{n}',srcCount),state:'done'};
+  steps[2].state='active';
+  renderTimeline(steps);
 
-  // Step 3: AI search for products + company data (or basic domain guess)
-  setStatus(t('searching'), t('step_products'));
-  let aiData = null;
+  // Step 3: AI products
+  let aiData=null;
   if(state.apiKey){
-    aiData = await aiSearch(name, signal);
+    aiData=await aiSearch(name,signal);
     if(aborted())return;
   }
+  const pc=aiData?.products?.length||aiData?.product_count||0;
+  if(aiData?.company?.website) domain=aiData.company.website;
+  else if(wiki?.website) domain=wiki.website;
+  steps[2]={label:t('ps_products'),detail:pc?t('ps_found_products').replace('{n}',pc):'✓',state:'done'};
+  steps[3].state='active';
+  renderTimeline(steps);
 
-  // Try domain guess if we don't have one
-  if(!domain){
-    if(aiData?.company?.website) domain=aiData.company.website;
-    else if(wiki?.website) domain=wiki.website;
-    else {
-      const slug=name.toLowerCase().replace(/[^a-z0-9]/g,'');
-      if(slug.length>2) domain=slug+'.co.jp';
-    }
-  }
+  // Step 4: Merge
+  await new Promise(r=>setTimeout(r,400));
+  if(aborted())return;
 
+  const company={
+    name_jp:aiData?.company?.name_jp||wiki?.name_jp||displayName,
+    name_en:aiData?.company?.name_en||wiki?.name_en||'',
+    website:aiData?.company?.website||wiki?.website||domain,
+    prefecture:aiData?.company?.prefecture||prefecture||wiki?.prefecture||'',
+    address:aiData?.company?.address||address||'',
+    phone:aiData?.company?.phone||'',
+    founded:aiData?.company?.founded||wiki?.founded||'',
+    history:wiki?.extract||aiData?.company?.history||'',
+  };
+  const productCount=pc;
+  const sources=aiData?.sources||[];
+
+  steps[3]={label:t('ps_merge'),detail:t('ps_done'),state:'done'};
+  renderTimeline(steps);
   state.searching=false;
 
-  // Build result
-  const company = {
-    name_jp: aiData?.company?.name_jp || wiki?.name_jp || displayName,
-    name_en: aiData?.company?.name_en || wiki?.name_en || '',
-    website: aiData?.company?.website || wiki?.website || domain,
-    prefecture: aiData?.company?.prefecture || prefecture || wiki?.prefecture || '',
-    address: aiData?.company?.address || address || '',
-    phone: aiData?.company?.phone || '',
-    founded: aiData?.company?.founded || wiki?.founded || '',
-    history: wiki?.extract || aiData?.company?.history || '',
-  };
-  const productCount = aiData?.products?.length || aiData?.product_count || 0;
-  const sources = aiData?.sources || [];
-
-  if(!company.name_jp && !company.website && !geo && !wiki){
-    ir.innerHTML=`<div class="search-status" style="border-color:var(--border2)"><div>${esc(t('not_found'))}</div></div>`;
-    setTimeout(()=>{ir.style.display='none';hero.classList.remove('has-results');hint.style.display='';},4000);
+  if(!company.name_jp&&!company.website&&!geo&&!wiki){
+    ir.innerHTML=`<div class="progress-timeline"><div style="padding:8px;text-align:center;color:var(--text3)">${esc(t('not_found'))}</div></div>`;
+    setTimeout(()=>{ir.style.display='none';hero.classList.remove('has-results');document.getElementById('search-hint').style.display='';},4000);
     return;
   }
 
-  state.foundData={company, productCount, sources, _geo:geo?{lat,lng}:null, _products:aiData?.products||[]};
+  await new Promise(r=>setTimeout(r,600));
+  if(aborted())return;
+  state.foundData={company,productCount,sources,_geo:geo?{lat,lng}:null,_products:aiData?.products||[]};
   showBreweryCard(state.foundData);
 
-  }catch(e){
-    if(e.name==='AbortError')return; // silently ignore aborted searches
-    state.searching=false;
-  }
+  }catch(e){if(e.name==='AbortError')return;state.searching=false;}
 }
 
 function showBreweryCard(data){
-  const c=data.company, pc=data.productCount, geo=data._geo, sources=data.sources||[];
+  const c=data.company,pc=data.productCount,geo=data._geo,sources=data.sources||[];
   const ir=document.getElementById('inline-result');
   const website=(c.website||'').replace(/^https?:\/\//,'').replace(/\/$/,'');
-  const faviconUrl=website?`https://www.google.com/s2/favicons?domain=${website}&sz=128`:'';
+  const fav=website?`https://www.google.com/s2/favicons?domain=${website}&sz=128`:'';
+  const logo=fav?`<img src="${fav}" onerror="this.parentElement.innerHTML='<div class=bc-logo-fallback>🏯</div>'">`:`<div class="bc-logo-fallback">🏯</div>`;
+  const map=geo&&geo.lat?`<div class="bc-map"><iframe src="https://www.openstreetmap.org/export/embed.html?bbox=${geo.lng-0.006},${geo.lat-0.004},${geo.lng+0.006},${geo.lat+0.004}&layer=mapnik&marker=${geo.lat},${geo.lng}" width="100%" height="140" style="border:0" loading="lazy"></iframe></div>`:'';
+  const hist=c.history?`<div class="bc-history">${esc(c.history)}</div>`:'';
+  const info=[];
+  if(c.prefecture)info.push({l:t('prefecture_label'),v:c.prefecture});
+  if(c.founded)info.push({l:t('founded_label'),v:c.founded});
+  if(c.address)info.push({l:t('address_label'),v:c.address});
+  if(c.phone)info.push({l:t('phone_label'),v:c.phone});
+  const grid=info.length?`<div class="bc-info-grid">${info.map(i=>`<div class="bc-info-item"><div><div class="bc-info-label">${esc(i.l)}</div><div class="bc-info-value">${esc(i.v)}</div></div></div>`).join('')}</div>`:'';
+  const prods=pc>0?`<div class="bc-products-badge"><div class="bc-products-number">${pc}</div><div><div class="bc-products-label">${esc(t('products_found'))}</div><div class="bc-products-sublabel">${esc(t('products_sublabel'))}</div></div></div>`:'';
+  const srcHtml=(sources.length||website)?`<div class="bc-sources">${website?`<span class="bc-source-tag">${esc(website)}</span>`:''}${sources.map(s=>`<span class="bc-source-tag">${esc(s)}</span>`).join('')}</div>`:'';
 
-  const logoHtml=faviconUrl
-    ?`<img src="${faviconUrl}" alt="" onerror="this.parentElement.innerHTML='<div class=bc-logo-fallback>🏯</div>'">`
-    :`<div class="bc-logo-fallback">🏯</div>`;
-
-  const mapHtml=geo&&geo.lat?`<div class="bc-map"><iframe src="https://www.openstreetmap.org/export/embed.html?bbox=${geo.lng-0.006},${geo.lat-0.004},${geo.lng+0.006},${geo.lat+0.004}&layer=mapnik&marker=${geo.lat},${geo.lng}" width="100%" height="140" style="border:0" loading="lazy"></iframe></div>`:'';
-
-  const historyHtml=c.history?`<div class="bc-history">${esc(c.history)}</div>`:'';
-
-  const infoItems=[];
-  if(c.prefecture) infoItems.push({icon:'📍',label:t('prefecture_label'),value:c.prefecture});
-  if(c.founded) infoItems.push({icon:'📅',label:t('founded_label'),value:c.founded});
-  if(c.address) infoItems.push({icon:'🏢',label:t('address_label'),value:c.address});
-  if(c.phone) infoItems.push({icon:'📞',label:t('phone_label'),value:c.phone});
-
-  const infoGrid=infoItems.length?`<div class="bc-info-grid">${infoItems.map(i=>`
-    <div class="bc-info-item"><div class="icon">${i.icon}</div><div><div class="bc-info-label">${esc(i.label)}</div><div class="bc-info-value">${esc(i.value)}</div></div></div>`).join('')}</div>`:'';
-
-  const productsHtml=pc>0?`
-    <div class="bc-products-badge">
-      <div class="bc-products-number">${pc}</div>
-      <div><div class="bc-products-label">${esc(t('products_found'))}</div><div class="bc-products-sublabel">${esc(t('products_sublabel'))}</div></div>
-    </div>`:'';
-
-  const srcTags=sources.length?sources.map(s=>`<span class="bc-source-tag">${esc(s)}</span>`).join(''):'';
-  const sourcesHtml=(sources.length||website)?`<div class="bc-sources">${website?`<span class="bc-source-tag">${esc(website)}</span>`:''}${srcTags}</div>`:'';
-
-  ir.innerHTML=`
-    <div class="brewery-card">
-      <div class="bc-header">
-        <div class="bc-logo">${logoHtml}</div>
-        <div class="bc-title">
-          <div class="bc-name-jp">${esc(c.name_jp)}</div>
-          ${c.name_en?`<div class="bc-name-en">${esc(c.name_en)}</div>`:''}
-        </div>
-      </div>
-      <div class="bc-body">
-        ${website?`<a class="bc-website" href="https://${esc(website)}" target="_blank" rel="noopener">🌐 ${esc(website)}</a>`:''}
-        ${infoGrid}
-        ${historyHtml}
-        ${productsHtml}
-      </div>
-      ${mapHtml}
-      ${sourcesHtml}
-      <div class="bc-cta">
-        <div class="bc-cta-text">${esc(t('found_confirm'))}</div>
-        <div class="bc-cta-actions">
-          <button class="btn btn-gold btn-lg" onclick="confirmBrewery()">${esc(t('btn_confirm'))}</button>
-          <button class="bc-retry" onclick="resetSearch()">${esc(t('btn_not_me'))}</button>
-        </div>
-      </div>
-    </div>`;
+  ir.innerHTML=`<div class="brewery-card">
+    <div class="bc-header"><div class="bc-logo">${logo}</div><div class="bc-title"><div class="bc-name-jp">${esc(c.name_jp)}</div>${c.name_en?`<div class="bc-name-en">${esc(c.name_en)}</div>`:''}</div></div>
+    <div class="bc-body">${website?`<a class="bc-website" href="https://${esc(website)}" target="_blank">🌐 ${esc(website)}</a>`:''}${grid}${hist}${prods}</div>
+    ${map}${srcHtml}
+    <div class="bc-cta"><div class="bc-cta-text">${esc(t('found_confirm'))}</div><div class="bc-cta-actions"><button class="btn btn-gold btn-lg" onclick="confirmBrewery()">${esc(t('btn_confirm'))}</button><button class="bc-retry" onclick="resetSearch()">${esc(t('btn_not_me'))}</button></div></div>
+  </div>`;
 }
 
 function resetSearch(){
-  if(state.abortCtrl){state.abortCtrl.abort();state.abortCtrl=null;}
+  if(state.abortCtrl){state.abortCtrl.abort();}
   clearTimeout(state.debounceTimer);
-  state.searching=false; state.foundData=null; state.lastQuery='';
-  const hero=document.getElementById('hero');
+  state.searching=false;state.foundData=null;state.lastQuery='';
   const ir=document.getElementById('inline-result');
-  const hint=document.getElementById('search-hint');
-  ir.style.display='none'; ir.innerHTML='';
-  hero.classList.remove('has-results');
-  hint.style.display='';
+  ir.style.display='none';ir.innerHTML='';
+  document.getElementById('hero').classList.remove('has-results');
+  document.getElementById('search-hint').style.display='';
   document.getElementById('search-input').value='';
   document.getElementById('search-input').focus();
 }
@@ -625,128 +700,68 @@ function confirmBrewery(){
   if(!state.foundData)return;
   state.brewery=state.foundData;
   localStorage.setItem('sp_brewery',JSON.stringify(state.foundData));
-  const c=state.foundData.company;
-  const website=(c.website||'').replace(/^https?:\/\//,'').replace(/\/$/,'');
-  const faviconUrl=website?`https://www.google.com/s2/favicons?domain=${website}&sz=64`:'';
-  document.getElementById('reg-brewery').innerHTML=
-    (faviconUrl?`<img src="${faviconUrl}" onerror="this.outerHTML='<div class=fallback>🏯</div>'">`:`<div class="fallback">🏯</div>`)+
-    `<span>${esc(c.name_jp)}${c.name_en?' — '+esc(c.name_en):''}</span>`;
-  document.getElementById('inp-email').placeholder='you@'+(website||'brewery.co.jp');
-  const ei=document.getElementById('inp-email');
-  ei.oninput=()=>{
-    const d=(ei.value.split('@')[1]||'').toLowerCase();
-    const bd=website.replace(/^www\./,'').split('/')[0].toLowerCase();
-    document.getElementById('domain-hint').style.display=(d&&bd&&d===bd)?'block':'none';
-  };
-  document.getElementById('reg-form').style.display='';
-  document.getElementById('verification-sent').style.display='none';
+  setupClaimPage();
   showPage('register');
 }
 
-// ==================== WEB APIS ====================
+function setupClaimPage(){
+  const c=state.brewery.company;
+  const website=(c.website||'').replace(/^https?:\/\//,'').replace(/^www\./,'').replace(/\/$/,'');
+  const fav=website?`https://www.google.com/s2/favicons?domain=${website}&sz=64`:'';
+  document.getElementById('claim-brewery').innerHTML=
+    `<div class="claim-brewery-logo">${fav?`<img src="${fav}" onerror="this.outerHTML='🏯'">`:'🏯'}</div>
+     <div><div class="claim-brewery-name">${esc(c.name_jp)}</div><div class="claim-brewery-site">${esc(website)}</div></div>`;
 
-async function geocodeLookup(name,signal){
-  try{
-    const qs=[name+' 酒造',name+' sake brewery',name];
-    for(const q of qs){
-      const r=await fetch(`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(q)}&format=json&addressdetails=1&limit=3&accept-language=ja`,{headers:{'User-Agent':'SakePlatform/2.0'},signal});
-      if(!r.ok)continue;
-      const res=await r.json();
-      if(!res.length)continue;
-      const b=res.find(r=>r.address?.country_code==='jp')||res[0];
-      const a=b.address||{};
-      return{displayName:b.name||'',address:b.display_name||'',lat:+b.lat,lng:+b.lon,prefecture:a.province||a.state||''};
-    }
-  }catch(e){if(e.name==='AbortError')throw e;}
-  return null;
+  document.getElementById('claim-title').textContent=t('claim_title');
+  document.getElementById('claim-desc').textContent=t('claim_desc');
+  document.getElementById('form-title').textContent=t('form_title');
+
+  // Build verification methods
+  const dom=website||'sakagura.co.jp';
+  document.getElementById('verif-methods').innerHTML=`
+    <div class="verif-method recommended">
+      <div class="verif-method-icon">✓</div>
+      <div><div class="verif-method-title">${esc(t('verif_email_title'))}</div>
+      <div class="verif-method-desc">${esc(t('verif_email_desc').replace(/\{domain\}/g,dom))}</div>
+      <div class="verif-method-badge auto">${esc(t('verif_email_badge'))}</div></div>
+    </div>
+    <div class="verif-method">
+      <div class="verif-method-icon">📄</div>
+      <div><div class="verif-method-title">${esc(t('verif_doc_title'))}</div>
+      <div class="verif-method-desc">${esc(t('verif_doc_desc'))}</div>
+      <div class="verif-method-badge manual">${esc(t('verif_doc_badge'))}</div></div>
+    </div>
+    <div class="verif-method">
+      <div class="verif-method-icon">📞</div>
+      <div><div class="verif-method-title">${esc(t('verif_phone_title'))}</div>
+      <div class="verif-method-desc">${esc(t('verif_phone_desc'))}</div>
+      <div class="verif-method-badge manual">${esc(t('verif_phone_badge'))}</div></div>
+    </div>
+    <div class="verif-method">
+      <div class="verif-method-icon">📱</div>
+      <div><div class="verif-method-title">${esc(t('verif_social_title'))}</div>
+      <div class="verif-method-desc">${esc(t('verif_social_desc'))}</div>
+      <div class="verif-method-badge manual">${esc(t('verif_social_badge'))}</div></div>
+    </div>`;
+
+  document.getElementById('inp-email').placeholder='you@'+(website||'brewery.co.jp');
+  document.getElementById('domain-match').textContent=t('domain_match_yes');
+  document.getElementById('domain-no-match').textContent=t('domain_match_no').replace('{domain}',dom);
+  document.getElementById('claim-form-section').style.display='';
+  document.getElementById('email-sent').style.display='none';
 }
 
-async function wikiLookup(name,signal){
-  try{
-    // Search Japanese Wikipedia
-    const searchTerms=[name+'酒造',name+' 酒造',name];
-    for(const term of searchTerms){
-      const sr=await fetch(`https://ja.wikipedia.org/w/api.php?action=query&list=search&srsearch=${encodeURIComponent(term)}&format=json&origin=*&srlimit=3`,{signal});
-      if(!sr.ok)continue;
-      const sd=await sr.json();
-      const results=sd.query?.search||[];
-      const article=results.find(r=>r.snippet.includes('酒')||r.snippet.includes('醸造')||r.snippet.includes('蔵'))||results[0];
-      if(!article)continue;
-      const er=await fetch(`https://ja.wikipedia.org/w/api.php?action=query&titles=${encodeURIComponent(article.title)}&prop=extracts&exintro=1&explaintext=1&format=json&origin=*`,{signal});
-      if(!er.ok)continue;
-      const ed=await er.json();
-      const pages=ed.query?.pages||{};
-      const page=Object.values(pages)[0];
-      if(!page||page.missing!==undefined)continue;
-      let extract=(page.extract||'').substring(0,400);
-      if(extract.length===400)extract=extract.substring(0,extract.lastIndexOf('。')+1)||extract+'…';
-      const foundedMatch=extract.match(/(\d{4})年.*?(創業|設立|開業)/)||extract.match(/(創業|設立|開業).*?(\d{4})年/);
-      const founded=foundedMatch?(foundedMatch[1].match(/\d{4}/)?.[0]||foundedMatch[2]):'';
-      return{extract,founded,name_jp:article.title};
-    }
-    // Try English Wikipedia too
-    const enr=await fetch(`https://en.wikipedia.org/w/api.php?action=query&list=search&srsearch=${encodeURIComponent(name+' sake brewery')}&format=json&origin=*&srlimit=3`,{signal});
-    if(enr.ok){
-      const end=await enr.json();
-      const enResults=end.query?.search||[];
-      const enArticle=enResults.find(r=>r.snippet.toLowerCase().includes('sake')||r.snippet.toLowerCase().includes('brew'))||enResults[0];
-      if(enArticle){
-        const er2=await fetch(`https://en.wikipedia.org/w/api.php?action=query&titles=${encodeURIComponent(enArticle.title)}&prop=extracts&exintro=1&explaintext=1&format=json&origin=*`,{signal});
-        if(er2.ok){
-          const ed2=await er2.json();
-          const pages2=ed2.query?.pages||{};
-          const page2=Object.values(pages2)[0];
-          if(page2&&page2.missing===undefined){
-            let ext=(page2.extract||'').substring(0,400);
-            if(ext.length===400)ext=ext.substring(0,ext.lastIndexOf('.')+1)||ext+'…';
-            return{extract:ext,name_en:enArticle.title};
-          }
-        }
-      }
-    }
-  }catch(e){if(e.name==='AbortError')throw e;}
-  return null;
+function checkDomainMatch(){
+  const c=state.brewery?.company;if(!c)return;
+  const website=(c.website||'').replace(/^https?:\/\//,'').replace(/^www\./,'').split('/')[0].toLowerCase();
+  const emailDomain=(document.getElementById('inp-email').value.split('@')[1]||'').toLowerCase();
+  const matchEl=document.getElementById('domain-match');
+  const noMatchEl=document.getElementById('domain-no-match');
+  if(!emailDomain||!emailDomain.includes('.')){matchEl.style.display='none';noMatchEl.style.display='none';return;}
+  if(website&&emailDomain===website){matchEl.style.display='block';noMatchEl.style.display='none';}
+  else{matchEl.style.display='none';noMatchEl.style.display='block';}
 }
 
-async function aiSearch(name,signal){
-  try{
-    const p=`You are a comprehensive sake database. Search for the Japanese sake brewery "${name}".
-
-Find ALL information from EVERY source you know: the brewery's official website, international importers (Sake Company, Tippsy Sake, Sake Inn, World Sake Imports, JFC, Mutual Trading, Southern Glazers), sake databases (Saketime, Sake-World, Rate Beer), retailers worldwide (Wine-Searcher, Vivino, Total Wine), competition results (IWC, Kura Master, Joy of Sake), and export catalogs.
-
-Return ONLY valid JSON:
-{
-  "company":{
-    "name_jp":"Japanese name",
-    "name_en":"English name",
-    "prefecture":"Prefecture in Japanese",
-    "address":"Full address",
-    "phone":"Phone number",
-    "website":"domain.co.jp",
-    "founded":"Year",
-    "history":"2-3 sentence description of the brewery's history and philosophy"
-  },
-  "products":[{"name_jp":"","name_en":"","type":""}],
-  "product_count":0,
-  "sources":["source1.com","source2.com"]
-}
-
-CRITICAL: Find as MANY products as possible from ALL international sources. Include every variation, seasonal release, limited edition, collaboration, and export-only product. The product_count must reflect the TOTAL number of unique products found across all sources.`;
-    const r=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',signal,headers:{'Content-Type':'application/json','x-api-key':state.apiKey,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:8000,messages:[{role:'user',content:p}]})});
-    if(!r.ok)return null;
-    const d=await r.json();
-    const txt=d.content[0].text;
-    const m=txt.match(/\{[\s\S]*\}/);
-    if(!m)return null;
-    const parsed=JSON.parse(m[0]);
-    // Ensure product_count reflects actual products array if present
-    if(parsed.products?.length && !parsed.product_count) parsed.product_count=parsed.products.length;
-    if(parsed.product_count < parsed.products?.length) parsed.product_count=parsed.products.length;
-    return parsed;
-  }catch(e){if(e.name==='AbortError')throw e;return null;}
-}
-
-// ==================== REGISTER ====================
 function register(){
   const name=document.getElementById('inp-name').value.trim();
   const email=document.getElementById('inp-email').value.trim();
@@ -758,16 +773,18 @@ function register(){
   const dm=d&&website&&d===website;
   state.user={name,email,domainMatch:dm};
   localStorage.setItem('sp_user',JSON.stringify(state.user));
-  document.getElementById('reg-form').style.display='none';
-  document.getElementById('verification-sent').style.display='';
-  document.getElementById('verif-title').textContent=t('verif_title');
-  document.getElementById('verif-desc').textContent=t('verif_desc').replace('{email}',email);
+  document.getElementById('claim-form-section').style.display='none';
+  document.getElementById('claim-verification-section').style.display='none';
+  document.getElementById('email-sent').style.display='';
+  document.getElementById('email-sent-title').textContent=t('email_sent_title');
+  document.getElementById('email-sent-desc').textContent=t('email_sent_desc').replace('{email}',email);
 }
 
 function enterDashboard(){
   if(!state.brewery||!state.user){showPage('search');return;}
   const c=state.brewery.company;
   document.getElementById('dash-name').innerHTML=esc(c.name_jp)+(state.user.domainMatch?` <span style="display:inline-flex;width:22px;height:22px;border-radius:50%;background:#34a853;color:#fff;font-size:12px;align-items:center;justify-content:center">✓</span>`:'');
+  document.getElementById('dash-bc-name')&&(document.getElementById('dash-bc-name').textContent=c.name_jp);
   const b=document.getElementById('dash-badge');
   if(state.user.domainMatch){b.className='dash-verified-badge verified';b.textContent=t('verified_owner');}
   else{b.className='dash-verified-badge pending';b.textContent=t('pending_verif');}
@@ -775,37 +792,72 @@ function enterDashboard(){
   showPage('dashboard');
 }
 
-// ==================== DASHBOARD ====================
-function handleFiles(files){
-  for(const f of files){
-    state.files.push({name:f.name,size:(f.size/1024).toFixed(0)+'KB',type:f.name.split('.').pop().toUpperCase(),status:'processing'});
-    setTimeout(()=>{
-      const entry=state.files.find(e=>e.name===f.name&&e.status==='processing');
-      if(entry)entry.status='done';
-      localStorage.setItem('sp_files',JSON.stringify(state.files));
-      renderUploaded();
-    },2000+Math.random()*2000);
-  }
-  localStorage.setItem('sp_files',JSON.stringify(state.files));
-  renderUploaded();
+// ==================== WEB APIS ====================
+async function geocodeLookup(name,signal){
+  try{const qs=[name+' 酒造',name+' sake brewery',name];
+    for(const q of qs){const r=await fetch(`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(q)}&format=json&addressdetails=1&limit=3&accept-language=ja`,{headers:{'User-Agent':'SakePlatform/2.0'},signal});
+      if(!r.ok)continue;const res=await r.json();if(!res.length)continue;
+      const b=res.find(r=>r.address?.country_code==='jp')||res[0];const a=b.address||{};
+      return{displayName:b.name||'',address:b.display_name||'',lat:+b.lat,lng:+b.lon,prefecture:a.province||a.state||''};}
+  }catch(e){if(e.name==='AbortError')throw e;}return null;
 }
 
+async function wikiLookup(name,signal){
+  try{const terms=[name+'酒造',name+' 酒造',name];
+    for(const term of terms){const sr=await fetch(`https://ja.wikipedia.org/w/api.php?action=query&list=search&srsearch=${encodeURIComponent(term)}&format=json&origin=*&srlimit=3`,{signal});
+      if(!sr.ok)continue;const sd=await sr.json();const results=sd.query?.search||[];
+      const article=results.find(r=>r.snippet.includes('酒')||r.snippet.includes('醸造')||r.snippet.includes('蔵'))||results[0];
+      if(!article)continue;
+      const er=await fetch(`https://ja.wikipedia.org/w/api.php?action=query&titles=${encodeURIComponent(article.title)}&prop=extracts&exintro=1&explaintext=1&format=json&origin=*`,{signal});
+      if(!er.ok)continue;const ed=await er.json();const pages=ed.query?.pages||{};const page=Object.values(pages)[0];
+      if(!page||page.missing!==undefined)continue;
+      let extract=(page.extract||'').substring(0,400);
+      if(extract.length===400)extract=extract.substring(0,extract.lastIndexOf('。')+1)||extract+'…';
+      const fm=extract.match(/(\d{4})年.*?(創業|設立|開業)/)||extract.match(/(創業|設立|開業).*?(\d{4})年/);
+      return{extract,founded:fm?(fm[1].match(/\d{4}/)?.[0]||fm[2]):'',name_jp:article.title};}
+    const enr=await fetch(`https://en.wikipedia.org/w/api.php?action=query&list=search&srsearch=${encodeURIComponent(name+' sake brewery')}&format=json&origin=*&srlimit=3`,{signal});
+    if(enr.ok){const end=await enr.json();const enR=end.query?.search||[];
+      const enA=enR.find(r=>r.snippet.toLowerCase().includes('sake')||r.snippet.toLowerCase().includes('brew'))||enR[0];
+      if(enA){const er2=await fetch(`https://en.wikipedia.org/w/api.php?action=query&titles=${encodeURIComponent(enA.title)}&prop=extracts&exintro=1&explaintext=1&format=json&origin=*`,{signal});
+        if(er2.ok){const ed2=await er2.json();const p2=Object.values(ed2.query?.pages||{})[0];
+          if(p2&&p2.missing===undefined){let ext=(p2.extract||'').substring(0,400);if(ext.length===400)ext=ext.substring(0,ext.lastIndexOf('.')+1)||ext+'…';return{extract:ext,name_en:enA.title};}}}}
+  }catch(e){if(e.name==='AbortError')throw e;}return null;
+}
+
+async function aiSearch(name,signal){
+  try{const p=`You are a comprehensive sake database. Search for the Japanese sake brewery "${name}".
+Find ALL information from EVERY source: official website, international importers (Sake Company, Tippsy Sake, Sake Inn, World Sake Imports, JFC, Mutual Trading), sake databases (Saketime, Sake-World), retailers worldwide (Wine-Searcher, Vivino, Total Wine), competition results (IWC, Kura Master, Joy of Sake), and export catalogs.
+Return ONLY valid JSON:
+{"company":{"name_jp":"","name_en":"","prefecture":"","address":"","phone":"","website":"","founded":"","history":"2-3 sentences"},"products":[{"name_jp":"","name_en":"","type":""}],"product_count":0,"sources":["source1.com","source2.com"]}
+CRITICAL: Find as MANY products as possible from ALL international sources.`;
+    const r=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',signal,headers:{'Content-Type':'application/json','x-api-key':state.apiKey,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:8000,messages:[{role:'user',content:p}]})});
+    if(!r.ok)return null;const d=await r.json();const txt=d.content[0].text;const m=txt.match(/\{[\s\S]*\}/);if(!m)return null;
+    const parsed=JSON.parse(m[0]);
+    if(parsed.products?.length&&!parsed.product_count)parsed.product_count=parsed.products.length;
+    if(parsed.product_count<(parsed.products?.length||0))parsed.product_count=parsed.products.length;
+    return parsed;
+  }catch(e){if(e.name==='AbortError')throw e;return null;}
+}
+
+// ==================== DASHBOARD ====================
+function handleFiles(files){
+  for(const f of files){state.files.push({name:f.name,size:(f.size/1024).toFixed(0)+'KB',type:f.name.split('.').pop().toUpperCase(),status:'processing'});
+    setTimeout(()=>{const e=state.files.find(e=>e.name===f.name&&e.status==='processing');if(e)e.status='done';localStorage.setItem('sp_files',JSON.stringify(state.files));renderUploaded();},2000+Math.random()*2000);}
+  localStorage.setItem('sp_files',JSON.stringify(state.files));renderUploaded();
+}
 function renderUploaded(){
-  const el=document.getElementById('uploaded-files');
-  if(!state.files.length){el.innerHTML='';return;}
+  const el=document.getElementById('uploaded-files');if(!state.files.length){el.innerHTML='';return;}
   const ic={PDF:'📕',XLSX:'📗',XLS:'📗',CSV:'📊',DOCX:'📘',DOC:'📘',JPG:'🖼',JPEG:'🖼',PNG:'🖼'};
   el.innerHTML=state.files.map(f=>`<div class="uploaded-file"><div class="uf-info"><div class="uf-icon">${ic[f.type]||'📄'}</div><div><div class="uf-name">${esc(f.name)}</div><div class="uf-meta">${esc(f.size)} · ${esc(f.type)}</div></div></div><div class="uf-status ${f.status}">${f.status==='done'?esc(t('upload_done')):esc(t('upload_processing'))}</div></div>`).join('');
 }
-
 function logout(){
   state.user=null;state.brewery=null;state.files=[];state.foundData=null;
   localStorage.removeItem('sp_user');localStorage.removeItem('sp_brewery');localStorage.removeItem('sp_files');
   resetSearch();showPage('search');
 }
 
-// ==================== INIT ====================
 applyLang();
-if(state.user&&state.brewery) enterDashboard();
+if(state.user&&state.brewery)enterDashboard();
 else showPage('search');
 </script>
 </body>
