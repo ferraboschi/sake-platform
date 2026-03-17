@@ -46,7 +46,7 @@ body { font-family:var(--font); background:var(--bg); color:var(--text); min-hei
 .btn-lg { padding:14px 32px; font-size:15px; border-radius:12px; }
 .btn-full { width:100%; }
 
-/* PAGE 1: SEARCH — everything inline */
+/* PAGE 1: SEARCH */
 .hero { display:flex; flex-direction:column; align-items:center; justify-content:flex-start; min-height:calc(100vh - 56px); padding:100px 24px 60px; }
 .hero.has-results { justify-content:flex-start; padding-top:60px; }
 .hero-kanji { font-family:var(--font-serif); font-size:56px; font-weight:700; color:var(--navy); letter-spacing:8px; margin-bottom:12px; transition:var(--transition); }
@@ -60,27 +60,49 @@ body { font-family:var(--font); background:var(--bg); color:var(--text); min-hei
 .search-go { position:absolute; right:8px; top:50%; transform:translateY(-50%); width:44px; height:44px; border-radius:12px; background:var(--accent); border:none; color:#fff; font-size:20px; cursor:pointer; display:flex; align-items:center; justify-content:center; }
 .search-go:hover { background:var(--accent2); }
 .search-go:disabled { opacity:0.5; cursor:not-allowed; }
-.search-hint { margin-top:20px; font-size:13px; color:var(--text3); }
+.search-hint { margin-top:20px; font-size:13px; color:var(--text3); max-width:520px; text-align:center; }
 .search-hint strong { color:var(--text2); font-weight:500; }
 
-/* Inline result area */
-.inline-result { width:100%; max-width:520px; margin-top:28px; }
+/* Inline result */
+.inline-result { width:100%; max-width:600px; margin-top:28px; }
 .result-searching { display:flex; align-items:center; gap:12px; padding:16px 20px; background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); font-size:14px; color:var(--text2); }
 .result-searching .spinner { width:20px; height:20px; border:2px solid var(--border); border-top-color:var(--accent); border-radius:50%; animation:spin 0.8s linear infinite; flex-shrink:0; }
 @keyframes spin { to{transform:rotate(360deg)} }
 
-.result-found { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:24px; box-shadow:var(--shadow); animation:slideUp 0.4s ease; }
+.result-found { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); box-shadow:var(--shadow); animation:slideUp 0.4s ease; overflow:hidden; }
 @keyframes slideUp { from{opacity:0;transform:translateY(12px)} to{opacity:1;transform:translateY(0)} }
-.rf-label { font-size:12px; color:var(--text3); text-transform:uppercase; letter-spacing:1px; margin-bottom:12px; }
-.rf-brewery { display:flex; align-items:center; gap:12px; margin-bottom:16px; }
-.rf-brewery-icon { width:44px; height:44px; border-radius:12px; background:var(--accent-glow); color:var(--accent); display:flex; align-items:center; justify-content:center; font-size:20px; flex-shrink:0; }
-.rf-brewery-name { font-family:var(--font-serif); font-size:20px; font-weight:600; }
+.rf-header { padding:24px 24px 16px; }
+.rf-label { font-size:11px; color:var(--text3); text-transform:uppercase; letter-spacing:1.5px; margin-bottom:14px; font-weight:600; }
+.rf-brewery { display:flex; align-items:center; gap:14px; margin-bottom:16px; }
+.rf-brewery-icon { width:48px; height:48px; border-radius:14px; background:var(--accent-glow); color:var(--accent); display:flex; align-items:center; justify-content:center; font-size:22px; flex-shrink:0; }
+.rf-brewery-name { font-family:var(--font-serif); font-size:22px; font-weight:600; }
 .rf-brewery-en { font-size:12px; color:var(--text3); margin-top:2px; }
 .rf-details { display:flex; flex-wrap:wrap; gap:8px; margin-bottom:16px; }
 .rf-tag { display:inline-flex; align-items:center; gap:4px; padding:5px 12px; background:var(--bg); border-radius:20px; font-size:12px; color:var(--text2); }
-.rf-products { display:inline-flex; align-items:center; gap:6px; padding:6px 14px; background:var(--green2); color:var(--green); border-radius:20px; font-size:12px; font-weight:600; margin-bottom:16px; }
-.rf-map { border-radius:10px; overflow:hidden; margin-bottom:16px; }
-.rf-confirm { text-align:center; padding-top:8px; border-top:1px solid var(--border); }
+.rf-products-badge { display:inline-flex; align-items:center; gap:6px; padding:7px 16px; background:var(--green2); color:var(--green); border-radius:20px; font-size:13px; font-weight:600; }
+.rf-map { border-radius:0; overflow:hidden; }
+
+/* Products list in results */
+.rf-products-section { border-top:1px solid var(--border); }
+.rf-products-header { padding:16px 24px 12px; display:flex; align-items:center; justify-content:space-between; }
+.rf-products-title { font-size:13px; font-weight:600; color:var(--text2); text-transform:uppercase; letter-spacing:0.5px; }
+.rf-products-count { font-size:12px; color:var(--text3); }
+.rf-products-list { max-height:320px; overflow-y:auto; padding:0 24px 8px; }
+.rf-product { display:flex; align-items:center; justify-content:space-between; padding:10px 14px; background:var(--surface2); border:1px solid var(--bg2); border-radius:var(--radius-sm); margin-bottom:6px; font-size:13px; }
+.rf-product:hover { border-color:var(--accent); }
+.rf-product-name { font-family:var(--font-serif); font-weight:500; color:var(--text); }
+.rf-product-meta { font-size:11px; color:var(--text3); margin-top:1px; }
+.rf-product-type { font-size:11px; color:var(--accent); font-weight:500; }
+.rf-products-list::-webkit-scrollbar { width:4px; }
+.rf-products-list::-webkit-scrollbar-track { background:transparent; }
+.rf-products-list::-webkit-scrollbar-thumb { background:var(--border); border-radius:4px; }
+
+/* Sources */
+.rf-sources { padding:12px 24px; background:var(--surface2); border-top:1px solid var(--border); font-size:11px; color:var(--text3); }
+.rf-sources span { font-weight:600; color:var(--text2); }
+
+/* Confirm section */
+.rf-confirm { padding:16px 24px 20px; border-top:1px solid var(--border); text-align:center; }
 .rf-confirm-text { font-size:14px; color:var(--text2); margin-bottom:14px; }
 .rf-actions { display:flex; gap:8px; justify-content:center; }
 .rf-not-me { font-size:13px; color:var(--text3); background:none; border:none; cursor:pointer; padding:8px 16px; }
@@ -144,6 +166,11 @@ body { font-family:var(--font); background:var(--bg); color:var(--text); min-hei
   .search-box input { height:54px; font-size:15px; }
   .register-card { padding:28px; }
   .rf-actions { flex-direction:column; }
+  .rf-header { padding:20px 16px 12px; }
+  .rf-products-list { padding:0 16px 8px; }
+  .rf-confirm { padding:14px 16px 18px; }
+  .rf-sources { padding:10px 16px; }
+  .rf-products-header { padding:12px 16px 8px; }
 }
 </style>
 </head>
@@ -161,7 +188,7 @@ body { font-family:var(--font); background:var(--bg); color:var(--text); min-hei
   </div>
 </div>
 
-<!-- PAGE 1: SEARCH (everything inline) -->
+<!-- PAGE 1: SEARCH -->
 <div class="screen active" id="page-search">
   <div class="hero" id="hero">
     <div class="hero-kanji" id="hero-kanji"></div>
@@ -171,7 +198,6 @@ body { font-family:var(--font); background:var(--bg); color:var(--text); min-hei
       <button class="search-go" id="search-go-btn" onclick="startSearch()">→</button>
     </div>
     <div class="search-hint" id="search-hint"></div>
-    <!-- Inline results appear here -->
     <div class="inline-result" id="inline-result" style="display:none"></div>
   </div>
 </div>
@@ -235,13 +261,16 @@ const I18N = {
   it: {
     hero_title:'酒蔵を探す', hero_sub:'TROVA LA TUA SAKAGURA',
     search_placeholder:'Nome della sakagura...',
-    search_hint:'Inserisci il nome della tua sakagura. Cercheremo nel web <strong>dominio, prodotti e fonti</strong>.',
-    searching:'Sto cercando nel web...',
+    search_hint:'Inserisci il nome della tua sakagura. Cercheremo nel web <strong>dominio, prodotti e fonti internazionali</strong>.',
+    searching:'Sto cercando nel web fonti internazionali...',
     found_label:'HO TROVATO:',
     found_confirm:'Confermi che è la tua sakagura?',
     btn_confirm:'Sì, è la mia sakagura →',
     btn_not_me:'No, cerca di nuovo',
     products_found:'prodotti trovati',
+    products_section_title:'PRODOTTI TROVATI',
+    sources_label:'Fonti:',
+    sources_text:'sito ufficiale, importatori internazionali, database sake',
     not_found:'Nessun risultato trovato per questa ricerca. Prova con un altro nome.',
     reg_title:'Registra la tua sakagura', reg_desc:'Crea il tuo account per gestire le schede tecniche.',
     lbl_name:'Nome e cognome', lbl_email:'Email aziendale', lbl_pass:'Password',
@@ -261,13 +290,16 @@ const I18N = {
   en: {
     hero_title:'酒蔵を探す', hero_sub:'FIND YOUR SAKAGURA',
     search_placeholder:'Brewery name...',
-    search_hint:'Enter your brewery name. We\'ll search the web for <strong>domain, products and sources</strong>.',
-    searching:'Searching the web...',
+    search_hint:'Enter your brewery name. We\'ll search the web for <strong>domain, products and international sources</strong>.',
+    searching:'Searching international sources...',
     found_label:'FOUND:',
     found_confirm:'Is this your brewery?',
     btn_confirm:'Yes, this is my brewery →',
     btn_not_me:'No, search again',
     products_found:'products found',
+    products_section_title:'PRODUCTS FOUND',
+    sources_label:'Sources:',
+    sources_text:'official website, international importers, sake databases',
     not_found:'No results found. Try a different name.',
     reg_title:'Register your brewery', reg_desc:'Create your account to manage technical sheets.',
     lbl_name:'Full name', lbl_email:'Business email', lbl_pass:'Password',
@@ -287,13 +319,16 @@ const I18N = {
   ja: {
     hero_title:'酒蔵を探す', hero_sub:'あなたの酒蔵を見つける',
     search_placeholder:'酒蔵の名前...',
-    search_hint:'酒蔵名を入力。<strong>ドメイン、商品、情報源</strong>をウェブで検索します。',
-    searching:'ウェブを検索中...',
+    search_hint:'酒蔵名を入力。<strong>ドメイン、商品、国際的な情報源</strong>をウェブで検索します。',
+    searching:'国際的な情報源を検索中...',
     found_label:'見つかりました:',
     found_confirm:'あなたの酒蔵ですか？',
     btn_confirm:'はい、私の酒蔵です →',
     btn_not_me:'いいえ、もう一度検索',
     products_found:'件の商品',
+    products_section_title:'見つかった商品',
+    sources_label:'情報源:',
+    sources_text:'公式サイト、海外輸入業者、酒データベース',
     not_found:'結果が見つかりませんでした。別の名前で試してください。',
     reg_title:'酒蔵を登録', reg_desc:'技術シートを管理するアカウントを作成。',
     lbl_name:'氏名', lbl_email:'ビジネスメール', lbl_pass:'パスワード',
@@ -318,8 +353,7 @@ let state = {
   user: JSON.parse(localStorage.getItem('sp_user')||'null'),
   brewery: JSON.parse(localStorage.getItem('sp_brewery')||'null'),
   files: JSON.parse(localStorage.getItem('sp_files')||'[]'),
-  searching: false,
-  foundData: null
+  searching: false, foundData: null
 };
 
 function t(k){return(I18N[state.lang]||I18N.it)[k]||k}
@@ -354,7 +388,7 @@ function showPage(n){
 }
 function goHome(){showPage(state.user&&state.brewery?'dashboard':'search');}
 
-// SEARCH — inline results
+// SEARCH
 async function startSearch(){
   if(state.searching) return;
   const name=document.getElementById('search-input').value.trim();
@@ -367,7 +401,6 @@ async function startSearch(){
   const goBtn=document.getElementById('search-go-btn');
   const hint=document.getElementById('search-hint');
 
-  // Shrink hero, show searching state
   hero.classList.add('has-results');
   hint.style.display='none';
   inp.disabled=true;
@@ -380,19 +413,14 @@ async function startSearch(){
   // Step 1: geocode
   const geo=await geocodeLookup(name);
   let domain='', displayName=name;
-  if(geo){
-    displayName=geo.displayName||name;
-    domain=geo.website||'';
-  }
+  if(geo){ displayName=geo.displayName||name; domain=geo.website||''; }
 
-  // Step 2: get products
+  // Step 2: products (AI or demo)
   let data=null;
-  if(state.apiKey){data=await aiSearch(name);} else {data=getDemoBrewery(name);await delay(1200);}
-  if(!data){
-    // Try with domain-based search
-    if(domain){
-      data={company:{name_jp:displayName,name_en:'',website:domain,prefecture:geo?.prefecture||'',address:geo?.address||''},products:[]};
-    }
+  if(state.apiKey){data=await aiSearch(name);} else {data=getDemoBrewery(name);await delay(1500);}
+
+  if(!data && domain){
+    data={company:{name_jp:displayName,name_en:'',website:domain,prefecture:geo?.prefecture||'',address:geo?.address||''},products:[]};
   }
 
   state.searching=false;
@@ -400,7 +428,6 @@ async function startSearch(){
   goBtn.disabled=false;
 
   if(!data && !domain){
-    // Nothing found
     ir.innerHTML=`<div class="result-searching" style="border-color:var(--border2)">${esc(t('not_found'))}</div>`;
     setTimeout(()=>{ir.style.display='none';hero.classList.remove('has-results');hint.style.display='';},3000);
     return;
@@ -408,7 +435,6 @@ async function startSearch(){
 
   if(!data) data={company:{name_jp:displayName,name_en:'',website:domain,prefecture:geo?.prefecture||''},products:[]};
 
-  // Merge geo data
   if(geo){
     if(!data.company.address&&geo.address)data.company.address=geo.address;
     if(!data.company.prefecture&&geo.prefecture)data.company.prefecture=geo.prefecture;
@@ -421,29 +447,58 @@ async function startSearch(){
 }
 
 function showInlineResult(data){
-  const c=data.company, geo=data._geo, pc=data.products?.length||0;
+  const c=data.company, geo=data._geo, prods=data.products||[], pc=prods.length;
   const ir=document.getElementById('inline-result');
   const website=c.website||'';
 
-  const mapHtml=geo&&geo.lat?`<div class="rf-map"><iframe src="https://www.openstreetmap.org/export/embed.html?bbox=${geo.lng-0.006},${geo.lat-0.004},${geo.lng+0.006},${geo.lat+0.004}&layer=mapnik&marker=${geo.lat},${geo.lng}" width="100%" height="160" style="border:0;border-radius:10px" loading="lazy"></iframe></div>`:'';
+  const mapHtml=geo&&geo.lat?`<div class="rf-map"><iframe src="https://www.openstreetmap.org/export/embed.html?bbox=${geo.lng-0.006},${geo.lat-0.004},${geo.lng+0.006},${geo.lat+0.004}&layer=mapnik&marker=${geo.lat},${geo.lng}" width="100%" height="140" style="border:0" loading="lazy"></iframe></div>`:'';
+
+  // Build products HTML
+  let productsHtml='';
+  if(pc>0){
+    const rows=prods.map(p=>`
+      <div class="rf-product">
+        <div>
+          <div class="rf-product-name">${esc(p.name_jp)}</div>
+          <div class="rf-product-meta">${esc(p.name_en||'')}</div>
+        </div>
+        <div style="text-align:right">
+          <div class="rf-product-type">${esc(p.type_detail||p.type||'')}</div>
+          <div class="rf-product-meta">${p.polishing_rate?esc(p.polishing_rate):''}${p.alcohol?(p.polishing_rate?' · ':'')+esc(p.alcohol):''}</div>
+        </div>
+      </div>`).join('');
+
+    productsHtml=`
+      <div class="rf-products-section">
+        <div class="rf-products-header">
+          <div class="rf-products-title">${esc(t('products_section_title'))}</div>
+          <div class="rf-products-count">${pc} ${esc(t('products_found'))}</div>
+        </div>
+        <div class="rf-products-list">${rows}</div>
+      </div>`;
+  }
 
   ir.innerHTML=`
     <div class="result-found">
-      <div class="rf-label">${esc(t('found_label'))}</div>
-      <div class="rf-brewery">
-        <div class="rf-brewery-icon">🏯</div>
-        <div>
-          <div class="rf-brewery-name">${esc(c.name_jp||c.name_en)}</div>
-          ${c.name_en&&c.name_jp?`<div class="rf-brewery-en">${esc(c.name_en)}</div>`:''}
+      <div class="rf-header">
+        <div class="rf-label">${esc(t('found_label'))}</div>
+        <div class="rf-brewery">
+          <div class="rf-brewery-icon">🏯</div>
+          <div>
+            <div class="rf-brewery-name">${esc(c.name_jp||c.name_en)}</div>
+            ${c.name_en&&c.name_jp?`<div class="rf-brewery-en">${esc(c.name_en)}</div>`:''}
+          </div>
         </div>
+        <div class="rf-details">
+          ${website?`<div class="rf-tag">🌐 ${esc(website)}</div>`:''}
+          ${c.prefecture?`<div class="rf-tag">📍 ${esc(c.prefecture)}</div>`:''}
+          ${c.phone?`<div class="rf-tag">📞 ${esc(c.phone)}</div>`:''}
+        </div>
+        ${pc?`<div class="rf-products-badge">🍶 ${pc} ${esc(t('products_found'))}</div>`:''}
       </div>
-      <div class="rf-details">
-        ${website?`<div class="rf-tag">🌐 ${esc(website)}</div>`:''}
-        ${c.prefecture?`<div class="rf-tag">📍 ${esc(c.prefecture)}</div>`:''}
-        ${c.phone?`<div class="rf-tag">📞 ${esc(c.phone)}</div>`:''}
-      </div>
-      ${pc?`<div class="rf-products">🍶 ${pc} ${esc(t('products_found'))}</div>`:''}
       ${mapHtml}
+      ${productsHtml}
+      <div class="rf-sources"><span>${esc(t('sources_label'))}</span> ${esc(t('sources_text'))}</div>
       <div class="rf-confirm">
         <div class="rf-confirm-text">${esc(t('found_confirm'))}</div>
         <div class="rf-actions">
@@ -458,8 +513,7 @@ function resetSearch(){
   const hero=document.getElementById('hero');
   const ir=document.getElementById('inline-result');
   const hint=document.getElementById('search-hint');
-  ir.style.display='none';
-  ir.innerHTML='';
+  ir.style.display='none'; ir.innerHTML='';
   hero.classList.remove('has-results');
   hint.style.display='';
   document.getElementById('search-input').value='';
@@ -490,62 +544,151 @@ async function geocodeLookup(name){
     for(const q of qs){const r=await fetch(`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(q)}&format=json&addressdetails=1&limit=3&accept-language=ja`,{headers:{'User-Agent':'SakePlatform/2.0'}});
       if(!r.ok)continue;const res=await r.json();if(!res.length)continue;
       const b=res.find(r=>r.address?.country_code==='jp')||res[0];const a=b.address||{};
-      return{displayName:b.name||'',address:b.display_name||'',lat:+b.lat,lng:+b.lon,prefecture:a.province||a.state||'',mapsUrl:`https://www.google.com/maps/search/?api=1&query=${b.lat},${b.lon}`};
+      return{displayName:b.name||'',address:b.display_name||'',lat:+b.lat,lng:+b.lon,prefecture:a.province||a.state||''};
     }
   }catch(e){}return null;
 }
 
 async function aiSearch(name){
-  try{const p=`Search for Japanese sake brewery "${name}". Return ONLY valid JSON:\n{"company":{"name_jp":"","name_en":"","prefecture":"","address":"","phone":"","website":""},"products":[{"name_jp":"","name_en":"","type":"","type_detail":"","rice":"","polishing_rate":"","alcohol":"","smv":"","acidity":""}]}`;
-    const r=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json','x-api-key':state.apiKey,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:6000,messages:[{role:'user',content:p}]})});
+  try{
+    const p=`You are a sake expert with comprehensive knowledge of Japanese breweries. Search for the sake brewery "${name}" and return ALL products you can find from ANY source: the brewery's official website, international importers (Sake Company, Tippsy, Sake Inn, World Sake Imports, etc.), sake databases (Saketime, Sake-World), retailers worldwide, competition results, and export catalogs.
+
+IMPORTANT: Return as MANY products as possible. Include every variation, seasonal release, limited edition, and export-only product you know about. Search broadly across international sources, not just the official website.
+
+Return ONLY valid JSON:
+{"company":{"name_jp":"","name_en":"","prefecture":"","address":"","phone":"","website":"","founded":""},
+"products":[{"name_jp":"","name_en":"","type":"","type_detail":"","rice":"","polishing_rate":"","alcohol":"","smv":"","acidity":""}],
+"sources":["source1","source2"]}
+
+Include ALL products you can find. Be comprehensive.`;
+    const r=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json','x-api-key':state.apiKey,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:8000,messages:[{role:'user',content:p}]})});
     if(!r.ok)return null;const d=await r.json();const txt=d.content[0].text;const m=txt.match(/\{[\s\S]*\}/);if(!m)return null;return JSON.parse(m[0]);
   }catch(e){return null;}
 }
 
+// ============ COMPREHENSIVE DEMO DATA ============
 const demoData={
-  tatenokawa:{company:{name_jp:'楯の川酒造',name_en:'Tatenokawa Sake Brewery',prefecture:'山形県',website:'tatenokawa.com',address:'山形県酒田市山楯字清水田27',phone:'0234-52-2323'},products:[
-    {name_jp:'楯野川 清流',name_en:'Seiryu',type:'Junmai Daiginjo',type_detail:'純米大吟醸',rice:'出羽燦々',polishing_rate:'50%',alcohol:'14-15%',smv:'-2',acidity:'1.4'},
-    {name_jp:'楯野川 光明',name_en:'Koumyou',type:'Junmai Daiginjo',type_detail:'純米大吟醸',rice:'山田錦',polishing_rate:'1%',alcohol:'15%',smv:'-2',acidity:'1.3'},
+  tatenokawa:{company:{name_jp:'楯の川酒造',name_en:'Tatenokawa Sake Brewery',prefecture:'山形県',website:'tatenokawa.com',address:'山形県酒田市山楯字清水田27',phone:'0234-52-2323',founded:'1832'},products:[
+    // Komyo Series
+    {name_jp:'楯野川 光明 山田錦',name_en:'Komyo Yamada Nishiki',type:'Junmai Daiginjo',type_detail:'純米大吟醸',rice:'山田錦',polishing_rate:'1%',alcohol:'15%'},
+    {name_jp:'楯野川 光明 出羽燦々',name_en:'Komyo Dewasansan',type:'Junmai Daiginjo',type_detail:'純米大吟醸',rice:'出羽燦々',polishing_rate:'1%',alcohol:'15%'},
+    // Extreme Series
     {name_jp:'楯野川 極限',name_en:'Kyokugen',type:'Junmai Daiginjo',type_detail:'純米大吟醸',rice:'山田錦',polishing_rate:'8%',alcohol:'15%'},
-    {name_jp:'楯野川 主流',name_en:'Shuryu',type:'Junmai Daiginjo',type_detail:'純米大吟醸',rice:'山田錦',polishing_rate:'50%',alcohol:'15-16%'},
+    {name_jp:'楯野川 十八 18',name_en:'Junmai Daiginjo 18',type:'Junmai Daiginjo',type_detail:'純米大吟醸',rice:'山田錦',polishing_rate:'18%',alcohol:'15%'},
+    {name_jp:'楯野川 急流',name_en:'Kyuryu',type:'Junmai Daiginjo',type_detail:'純米大吟醸',rice:'出羽燦々',polishing_rate:'33%',alcohol:'15%'},
+    // MUGA Series
+    {name_jp:'楯野川 無我 ブルーボトル',name_en:'Muga Blue Bottle',type:'Junmai Daiginjo',type_detail:'純米大吟醸 生',rice:'出羽燦々',polishing_rate:'50%',alcohol:'15%'},
+    {name_jp:'楯野川 無我 シルバーボトル',name_en:'Muga Silver Bottle',type:'Junmai Daiginjo',type_detail:'純米大吟醸 生',rice:'美山錦',polishing_rate:'50%',alcohol:'15%'},
+    {name_jp:'楯野川 無我 ブラウンボトル',name_en:'Muga Brown Bottle',type:'Junmai Daiginjo',type_detail:'純米大吟醸 生',rice:'雪女神',polishing_rate:'50%',alcohol:'15%'},
+    {name_jp:'楯野川 無我 パープルボトル',name_en:'Muga Purple Bottle',type:'Junmai Daiginjo',type_detail:'純米大吟醸 生',rice:'山田錦',polishing_rate:'50%',alcohol:'15%'},
+    // Basic Series
+    {name_jp:'楯野川 清流',name_en:'Seiryu (Stream)',type:'Junmai Daiginjo',type_detail:'純米大吟醸',rice:'出羽燦々',polishing_rate:'50%',alcohol:'14%'},
+    {name_jp:'楯野川 主流',name_en:'Shuryu (Mainstream)',type:'Junmai Daiginjo',type_detail:'純米大吟醸',rice:'山田錦',polishing_rate:'50%',alcohol:'15-16%'},
     {name_jp:'楯野川 本流辛口',name_en:'Honryu Karakuchi',type:'Junmai Daiginjo',type_detail:'純米大吟醸',rice:'出羽燦々',polishing_rate:'50%',alcohol:'15-16%',smv:'+8'},
+    {name_jp:'楯野川 美山錦 中取り',name_en:'Miyama Nishiki Nakadori',type:'Junmai Daiginjo',type_detail:'純米大吟醸',rice:'美山錦',polishing_rate:'50%',alcohol:'15%'},
+    // Shield Series
+    {name_jp:'楯野川 Shield 亀の尾',name_en:'Shield Kamenoo',type:'Junmai Daiginjo',type_detail:'純米大吟醸',rice:'亀の尾',polishing_rate:'50%',alcohol:'15%'},
+    {name_jp:'楯野川 Shield 雄町',name_en:'Shield Omachi',type:'Junmai Daiginjo',type_detail:'純米大吟醸',rice:'雄町',polishing_rate:'50%',alcohol:'15%'},
+    {name_jp:'楯野川 Shield 出羽の里',name_en:'Shield Dewa no Sato',type:'Junmai Daiginjo',type_detail:'純米大吟醸',rice:'出羽の里',polishing_rate:'50%',alcohol:'15%'},
+    // Sou / Special
+    {name_jp:'楯野川 草編 早稲',name_en:'Soube Wase',type:'Junmai Daiginjo',type_detail:'純米大吟醸',rice:'惣兵衛早生（古代米）',polishing_rate:'50%',alcohol:'14%'},
+    {name_jp:'楯野川 涅槃 NEHAN',name_en:'Nehan',type:'Junmai Daiginjo',type_detail:'純米大吟醸 熟成',rice:'山田錦',polishing_rate:'18%',alcohol:'16%'},
+    // Collaboration
+    {name_jp:'楯野川 × Foo Fighters 反照 Blue',name_en:'Foo Fighters Hansho Blue',type:'Junmai Daiginjo',type_detail:'純米大吟醸',rice:'出羽燦々',polishing_rate:'50%',alcohol:'15%'},
+    {name_jp:'楯野川 × Foo Fighters 反照 Silver',name_en:'Foo Fighters Hansho Silver',type:'Junmai Daiginjo',type_detail:'純米大吟醸',rice:'山田錦',polishing_rate:'50%',alcohol:'15%'},
+    // Music series
+    {name_jp:'楯野川 SAKERISE',name_en:'Sakerise',type:'Junmai Daiginjo',type_detail:'純米大吟醸 スパークリング',rice:'出羽燦々',polishing_rate:'50%',alcohol:'13%'},
   ]},
-  koikawa:{company:{name_jp:'鯉川酒造',name_en:'Koikawa Sake Brewery',prefecture:'山形県',website:'sake-koikawa.jp',address:'山形県東田川郡庄内町余目字興野42'},products:[
+
+  koikawa:{company:{name_jp:'鯉川酒造',name_en:'Koikawa Sake Brewery',prefecture:'山形県',website:'sake-koikawa.jp',address:'山形県東田川郡庄内町余目字興野42',phone:'0234-43-2005',founded:'1725'},products:[
     {name_jp:'純米大吟醸 亀の尾',name_en:'Junmai Daiginjo Kamenoo',type:'Junmai Daiginjo',type_detail:'純米大吟醸',rice:'亀の尾 100%',polishing_rate:'45%',alcohol:'16.6%'},
     {name_jp:'純米吟醸 亀治好日',name_en:'Kameji Kojitsu',type:'Junmai Ginjo',type_detail:'純米吟醸',rice:'亀の尾',polishing_rate:'55%',alcohol:'15.3%'},
-    {name_jp:'特別純米 鯉川',name_en:'Koikawa Tokubetsu',type:'Tokubetsu Junmai',type_detail:'特別純米',rice:'山形県産米',polishing_rate:'55%',alcohol:'15.3%'},
+    {name_jp:'特別純米 鯉川',name_en:'Koikawa Tokubetsu Junmai',type:'Tokubetsu Junmai',type_detail:'特別純米',rice:'山形県産米',polishing_rate:'55%',alcohol:'15.3%'},
+    {name_jp:'鯉川 純米吟醸 鉄人',name_en:'Koikawa Tetsujin',type:'Junmai Ginjo',type_detail:'純米吟醸',rice:'亀の尾',polishing_rate:'55%',alcohol:'16%'},
+    {name_jp:'鯉川 純米酒',name_en:'Koikawa Junmai',type:'Junmai',type_detail:'純米',rice:'出羽の里',polishing_rate:'65%',alcohol:'15%'},
+    {name_jp:'鯉川 辛口 本醸造',name_en:'Koikawa Honjozo Karakuchi',type:'Honjozo',type_detail:'本醸造',rice:'はえぬき',polishing_rate:'65%',alcohol:'15%'},
+    {name_jp:'鯉川 出羽の里 特別純米',name_en:'Koikawa Dewa no Sato',type:'Tokubetsu Junmai',type_detail:'特別純米',rice:'出羽の里',polishing_rate:'60%',alcohol:'15%'},
+    {name_jp:'鯉川 純米吟醸 庄内産亀の尾 生',name_en:'Koikawa Kamenoo Nama',type:'Junmai Ginjo',type_detail:'純米吟醸 生',rice:'亀の尾',polishing_rate:'55%',alcohol:'16%'},
   ]},
-  amabuki:{company:{name_jp:'天吹酒造',name_en:'Amabuki Sake Brewery',prefecture:'佐賀県',website:'amabuki.co.jp',address:'佐賀県三養基郡みやき町東尾2894'},products:[
-    {name_jp:'天吹 大吟醸 りんごの花酵母',name_en:'Amabuki Apple Blossom',type:'Daiginjo',type_detail:'大吟醸',rice:'山田錦 100%',polishing_rate:'35%',alcohol:'16%'},
-    {name_jp:'天吹 純米大吟醸 バラの花酵母',name_en:'Amabuki Rose',type:'Junmai Daiginjo',type_detail:'純米大吟醸',rice:'雄町 100%',polishing_rate:'50%',alcohol:'16%'},
-    {name_jp:'天吹 純米吟醸 コスモスの花酵母',name_en:'Amabuki Cosmos',type:'Junmai Ginjo',type_detail:'純米吟醸',rice:'佐賀の華',polishing_rate:'55%',alcohol:'15%'},
-    {name_jp:'天吹 純米 月下美人',name_en:'Amabuki Gekka Bijin',type:'Junmai',type_detail:'純米',rice:'雄町',polishing_rate:'65%',alcohol:'15%'},
+
+  amabuki:{company:{name_jp:'天吹酒造',name_en:'Amabuki Sake Brewery',prefecture:'佐賀県',website:'amabuki.co.jp',address:'佐賀県三養基郡みやき町東尾2894',phone:'0942-89-2001',founded:'1688'},products:[
+    // Flower Yeast Signatures
+    {name_jp:'天吹 大吟醸 りんごの花酵母',name_en:'Amabuki Daiginjo Apple Blossom Yeast',type:'Daiginjo',type_detail:'大吟醸',rice:'山田錦 100%',polishing_rate:'35%',alcohol:'16%'},
+    {name_jp:'天吹 純米大吟醸 バラの花酵母',name_en:'Amabuki Junmai Daiginjo Rose Yeast',type:'Junmai Daiginjo',type_detail:'純米大吟醸',rice:'雄町 100%',polishing_rate:'50%',alcohol:'16%'},
+    {name_jp:'天吹 純米大吟醸 バナナ酵母',name_en:'Amabuki Junmai Daiginjo Banana Yeast',type:'Junmai Daiginjo',type_detail:'純米大吟醸',rice:'山田錦',polishing_rate:'50%',alcohol:'16%'},
+    {name_jp:'天吹 純米吟醸 コスモスの花酵母',name_en:'Amabuki Junmai Ginjo Cosmos Yeast',type:'Junmai Ginjo',type_detail:'純米吟醸',rice:'佐賀の華',polishing_rate:'55%',alcohol:'15%'},
+    {name_jp:'天吹 純米吟醸 いちご酵母 生',name_en:'Amabuki Junmai Ginjo Strawberry Yeast Nama',type:'Junmai Ginjo',type_detail:'純米吟醸 生',rice:'佐賀の華',polishing_rate:'55%',alcohol:'16%'},
+    {name_jp:'天吹 純米吟醸 ひまわり酵母',name_en:'Amabuki Junmai Ginjo Sunflower Yeast',type:'Junmai Ginjo',type_detail:'純米吟醸',rice:'佐賀の華',polishing_rate:'55%',alcohol:'16%'},
+    {name_jp:'天吹 純米吟醸 マリーゴールド酵母',name_en:'Amabuki Junmai Ginjo Marigold Yeast',type:'Junmai Ginjo',type_detail:'純米吟醸',rice:'佐賀の華',polishing_rate:'55%',alcohol:'15%'},
+    {name_jp:'天吹 純米吟醸 アベリア酵母',name_en:'Amabuki Junmai Ginjo Abelia Yeast',type:'Junmai Ginjo',type_detail:'純米吟醸',rice:'佐賀の華',polishing_rate:'55%',alcohol:'15%'},
+    // Special
+    {name_jp:'天吹 純米 月下美人',name_en:'Amabuki Junmai Gekka Bijin',type:'Junmai',type_detail:'純米',rice:'雄町',polishing_rate:'65%',alcohol:'15%'},
+    {name_jp:'天吹 純米大吟醸 愛山',name_en:'Amabuki Junmai Daiginjo Aiyama',type:'Junmai Daiginjo',type_detail:'純米大吟醸',rice:'愛山',polishing_rate:'50%',alcohol:'16%'},
+    {name_jp:'天吹 純米大吟醸 山田錦',name_en:'Amabuki Junmai Daiginjo Yamada Nishiki',type:'Junmai Daiginjo',type_detail:'純米大吟醸',rice:'山田錦',polishing_rate:'50%',alcohol:'16%'},
+    {name_jp:'天吹 生酛 純米大吟醸',name_en:'Amabuki Kimoto Junmai Daiginjo',type:'Junmai Daiginjo',type_detail:'生酛 純米大吟醸',rice:'山田錦',polishing_rate:'50%',alcohol:'16%'},
+    {name_jp:'天吹 山廃 純米',name_en:'Amabuki Yamahai Junmai',type:'Junmai',type_detail:'山廃 純米',rice:'雄町',polishing_rate:'65%',alcohol:'15%'},
+    {name_jp:'天吹 特別純米',name_en:'Amabuki Tokubetsu Junmai',type:'Tokubetsu Junmai',type_detail:'特別純米',rice:'佐賀の華',polishing_rate:'60%',alcohol:'15%'},
+    {name_jp:'天吹 特別純米 生',name_en:'Amabuki Tokubetsu Junmai Nama',type:'Tokubetsu Junmai',type_detail:'特別純米 生',rice:'佐賀の華',polishing_rate:'60%',alcohol:'15%'},
+    // Export
+    {name_jp:'天吹 本醸造',name_en:'Amabuki Honjozo',type:'Honjozo',type_detail:'本醸造',rice:'佐賀の華',polishing_rate:'65%',alcohol:'15%'},
+    {name_jp:'天吹 純米吟醸 雄町 生',name_en:'Amabuki Junmai Ginjo Omachi Nama',type:'Junmai Ginjo',type_detail:'純米吟醸 生',rice:'雄町 100%',polishing_rate:'55%',alcohol:'16%'},
+    {name_jp:'天吹 I Love Sushi 純米',name_en:'Amabuki I Love Sushi Junmai',type:'Junmai',type_detail:'純米',rice:'佐賀の華',polishing_rate:'65%',alcohol:'15%'},
+    {name_jp:'天吹 Cloud にごり',name_en:'Amabuki Cloud Nigori',type:'Junmai',type_detail:'純米 にごり',rice:'佐賀の華',polishing_rate:'65%',alcohol:'15%'},
+    {name_jp:'天吹 桜吹雪 純米',name_en:'Amabuki Sakura Fubuki',type:'Junmai',type_detail:'純米',rice:'佐賀の華',polishing_rate:'65%',alcohol:'14%'},
+    {name_jp:'天吹 銀の紅 Pink Lady',name_en:'Amabuki Gin no Kurenai Pink Lady',type:'Junmai Ginjo',type_detail:'純米吟醸',rice:'佐賀の華',polishing_rate:'55%',alcohol:'14%'},
+    {name_jp:'天吹 純米大吟醸 White',name_en:'Amabuki Junmai Daiginjo White',type:'Junmai Daiginjo',type_detail:'純米大吟醸',rice:'山田錦',polishing_rate:'50%',alcohol:'16%'},
+    {name_jp:'天吹 純米大吟醸 Pure Love',name_en:'Amabuki Junmai Daiginjo Pure Love',type:'Junmai Daiginjo',type_detail:'純米大吟醸',rice:'山田錦',polishing_rate:'45%',alcohol:'16%'},
   ]},
-  dassai:{company:{name_jp:'旭酒造（獺祭）',name_en:'Asahi Shuzo (Dassai)',prefecture:'山口県',website:'asahishuzo.ne.jp'},products:[
+
+  dassai:{company:{name_jp:'旭酒造（獺祭）',name_en:'Asahi Shuzo (Dassai)',prefecture:'山口県',website:'asahishuzo.ne.jp',address:'山口県岩国市周東町獺越2167-4',phone:'0827-86-0120',founded:'1948'},products:[
     {name_jp:'獺祭 磨き その先へ',name_en:'Dassai Beyond',type:'Junmai Daiginjo',type_detail:'純米大吟醸',rice:'山田錦 100%',polishing_rate:'非公開',alcohol:'16%'},
     {name_jp:'獺祭 純米大吟醸 23',name_en:'Dassai 23',type:'Junmai Daiginjo',type_detail:'純米大吟醸',rice:'山田錦 100%',polishing_rate:'23%',alcohol:'16%'},
+    {name_jp:'獺祭 純米大吟醸 39',name_en:'Dassai 39',type:'Junmai Daiginjo',type_detail:'純米大吟醸',rice:'山田錦 100%',polishing_rate:'39%',alcohol:'16%'},
     {name_jp:'獺祭 純米大吟醸 45',name_en:'Dassai 45',type:'Junmai Daiginjo',type_detail:'純米大吟醸',rice:'山田錦 100%',polishing_rate:'45%',alcohol:'16%'},
+    {name_jp:'獺祭 純米大吟醸 50',name_en:'Dassai 50',type:'Junmai Daiginjo',type_detail:'純米大吟醸',rice:'山田錦 100%',polishing_rate:'50%',alcohol:'16%'},
+    {name_jp:'獺祭 スパークリング 45',name_en:'Dassai 45 Sparkling',type:'Junmai Daiginjo',type_detail:'純米大吟醸 スパークリング',rice:'山田錦 100%',polishing_rate:'45%',alcohol:'14%'},
+    {name_jp:'獺祭 スパークリング 50',name_en:'Dassai 50 Sparkling',type:'Junmai Daiginjo',type_detail:'純米大吟醸 スパークリング',rice:'山田錦 100%',polishing_rate:'50%',alcohol:'14%'},
+    {name_jp:'獺祭 にごりスパークリング 50',name_en:'Dassai 50 Nigori Sparkling',type:'Junmai Daiginjo',type_detail:'純米大吟醸 にごりスパークリング',rice:'山田錦 100%',polishing_rate:'50%',alcohol:'14%'},
+    {name_jp:'獺祭 甘酒',name_en:'Dassai Amazake',type:'Non-alcohol',type_detail:'甘酒（ノンアルコール）',rice:'山田錦',polishing_rate:'50%',alcohol:'0%'},
+    {name_jp:'獺祭 梅酒',name_en:'Dassai Umeshu',type:'Umeshu',type_detail:'梅酒',rice:'山田錦',polishing_rate:'50%',alcohol:'8%'},
+    {name_jp:'獺祭 純米大吟醸 23 遠心分離',name_en:'Dassai 23 Centrifuge',type:'Junmai Daiginjo',type_detail:'純米大吟醸 遠心分離',rice:'山田錦 100%',polishing_rate:'23%',alcohol:'16%'},
+    {name_jp:'獺祭 純米大吟醸 39 遠心分離',name_en:'Dassai 39 Centrifuge',type:'Junmai Daiginjo',type_detail:'純米大吟醸 遠心分離',rice:'山田錦 100%',polishing_rate:'39%',alcohol:'16%'},
+    {name_jp:'獺祭 早田 純米大吟醸 23',name_en:'Dassai Hayata 23',type:'Junmai Daiginjo',type_detail:'純米大吟醸',rice:'山田錦 100%',polishing_rate:'23%',alcohol:'16%'},
+    {name_jp:'獺祭 早田 純米大吟醸 39',name_en:'Dassai Hayata 39',type:'Junmai Daiginjo',type_detail:'純米大吟醸',rice:'山田錦 100%',polishing_rate:'39%',alcohol:'16%'},
   ]},
-  kubota:{company:{name_jp:'朝日酒造（久保田）',name_en:'Asahi-Shuzo (Kubota)',prefecture:'新潟県',website:'asahi-shuzo.co.jp'},products:[
+
+  kubota:{company:{name_jp:'朝日酒造（久保田）',name_en:'Asahi Shuzo (Kubota)',prefecture:'新潟県',website:'asahi-shuzo.co.jp',address:'新潟県長岡市朝日880-1',phone:'0258-92-3181',founded:'1830'},products:[
     {name_jp:'久保田 萬寿',name_en:'Kubota Manju',type:'Junmai Daiginjo',type_detail:'純米大吟醸',rice:'五百万石',polishing_rate:'33%',alcohol:'15%'},
+    {name_jp:'久保田 碧寿',name_en:'Kubota Hekiju',type:'Junmai Daiginjo',type_detail:'山廃 純米大吟醸',rice:'五百万石',polishing_rate:'50%',alcohol:'15%'},
+    {name_jp:'久保田 翠寿',name_en:'Kubota Suiju',type:'Daiginjo',type_detail:'大吟醸 生酒',rice:'五百万石',polishing_rate:'40%',alcohol:'14%'},
+    {name_jp:'久保田 紅寿',name_en:'Kubota Kouju',type:'Junmai Ginjo',type_detail:'純米吟醸',rice:'五百万石',polishing_rate:'55%',alcohol:'15%'},
     {name_jp:'久保田 千寿',name_en:'Kubota Senju',type:'Ginjo',type_detail:'吟醸',rice:'五百万石',polishing_rate:'55%',alcohol:'15%'},
+    {name_jp:'久保田 千寿 秋あがり',name_en:'Kubota Senju Akiagari',type:'Ginjo',type_detail:'吟醸 秋あがり',rice:'五百万石',polishing_rate:'55%',alcohol:'15%'},
+    {name_jp:'久保田 百寿',name_en:'Kubota Hyakuju',type:'Tokubetsu Honjozo',type_detail:'特別本醸造',rice:'五百万石',polishing_rate:'60%',alcohol:'15%'},
+    {name_jp:'久保田 純米大吟醸',name_en:'Kubota Junmai Daiginjo',type:'Junmai Daiginjo',type_detail:'純米大吟醸',rice:'五百万石',polishing_rate:'50%',alcohol:'15%'},
+    {name_jp:'久保田 スパークリング',name_en:'Kubota Sparkling',type:'Junmai Daiginjo',type_detail:'純米大吟醸 スパークリング',rice:'五百万石',polishing_rate:'50%',alcohol:'13%'},
+    {name_jp:'久保田 雪峰',name_en:'Kubota Seppou',type:'Junmai Daiginjo',type_detail:'純米大吟醸 アウトドア限定',rice:'五百万石',polishing_rate:'33%',alcohol:'13%'},
   ]},
-  kenbishi:{company:{name_jp:'剣菱酒造',name_en:'Kenbishi Sake Brewing',prefecture:'兵庫県',website:'kenbishi.co.jp',address:'兵庫県神戸市東灘区御影本町3-2-1',phone:'078-451-2501'},products:[
+
+  kenbishi:{company:{name_jp:'剣菱酒造',name_en:'Kenbishi Sake Brewing',prefecture:'兵庫県',website:'kenbishi.co.jp',address:'兵庫県神戸市東灘区御影本町3-2-1',phone:'078-451-2501',founded:'1505'},products:[
     {name_jp:'剣菱',name_en:'Kenbishi',type:'Honjozo',type_detail:'本醸造',rice:'山田錦・愛山',polishing_rate:'70-75%',alcohol:'17%'},
     {name_jp:'黒松剣菱',name_en:'Kuromatsu Kenbishi',type:'Tokubetsu Junmai',type_detail:'特別純米',rice:'山田錦・愛山',polishing_rate:'60-65%',alcohol:'17%'},
     {name_jp:'瑞穂黒松剣菱',name_en:'Mizuho Kuromatsu Kenbishi',type:'Junmai',type_detail:'純米',rice:'山田錦・愛山',polishing_rate:'55-60%',alcohol:'17%'},
     {name_jp:'極上黒松剣菱',name_en:'Gokujo Kuromatsu Kenbishi',type:'Junmai Ginjo',type_detail:'純米吟醸',rice:'山田錦・愛山',polishing_rate:'50-55%',alcohol:'16-17%'},
+    {name_jp:'剣菱 瑞祥',name_en:'Kenbishi Zuisho',type:'Junmai Daiginjo',type_detail:'純米大吟醸',rice:'山田錦',polishing_rate:'40%',alcohol:'17%'},
+    {name_jp:'剣菱 灘の生一本',name_en:'Kenbishi Nada no Ki-ippon',type:'Junmai',type_detail:'純米',rice:'山田錦・愛山',polishing_rate:'60%',alcohol:'17%'},
+    {name_jp:'剣菱 上撰',name_en:'Kenbishi Josen',type:'Futsu-shu',type_detail:'普通酒',rice:'山田錦・愛山',polishing_rate:'70%',alcohol:'17%'},
   ]}
 };
 
 function getDemoBrewery(n){
   const q=n.toLowerCase();
-  if(q.includes('楯')||q.includes('tatenokawa'))return demoData.tatenokawa;
-  if(q.includes('鯉')||q.includes('koikawa'))return demoData.koikawa;
-  if(q.includes('天吹')||q.includes('amabuki'))return demoData.amabuki;
-  if(q.includes('獺祭')||q.includes('dassai'))return demoData.dassai;
-  if(q.includes('久保田')||q.includes('kubota'))return demoData.kubota;
-  if(q.includes('剣菱')||q.includes('kenbishi'))return demoData.kenbishi;
+  if(q.includes('楯')||q.includes('tatenokawa'))return JSON.parse(JSON.stringify(demoData.tatenokawa));
+  if(q.includes('鯉')||q.includes('koikawa'))return JSON.parse(JSON.stringify(demoData.koikawa));
+  if(q.includes('天吹')||q.includes('amabuki'))return JSON.parse(JSON.stringify(demoData.amabuki));
+  if(q.includes('獺祭')||q.includes('dassai'))return JSON.parse(JSON.stringify(demoData.dassai));
+  if(q.includes('久保田')||q.includes('kubota'))return JSON.parse(JSON.stringify(demoData.kubota));
+  if(q.includes('剣菱')||q.includes('kenbishi'))return JSON.parse(JSON.stringify(demoData.kenbishi));
   return null;
 }
 
