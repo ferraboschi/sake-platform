@@ -209,8 +209,8 @@ body { font-family:var(--font); background:var(--bg); color:var(--text); min-hei
     <div class="hero-kanji" id="hero-kanji"></div>
     <div class="hero-sub" id="hero-sub"></div>
     <div class="search-box">
-      <input type="text" id="search-input" autocomplete="off" onkeydown="if(event.key==='Enter')startSearch()">
-      <button class="search-go" id="search-go-btn" onclick="startSearch()">→</button>
+      <input type="text" id="search-input" autocomplete="off" oninput="onSearchInput()" onkeydown="if(event.key==='Enter'){clearTimeout(state.debounceTimer);startSearch();}">
+      <button class="search-go" id="search-go-btn" onclick="clearTimeout(state.debounceTimer);startSearch()">→</button>
     </div>
     <div class="search-hint" id="search-hint"></div>
     <div class="inline-result" id="inline-result" style="display:none"></div>
@@ -384,7 +384,8 @@ let state = {
   user: JSON.parse(localStorage.getItem('sp_user')||'null'),
   brewery: JSON.parse(localStorage.getItem('sp_brewery')||'null'),
   files: JSON.parse(localStorage.getItem('sp_files')||'[]'),
-  searching:false, foundData:null, currentPage:'search'
+  searching:false, foundData:null, currentPage:'search',
+  debounceTimer:null, abortCtrl:null, lastQuery:''
 };
 
 function t(k){return(I18N[state.lang]||I18N.it)[k]||k}
@@ -438,30 +439,53 @@ function navTo(n){showPage(n);}
 function goHome(){showPage(state.user&&state.brewery?'dashboard':'search');}
 
 // ==================== SEARCH ====================
+const DEBOUNCE_MS=800, MIN_CHARS=3;
+
+function onSearchInput(){
+  clearTimeout(state.debounceTimer);
+  const val=document.getElementById('search-input').value.trim();
+  // If cleared, reset
+  if(!val && state.foundData){ resetSearch(); return; }
+  // Don't re-search same query
+  if(val===state.lastQuery) return;
+  // Wait for minimum chars
+  if(val.length<MIN_CHARS) return;
+  // Debounce
+  state.debounceTimer=setTimeout(()=>startSearch(),DEBOUNCE_MS);
+}
+
 async function startSearch(){
-  if(state.searching)return;
   const name=document.getElementById('search-input').value.trim();
-  if(!name)return;
+  if(!name||name.length<MIN_CHARS)return;
+  if(name===state.lastQuery&&state.foundData)return;
+  // Abort previous search
+  if(state.abortCtrl){state.abortCtrl.abort();state.abortCtrl=null;}
+  if(state.searching){state.searching=false;}
+  state.lastQuery=name;
+  state.abortCtrl=new AbortController();
+  const signal=state.abortCtrl.signal;
 
   state.searching=true;
+  state.foundData=null;
   const hero=document.getElementById('hero');
   const ir=document.getElementById('inline-result');
-  const inp=document.getElementById('search-input');
-  const goBtn=document.getElementById('search-go-btn');
   const hint=document.getElementById('search-hint');
 
   hero.classList.add('has-results');
   hint.style.display='none';
-  inp.disabled=true; goBtn.disabled=true;
   ir.style.display='block';
 
+  function aborted(){return signal.aborted;}
   function setStatus(text,step){
+    if(aborted())return;
     ir.innerHTML=`<div class="search-status"><div class="dot"></div><div><div>${esc(text)}</div><div class="search-step">${esc(step)}</div></div></div>`;
   }
 
+  try{
   // Step 1: Geocode (Nominatim)
   setStatus(t('searching'), t('step_geo'));
-  const geo = await geocodeLookup(name);
+  const geo = await geocodeLookup(name, signal);
+  if(aborted())return;
   let domain='', displayName=name, address='', prefecture='', lat=null, lng=null;
   if(geo){
     displayName=geo.displayName||name;
@@ -472,22 +496,21 @@ async function startSearch(){
 
   // Step 2: Wikipedia (company info + history)
   setStatus(t('searching'), t('step_wiki'));
-  const wiki = await wikiLookup(name);
+  const wiki = await wikiLookup(name, signal);
+  if(aborted())return;
 
   // Step 3: AI search for products + company data (or basic domain guess)
   setStatus(t('searching'), t('step_products'));
   let aiData = null;
   if(state.apiKey){
-    aiData = await aiSearch(name);
+    aiData = await aiSearch(name, signal);
+    if(aborted())return;
   }
 
   // Try domain guess if we don't have one
   if(!domain){
-    // From AI data
     if(aiData?.company?.website) domain=aiData.company.website;
-    // From wiki
     else if(wiki?.website) domain=wiki.website;
-    // Guess: name.co.jp
     else {
       const slug=name.toLowerCase().replace(/[^a-z0-9]/g,'');
       if(slug.length>2) domain=slug+'.co.jp';
@@ -495,7 +518,6 @@ async function startSearch(){
   }
 
   state.searching=false;
-  inp.disabled=false; goBtn.disabled=false;
 
   // Build result
   const company = {
@@ -519,6 +541,11 @@ async function startSearch(){
 
   state.foundData={company, productCount, sources, _geo:geo?{lat,lng}:null, _products:aiData?.products||[]};
   showBreweryCard(state.foundData);
+
+  }catch(e){
+    if(e.name==='AbortError')return; // silently ignore aborted searches
+    state.searching=false;
+  }
 }
 
 function showBreweryCard(data){
@@ -581,6 +608,9 @@ function showBreweryCard(data){
 }
 
 function resetSearch(){
+  if(state.abortCtrl){state.abortCtrl.abort();state.abortCtrl=null;}
+  clearTimeout(state.debounceTimer);
+  state.searching=false; state.foundData=null; state.lastQuery='';
   const hero=document.getElementById('hero');
   const ir=document.getElementById('inline-result');
   const hint=document.getElementById('search-hint');
@@ -589,7 +619,6 @@ function resetSearch(){
   hint.style.display='';
   document.getElementById('search-input').value='';
   document.getElementById('search-input').focus();
-  state.foundData=null;
 }
 
 function confirmBrewery(){
@@ -616,11 +645,11 @@ function confirmBrewery(){
 
 // ==================== WEB APIS ====================
 
-async function geocodeLookup(name){
+async function geocodeLookup(name,signal){
   try{
     const qs=[name+' 酒造',name+' sake brewery',name];
     for(const q of qs){
-      const r=await fetch(`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(q)}&format=json&addressdetails=1&limit=3&accept-language=ja`,{headers:{'User-Agent':'SakePlatform/2.0'}});
+      const r=await fetch(`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(q)}&format=json&addressdetails=1&limit=3&accept-language=ja`,{headers:{'User-Agent':'SakePlatform/2.0'},signal});
       if(!r.ok)continue;
       const res=await r.json();
       if(!res.length)continue;
@@ -628,24 +657,22 @@ async function geocodeLookup(name){
       const a=b.address||{};
       return{displayName:b.name||'',address:b.display_name||'',lat:+b.lat,lng:+b.lon,prefecture:a.province||a.state||''};
     }
-  }catch(e){}
+  }catch(e){if(e.name==='AbortError')throw e;}
   return null;
 }
 
-async function wikiLookup(name){
+async function wikiLookup(name,signal){
   try{
     // Search Japanese Wikipedia
     const searchTerms=[name+'酒造',name+' 酒造',name];
     for(const term of searchTerms){
-      const sr=await fetch(`https://ja.wikipedia.org/w/api.php?action=query&list=search&srsearch=${encodeURIComponent(term)}&format=json&origin=*&srlimit=3`);
+      const sr=await fetch(`https://ja.wikipedia.org/w/api.php?action=query&list=search&srsearch=${encodeURIComponent(term)}&format=json&origin=*&srlimit=3`,{signal});
       if(!sr.ok)continue;
       const sd=await sr.json();
       const results=sd.query?.search||[];
-      // Find a brewery-related article
       const article=results.find(r=>r.snippet.includes('酒')||r.snippet.includes('醸造')||r.snippet.includes('蔵'))||results[0];
       if(!article)continue;
-      // Get extract
-      const er=await fetch(`https://ja.wikipedia.org/w/api.php?action=query&titles=${encodeURIComponent(article.title)}&prop=extracts&exintro=1&explaintext=1&format=json&origin=*`);
+      const er=await fetch(`https://ja.wikipedia.org/w/api.php?action=query&titles=${encodeURIComponent(article.title)}&prop=extracts&exintro=1&explaintext=1&format=json&origin=*`,{signal});
       if(!er.ok)continue;
       const ed=await er.json();
       const pages=ed.query?.pages||{};
@@ -653,19 +680,18 @@ async function wikiLookup(name){
       if(!page||page.missing!==undefined)continue;
       let extract=(page.extract||'').substring(0,400);
       if(extract.length===400)extract=extract.substring(0,extract.lastIndexOf('。')+1)||extract+'…';
-      // Try to extract info from text
       const foundedMatch=extract.match(/(\d{4})年.*?(創業|設立|開業)/)||extract.match(/(創業|設立|開業).*?(\d{4})年/);
       const founded=foundedMatch?(foundedMatch[1].match(/\d{4}/)?.[0]||foundedMatch[2]):'';
       return{extract,founded,name_jp:article.title};
     }
     // Try English Wikipedia too
-    const enr=await fetch(`https://en.wikipedia.org/w/api.php?action=query&list=search&srsearch=${encodeURIComponent(name+' sake brewery')}&format=json&origin=*&srlimit=3`);
+    const enr=await fetch(`https://en.wikipedia.org/w/api.php?action=query&list=search&srsearch=${encodeURIComponent(name+' sake brewery')}&format=json&origin=*&srlimit=3`,{signal});
     if(enr.ok){
       const end=await enr.json();
       const enResults=end.query?.search||[];
       const enArticle=enResults.find(r=>r.snippet.toLowerCase().includes('sake')||r.snippet.toLowerCase().includes('brew'))||enResults[0];
       if(enArticle){
-        const er2=await fetch(`https://en.wikipedia.org/w/api.php?action=query&titles=${encodeURIComponent(enArticle.title)}&prop=extracts&exintro=1&explaintext=1&format=json&origin=*`);
+        const er2=await fetch(`https://en.wikipedia.org/w/api.php?action=query&titles=${encodeURIComponent(enArticle.title)}&prop=extracts&exintro=1&explaintext=1&format=json&origin=*`,{signal});
         if(er2.ok){
           const ed2=await er2.json();
           const pages2=ed2.query?.pages||{};
@@ -678,11 +704,11 @@ async function wikiLookup(name){
         }
       }
     }
-  }catch(e){}
+  }catch(e){if(e.name==='AbortError')throw e;}
   return null;
 }
 
-async function aiSearch(name){
+async function aiSearch(name,signal){
   try{
     const p=`You are a comprehensive sake database. Search for the Japanese sake brewery "${name}".
 
@@ -706,7 +732,7 @@ Return ONLY valid JSON:
 }
 
 CRITICAL: Find as MANY products as possible from ALL international sources. Include every variation, seasonal release, limited edition, collaboration, and export-only product. The product_count must reflect the TOTAL number of unique products found across all sources.`;
-    const r=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json','x-api-key':state.apiKey,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:8000,messages:[{role:'user',content:p}]})});
+    const r=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',signal,headers:{'Content-Type':'application/json','x-api-key':state.apiKey,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:8000,messages:[{role:'user',content:p}]})});
     if(!r.ok)return null;
     const d=await r.json();
     const txt=d.content[0].text;
@@ -717,7 +743,7 @@ CRITICAL: Find as MANY products as possible from ALL international sources. Incl
     if(parsed.products?.length && !parsed.product_count) parsed.product_count=parsed.products.length;
     if(parsed.product_count < parsed.products?.length) parsed.product_count=parsed.products.length;
     return parsed;
-  }catch(e){return null;}
+  }catch(e){if(e.name==='AbortError')throw e;return null;}
 }
 
 // ==================== REGISTER ====================
