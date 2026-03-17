@@ -291,6 +291,82 @@ body { font-family:var(--font); background:var(--bg); color:var(--text); min-hei
 }
 .bc-retry:hover { color:var(--text); }
 
+/* ===== SETTINGS MODAL ===== */
+.settings-btn {
+  background:none; border:1px solid var(--border); color:var(--text3);
+  width:32px; height:32px; border-radius:8px; cursor:pointer;
+  display:flex; align-items:center; justify-content:center;
+  transition:var(--transition); flex-shrink:0;
+}
+.settings-btn:hover { color:var(--text); border-color:var(--border2); background:var(--bg2); }
+.settings-btn svg { width:16px; height:16px; }
+.settings-overlay {
+  position:fixed; inset:0; z-index:200; background:rgba(0,0,0,0.3);
+  backdrop-filter:blur(4px); display:none; align-items:center; justify-content:center;
+  animation:fadeIn 0.2s ease;
+}
+.settings-overlay.active { display:flex; }
+@keyframes fadeIn { from{opacity:0} to{opacity:1} }
+.settings-modal {
+  background:var(--surface); border:1px solid var(--border);
+  border-radius:var(--radius-lg); box-shadow:var(--shadow-lg);
+  width:100%; max-width:440px; margin:24px;
+  animation:slideUp 0.3s cubic-bezier(0.16,1,0.3,1);
+}
+.settings-header {
+  display:flex; align-items:center; justify-content:space-between;
+  padding:20px 24px; border-bottom:1px solid var(--border);
+}
+.settings-title { font-size:15px; font-weight:600; letter-spacing:-0.2px; }
+.settings-close {
+  background:none; border:none; color:var(--text3); cursor:pointer;
+  width:28px; height:28px; border-radius:6px; display:flex;
+  align-items:center; justify-content:center; transition:var(--transition);
+  font-size:18px;
+}
+.settings-close:hover { color:var(--text); background:var(--bg2); }
+.settings-body { padding:24px; }
+.settings-field { margin-bottom:20px; }
+.settings-field:last-child { margin-bottom:0; }
+.settings-label {
+  font-size:12px; font-weight:600; color:var(--text2);
+  text-transform:uppercase; letter-spacing:0.5px; margin-bottom:8px; display:block;
+}
+.settings-desc {
+  font-size:12px; color:var(--text3); line-height:1.6; margin-bottom:10px;
+}
+.settings-input-wrap { position:relative; }
+.settings-input {
+  width:100%; height:44px; background:var(--bg2);
+  border:1px solid var(--border); border-radius:var(--radius-sm);
+  padding:0 40px 0 14px; font:400 13px var(--font);
+  color:var(--text); outline:none; transition:var(--transition);
+}
+.settings-input::placeholder { color:var(--text3); }
+.settings-input:focus { border-color:var(--text3); background:var(--surface); box-shadow:0 0 0 3px var(--accent-glow); }
+.settings-toggle-vis {
+  position:absolute; right:8px; top:50%; transform:translateY(-50%);
+  background:none; border:none; color:var(--text3); cursor:pointer;
+  padding:4px; border-radius:4px; transition:var(--transition);
+}
+.settings-toggle-vis:hover { color:var(--text); }
+.settings-status {
+  display:flex; align-items:center; gap:6px; margin-top:10px;
+  font-size:12px; font-weight:500; padding:8px 12px;
+  border-radius:var(--radius-sm);
+}
+.settings-status.ok { background:var(--green-soft); color:var(--green); }
+.settings-status.empty { background:var(--orange-soft); color:var(--orange); }
+.settings-footer {
+  padding:16px 24px; border-top:1px solid var(--border);
+  display:flex; justify-content:flex-end; gap:8px;
+}
+.settings-link {
+  font-size:12px; color:var(--blue); text-decoration:none;
+  font-weight:500; transition:var(--transition);
+}
+.settings-link:hover { text-decoration:underline; }
+
 /* ===== CLAIM / REGISTER PAGE ===== */
 .claim-page { max-width:520px; margin:0 auto; padding:48px 24px 80px; }
 .claim-breadcrumb {
@@ -470,6 +546,9 @@ body { font-family:var(--font); background:var(--bg); color:var(--text); min-hei
       <button class="lang-btn" data-lang="en" onclick="switchLang('en')">EN</button>
       <button class="lang-btn" data-lang="ja" onclick="switchLang('ja')">JA</button>
     </div>
+    <button class="settings-btn" onclick="openSettings()" title="Settings">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+    </button>
     <div class="topbar-user" id="topbar-user">
       <span class="topbar-user-name" id="topbar-user-name"></span>
       <button class="topbar-user-btn" id="btn-logout" onclick="logout()"></button>
@@ -636,6 +715,16 @@ const I18N = {
     verified_owner:'✓ Owner Verificato', pending_verif:'⏳ Verifica in corso',
     logout:'Esci',
     founded_label:'Fondata', address_label:'Indirizzo', phone_label:'Telefono', prefecture_label:'Prefettura', country_label:'Paese',
+    settings_title:'Impostazioni',
+    settings_api_label:'API Key Anthropic',
+    settings_api_desc:'Inserisci la tua API key di Anthropic per attivare la ricerca AI avanzata con scoperta multi-risultato e verifica dei siti web.',
+    settings_api_placeholder:'sk-ant-api03-...',
+    settings_get_key:'Ottieni una API key su console.anthropic.com →',
+    settings_btn_cancel:'Annulla',
+    settings_btn_save:'Salva',
+    settings_status_ok:'✓ API key configurata — ricerca AI attiva',
+    settings_status_empty:'Nessuna API key — ricerca base attiva (Nominatim + Wikipedia)',
+    settings_saved:'API key salvata con successo!',
   },
   en: {
     hero_title:'酒蔵を探す', hero_sub:'FIND YOUR SAKAGURA',
@@ -701,6 +790,16 @@ const I18N = {
     verified_owner:'✓ Verified Owner', pending_verif:'⏳ Verification pending',
     logout:'Logout',
     founded_label:'Founded', address_label:'Address', phone_label:'Phone', prefecture_label:'Prefecture', country_label:'Country',
+    settings_title:'Settings',
+    settings_api_label:'Anthropic API Key',
+    settings_api_desc:'Enter your Anthropic API key to enable advanced AI search with multi-result discovery and website verification.',
+    settings_api_placeholder:'sk-ant-api03-...',
+    settings_get_key:'Get an API key at console.anthropic.com →',
+    settings_btn_cancel:'Cancel',
+    settings_btn_save:'Save',
+    settings_status_ok:'✓ API key configured — AI search active',
+    settings_status_empty:'No API key — basic search active (Nominatim + Wikipedia)',
+    settings_saved:'API key saved successfully!',
   },
   ja: {
     hero_title:'酒蔵を探す', hero_sub:'あなたの酒蔵を見つける',
@@ -766,6 +865,16 @@ const I18N = {
     verified_owner:'✓ 認証済み', pending_verif:'⏳ メール確認待ち',
     logout:'ログアウト',
     founded_label:'創業', address_label:'住所', phone_label:'電話', prefecture_label:'都道府県', country_label:'国',
+    settings_title:'設定',
+    settings_api_label:'Anthropic APIキー',
+    settings_api_desc:'Anthropic APIキーを入力して、高度なAI検索（マルチ結果発見・ウェブサイト検証）を有効にします。',
+    settings_api_placeholder:'sk-ant-api03-...',
+    settings_get_key:'console.anthropic.comでAPIキーを取得 →',
+    settings_btn_cancel:'キャンセル',
+    settings_btn_save:'保存',
+    settings_status_ok:'✓ APIキー設定済み — AI検索アクティブ',
+    settings_status_empty:'APIキーなし — 基本検索アクティブ（Nominatim + Wikipedia）',
+    settings_saved:'APIキーが正常に保存されました！',
   }
 };
 
@@ -1394,9 +1503,119 @@ function logout(){
   resetSearch();showPage('search');
 }
 
+// ==================== SETTINGS ====================
+function openSettings(){
+  const overlay=document.getElementById('settings-overlay');
+  const inp=document.getElementById('settings-api-input');
+  inp.value=state.apiKey||'';
+  inp.type='password';
+  updateSettingsLang();
+  updateApiStatus();
+  overlay.classList.add('active');
+  setTimeout(()=>inp.focus(),100);
+}
+function closeSettings(){
+  document.getElementById('settings-overlay').classList.remove('active');
+}
+function toggleApiVis(){
+  const inp=document.getElementById('settings-api-input');
+  inp.type=inp.type==='password'?'text':'password';
+}
+function onApiKeyInput(){
+  updateApiStatus();
+}
+function updateApiStatus(){
+  const inp=document.getElementById('settings-api-input');
+  const st=document.getElementById('settings-api-status');
+  if(inp.value.trim()){
+    st.className='settings-status ok';
+    st.textContent=t('settings_status_ok');
+  } else {
+    st.className='settings-status empty';
+    st.textContent=t('settings_status_empty');
+  }
+}
+function saveApiKey(){
+  const val=document.getElementById('settings-api-input').value.trim();
+  state.apiKey=val;
+  if(val){
+    localStorage.setItem('sp_api_key',val);
+  } else {
+    localStorage.removeItem('sp_api_key');
+  }
+  closeSettings();
+  // Brief toast notification
+  showToast(t('settings_saved'));
+}
+function showToast(msg){
+  let toast=document.getElementById('sp-toast');
+  if(!toast){
+    toast=document.createElement('div');
+    toast.id='sp-toast';
+    toast.style.cssText='position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--text);color:#fff;padding:10px 20px;border-radius:8px;font:500 13px var(--font);opacity:0;transition:all 0.3s ease;z-index:300;pointer-events:none;';
+    document.body.appendChild(toast);
+  }
+  toast.textContent=msg;
+  requestAnimationFrame(()=>{
+    toast.style.opacity='1';
+    toast.style.transform='translateX(-50%) translateY(0)';
+    setTimeout(()=>{
+      toast.style.opacity='0';
+      toast.style.transform='translateX(-50%) translateY(20px)';
+    },2500);
+  });
+}
+function updateSettingsLang(){
+  const el=id=>document.getElementById(id);
+  el('settings-title').textContent=t('settings_title');
+  el('settings-api-label').textContent=t('settings_api_label');
+  el('settings-api-desc').textContent=t('settings_api_desc');
+  el('settings-api-input').placeholder=t('settings_api_placeholder');
+  el('settings-get-key').textContent=t('settings_get_key');
+  el('settings-btn-cancel').textContent=t('settings_btn_cancel');
+  el('settings-btn-save').textContent=t('settings_btn_save');
+  updateApiStatus();
+}
+
 applyLang();
 if(state.user&&state.brewery)enterDashboard();
 else showPage('search');
 </script>
+
+<!-- SETTINGS MODAL -->
+<div class="settings-overlay" id="settings-overlay" onclick="if(event.target===this)closeSettings()">
+  <div class="settings-modal">
+    <div class="settings-header">
+      <span class="settings-title" id="settings-title">Impostazioni</span>
+      <button class="settings-close" onclick="closeSettings()">&times;</button>
+    </div>
+    <div class="settings-body">
+      <div class="settings-field">
+        <label class="settings-label" id="settings-api-label">API Key</label>
+        <div class="settings-desc" id="settings-api-desc">
+          Inserisci la tua API key di Anthropic per attivare la ricerca AI avanzata.
+        </div>
+        <div class="settings-input-wrap">
+          <input type="password" class="settings-input" id="settings-api-input"
+            placeholder="sk-ant-api03-..."
+            oninput="onApiKeyInput()">
+          <button class="settings-toggle-vis" onclick="toggleApiVis()" title="Show/Hide">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+          </button>
+        </div>
+        <div class="settings-status" id="settings-api-status"></div>
+      </div>
+      <div class="settings-field" style="display:flex;align-items:center;justify-content:space-between">
+        <a class="settings-link" href="https://console.anthropic.com/settings/keys" target="_blank" rel="noopener" id="settings-get-key">
+          Ottieni una API key su console.anthropic.com →
+        </a>
+      </div>
+    </div>
+    <div class="settings-footer">
+      <button class="btn btn-outline" onclick="closeSettings()" id="settings-btn-cancel">Annulla</button>
+      <button class="btn btn-primary" onclick="saveApiKey()" id="settings-btn-save">Salva</button>
+    </div>
+  </div>
+</div>
 </body>
 </html>
