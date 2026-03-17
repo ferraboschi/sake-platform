@@ -5,201 +5,427 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Sake Platform — 蔵元のためのプラットフォーム</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+JP:wght@300;400;500;600;700&family=Noto+Serif+JP:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Noto+Sans+JP:wght@300;400;500;600;700;800&family=Noto+Serif+JP:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root {
-  --bg: #f5f0e8; --bg2: #ebe5d8; --bg3: #e0d9cc;
-  --surface: #ffffff; --surface2: #faf7f2;
-  --border: #d5cec0; --border2: #c0b8a8;
-  --text: #1a2a44; --text2: #4a5568; --text3: #8a8070;
-  --accent: #3a6ea5; --accent2: #2d5a8a; --accent-glow: rgba(58,110,165,0.12);
-  --gold: #c8a45e; --green: #34a853; --green2: rgba(52,168,83,0.1);
-  --navy: #1a2a44; --orange: #e67e22; --orange2: rgba(230,126,34,0.1);
-  --radius: 12px; --radius-sm: 8px; --radius-lg: 20px;
-  --font: 'Inter','Noto Sans JP',sans-serif; --font-serif: 'Noto Serif JP',serif;
-  --shadow: 0 4px 24px rgba(26,42,68,0.08); --shadow-lg: 0 8px 48px rgba(26,42,68,0.12);
-  --transition: 0.3s cubic-bezier(0.4,0,0.2,1);
+  --bg: #fafafa;
+  --bg2: #f4f4f5;
+  --bg3: #e4e4e7;
+  --surface: #ffffff;
+  --surface2: #f9f9fa;
+  --border: #e4e4e7;
+  --border2: #d4d4d8;
+  --text: #09090b;
+  --text2: #3f3f46;
+  --text3: #a1a1aa;
+  --accent: #18181b;
+  --accent-hover: #27272a;
+  --accent-glow: rgba(24,24,27,0.04);
+  --gold: #b8860b;
+  --gold-soft: rgba(184,134,11,0.08);
+  --green: #16a34a;
+  --green-soft: rgba(22,163,74,0.06);
+  --orange: #ea580c;
+  --orange-soft: rgba(234,88,12,0.06);
+  --radius: 12px;
+  --radius-sm: 8px;
+  --radius-lg: 16px;
+  --font: 'Inter', 'Noto Sans JP', -apple-system, sans-serif;
+  --font-serif: 'Noto Serif JP', serif;
+  --shadow-sm: 0 1px 2px rgba(0,0,0,0.04);
+  --shadow: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+  --shadow-lg: 0 4px 16px rgba(0,0,0,0.06);
+  --transition: 0.2s ease;
 }
-* { margin:0; padding:0; box-sizing:border-box; }
-body { font-family:var(--font); background:var(--bg); color:var(--text); min-height:100vh; -webkit-font-smoothing:antialiased; }
 
-/* TOPBAR */
-.topbar { position:fixed; top:0; left:0; right:0; z-index:100; height:56px; display:flex; align-items:center; justify-content:space-between; padding:0 20px; background:rgba(26,42,68,0.97); backdrop-filter:blur(20px); border-bottom:1px solid rgba(255,255,255,0.08); }
-.topbar-left { display:flex; align-items:center; gap:24px; }
-.topbar-logo { font-family:var(--font-serif); font-size:17px; font-weight:600; color:#fff; letter-spacing:0.5px; display:flex; align-items:center; gap:8px; cursor:pointer; white-space:nowrap; }
-.topbar-logo .logo-mark { color:var(--gold); font-size:13px; font-weight:500; letter-spacing:1px; }
-.topbar-nav { display:flex; gap:4px; }
-.topbar-nav a { color:rgba(255,255,255,0.45); font:500 12px var(--font); padding:6px 12px; border-radius:6px; cursor:pointer; transition:var(--transition); text-decoration:none; letter-spacing:0.3px; }
-.topbar-nav a:hover { color:rgba(255,255,255,0.8); background:rgba(255,255,255,0.06); }
-.topbar-nav a.active { color:#fff; background:rgba(255,255,255,0.1); }
-.topbar-right { display:flex; align-items:center; gap:6px; }
-.lang-switcher { display:flex; gap:1px; background:rgba(255,255,255,0.08); border-radius:8px; padding:2px; border:1px solid rgba(255,255,255,0.1); }
-.lang-btn { background:none; border:none; color:rgba(255,255,255,0.4); font:600 10px var(--font); padding:5px 10px; border-radius:6px; cursor:pointer; transition:var(--transition); letter-spacing:0.5px; }
-.lang-btn:hover { color:rgba(255,255,255,0.7); }
-.lang-btn.active { background:var(--gold); color:var(--navy); }
-.topbar-user { display:none; align-items:center; gap:8px; margin-left:8px; padding-left:12px; border-left:1px solid rgba(255,255,255,0.1); }
-.topbar-user-name { color:rgba(255,255,255,0.6); font:500 12px var(--font); }
-.topbar-user-btn { background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.12); color:rgba(255,255,255,0.5); cursor:pointer; font:500 11px var(--font); padding:5px 12px; border-radius:6px; transition:var(--transition); }
-.topbar-user-btn:hover { color:#fff; border-color:rgba(255,255,255,0.3); }
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family:var(--font); background:var(--bg); color:var(--text); min-height:100vh; -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale; }
+
+/* ===== TOPBAR ===== */
+.topbar {
+  position:fixed; top:0; left:0; right:0; z-index:100;
+  height:56px; display:flex; align-items:center; justify-content:space-between;
+  padding:0 24px;
+  background:rgba(255,255,255,0.82); backdrop-filter:blur(16px) saturate(180%);
+  border-bottom:1px solid var(--border);
+}
+.topbar-left { display:flex; align-items:center; gap:32px; }
+.topbar-logo {
+  font-family:var(--font); font-size:15px; font-weight:700; color:var(--text);
+  letter-spacing:-0.3px; display:flex; align-items:center; gap:8px;
+  cursor:pointer; white-space:nowrap; user-select:none;
+}
+.topbar-logo .logo-mark {
+  font-size:15px; font-weight:700; color:var(--text);
+  letter-spacing:-0.3px;
+}
+.topbar-logo .logo-jp {
+  font-family:var(--font-serif); font-size:14px; font-weight:500;
+  color:var(--text3); margin-left:4px;
+}
+.topbar-nav { display:flex; gap:2px; }
+.topbar-nav a {
+  color:var(--text3); font:500 13px var(--font);
+  padding:6px 12px; border-radius:6px; cursor:pointer;
+  transition:var(--transition); text-decoration:none; letter-spacing:-0.1px;
+}
+.topbar-nav a:hover { color:var(--text2); background:var(--bg2); }
+.topbar-nav a.active { color:var(--text); background:var(--bg2); }
+.topbar-right { display:flex; align-items:center; gap:8px; }
+.lang-switcher {
+  display:flex; gap:1px; background:var(--bg2);
+  border-radius:8px; padding:2px; border:1px solid var(--border);
+}
+.lang-btn {
+  background:none; border:none; color:var(--text3);
+  font:600 10px var(--font); padding:5px 10px; border-radius:6px;
+  cursor:pointer; transition:var(--transition); letter-spacing:0.5px;
+}
+.lang-btn:hover { color:var(--text2); }
+.lang-btn.active { background:var(--text); color:#fff; }
+.topbar-user {
+  display:none; align-items:center; gap:8px;
+  margin-left:8px; padding-left:12px; border-left:1px solid var(--border);
+}
+.topbar-user-name { color:var(--text2); font:500 13px var(--font); }
+.topbar-user-btn {
+  background:var(--bg2); border:1px solid var(--border); color:var(--text3);
+  cursor:pointer; font:500 12px var(--font); padding:5px 12px;
+  border-radius:6px; transition:var(--transition);
+}
+.topbar-user-btn:hover { color:var(--text); border-color:var(--border2); }
 
 .screen { display:none; min-height:100vh; padding-top:56px; }
 .screen.active { display:block; }
 
-.btn { display:inline-flex; align-items:center; justify-content:center; gap:6px; padding:10px 20px; border:none; border-radius:var(--radius-sm); font:500 13px var(--font); cursor:pointer; transition:var(--transition); text-decoration:none; }
-.btn-primary { background:var(--accent); color:#fff; }
-.btn-primary:hover { background:var(--accent2); }
-.btn-lg { padding:14px 32px; font-size:15px; border-radius:12px; }
+/* ===== BUTTONS ===== */
+.btn {
+  display:inline-flex; align-items:center; justify-content:center; gap:8px;
+  padding:10px 20px; border:none; border-radius:var(--radius-sm);
+  font:500 14px var(--font); cursor:pointer; transition:var(--transition);
+  text-decoration:none; letter-spacing:-0.1px;
+}
+.btn-primary { background:var(--text); color:#fff; }
+.btn-primary:hover { background:var(--accent-hover); }
+.btn-lg { padding:14px 32px; font-size:15px; border-radius:var(--radius); }
 .btn-full { width:100%; }
-.btn-gold { background:var(--gold); color:#fff; }
-.btn-gold:hover { background:#b8944e; }
+.btn-gold { background:var(--text); color:#fff; }
+.btn-gold:hover { background:var(--accent-hover); }
+.btn-outline {
+  background:transparent; color:var(--text); border:1px solid var(--border2);
+}
+.btn-outline:hover { background:var(--bg2); border-color:var(--text3); }
 
-/* SEARCH PAGE */
-.hero { display:flex; flex-direction:column; align-items:center; justify-content:flex-start; min-height:calc(100vh - 56px); padding:100px 24px 60px; transition:padding 0.4s ease; }
+/* ===== SEARCH / HERO ===== */
+.hero {
+  display:flex; flex-direction:column; align-items:center; justify-content:flex-start;
+  min-height:calc(100vh - 56px); padding:140px 24px 60px;
+  transition:padding 0.5s cubic-bezier(0.16,1,0.3,1);
+}
 .hero.has-results { padding-top:48px; }
-.hero-kanji { font-family:var(--font-serif); font-size:52px; font-weight:700; color:var(--navy); letter-spacing:6px; margin-bottom:10px; transition:all 0.4s ease; }
-.hero.has-results .hero-kanji { font-size:28px; letter-spacing:3px; margin-bottom:6px; }
-.hero-sub { font-size:13px; color:var(--text3); letter-spacing:2px; margin-bottom:44px; transition:all 0.4s ease; }
+.hero-kanji {
+  font-family:var(--font-serif); font-size:56px; font-weight:700;
+  color:var(--text); letter-spacing:4px; margin-bottom:12px;
+  transition:all 0.5s cubic-bezier(0.16,1,0.3,1);
+}
+.hero.has-results .hero-kanji { font-size:28px; letter-spacing:2px; margin-bottom:6px; }
+.hero-sub {
+  font-size:13px; font-weight:500; color:var(--text3);
+  letter-spacing:3px; text-transform:uppercase; margin-bottom:56px;
+  transition:all 0.5s cubic-bezier(0.16,1,0.3,1);
+}
 .hero.has-results .hero-sub { font-size:11px; margin-bottom:20px; }
-.search-box { position:relative; width:100%; max-width:520px; }
-.search-box input { width:100%; height:58px; background:var(--surface); border:1px solid var(--border); border-radius:16px; padding:0 58px 0 22px; font:400 16px var(--font); color:var(--text); outline:none; transition:var(--transition); }
-.search-box input:focus { border-color:var(--accent); box-shadow:0 0 0 3px var(--accent-glow); }
-.search-go { position:absolute; right:7px; top:50%; transform:translateY(-50%); width:44px; height:44px; border-radius:12px; background:var(--accent); border:none; color:#fff; font-size:18px; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:var(--transition); }
-.search-go:hover { background:var(--accent2); }
-.search-go:disabled { opacity:0.4; cursor:not-allowed; }
-.search-hint { margin-top:18px; font-size:12px; color:var(--text3); max-width:520px; text-align:center; line-height:1.6; }
+
+.search-box { position:relative; width:100%; max-width:480px; }
+.search-box input {
+  width:100%; height:56px; background:var(--surface);
+  border:1px solid var(--border); border-radius:var(--radius);
+  padding:0 56px 0 20px; font:400 16px var(--font);
+  color:var(--text); outline:none; transition:var(--transition);
+  box-shadow:var(--shadow-sm);
+}
+.search-box input::placeholder { color:var(--text3); }
+.search-box input:focus {
+  border-color:var(--text3); box-shadow:0 0 0 3px var(--accent-glow), var(--shadow);
+}
+.search-go {
+  position:absolute; right:8px; top:50%; transform:translateY(-50%);
+  width:40px; height:40px; border-radius:var(--radius-sm);
+  background:var(--text); border:none; color:#fff; font-size:16px;
+  cursor:pointer; display:flex; align-items:center; justify-content:center;
+  transition:var(--transition);
+}
+.search-go:hover { background:var(--accent-hover); }
+.search-go:disabled { opacity:0.3; cursor:not-allowed; }
+
+.search-hint {
+  margin-top:24px; font-size:13px; color:var(--text3);
+  max-width:480px; text-align:center; line-height:1.7; letter-spacing:-0.1px;
+}
 .search-hint strong { color:var(--text2); font-weight:500; }
 
-/* PROGRESS TIMELINE */
-.inline-result { width:100%; max-width:580px; margin-top:24px; }
-.progress-timeline { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:20px 22px; }
-.pt-step { display:flex; align-items:flex-start; gap:12px; padding:8px 0; position:relative; }
+/* ===== PROGRESS TIMELINE ===== */
+.inline-result { width:100%; max-width:520px; margin-top:28px; }
+.progress-timeline {
+  background:var(--surface); border:1px solid var(--border);
+  border-radius:var(--radius); padding:20px 24px;
+  box-shadow:var(--shadow-sm);
+}
+.pt-step { display:flex; align-items:flex-start; gap:14px; padding:8px 0; position:relative; }
 .pt-step:not(:last-child) { padding-bottom:14px; }
-.pt-step:not(:last-child)::after { content:''; position:absolute; left:11px; top:28px; bottom:0; width:1.5px; background:var(--bg3); }
+.pt-step:not(:last-child)::after {
+  content:''; position:absolute; left:11px; top:30px; bottom:0;
+  width:1.5px; background:var(--bg3);
+}
 .pt-step.done:not(:last-child)::after { background:var(--green); }
-.pt-step.active:not(:last-child)::after { background:linear-gradient(var(--accent),var(--bg3)); }
-.pt-icon { width:24px; height:24px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:11px; flex-shrink:0; transition:var(--transition); border:2px solid var(--bg3); color:var(--text3); background:var(--surface); }
-.pt-step.active .pt-icon { border-color:var(--accent); color:var(--accent); background:var(--accent-glow); animation:pulse 1.5s ease infinite; }
-.pt-step.done .pt-icon { border-color:var(--green); color:#fff; background:var(--green); font-size:10px; }
-.pt-step.waiting .pt-icon { border-color:var(--bg3); color:var(--text3); }
-@keyframes pulse { 0%,100%{box-shadow:0 0 0 0 rgba(58,110,165,0.2)} 50%{box-shadow:0 0 0 6px rgba(58,110,165,0)} }
-.pt-label { font-size:13px; font-weight:500; color:var(--text2); }
-.pt-step.active .pt-label { color:var(--accent); }
+.pt-step.active:not(:last-child)::after { background:linear-gradient(var(--text3),var(--bg3)); }
+.pt-icon {
+  width:24px; height:24px; border-radius:50%;
+  display:flex; align-items:center; justify-content:center;
+  font-size:11px; flex-shrink:0; transition:var(--transition);
+  border:1.5px solid var(--bg3); color:var(--text3); background:var(--surface);
+}
+.pt-step.active .pt-icon {
+  border-color:var(--text); color:var(--text); background:var(--accent-glow);
+  animation:pulse 1.8s ease infinite;
+}
+.pt-step.done .pt-icon {
+  border-color:var(--green); color:#fff; background:var(--green); font-size:10px;
+}
+@keyframes pulse {
+  0%,100%{box-shadow:0 0 0 0 rgba(24,24,27,0.12)}
+  50%{box-shadow:0 0 0 6px rgba(24,24,27,0)}
+}
+.pt-label { font-size:13px; font-weight:500; color:var(--text2); letter-spacing:-0.1px; }
+.pt-step.active .pt-label { color:var(--text); }
 .pt-step.done .pt-label { color:var(--green); }
-.pt-detail { font-size:11px; color:var(--text3); margin-top:2px; }
+.pt-detail { font-size:12px; color:var(--text3); margin-top:2px; }
 .pt-step.done .pt-detail { color:var(--green); }
 
-/* BREWERY CARD */
-.brewery-card { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-lg); box-shadow:var(--shadow-lg); animation:slideUp 0.5s ease; overflow:hidden; }
-@keyframes slideUp { from{opacity:0;transform:translateY(16px)} to{opacity:1;transform:translateY(0)} }
-.bc-header { display:flex; align-items:center; gap:16px; padding:24px 24px 0; }
-.bc-logo { width:56px; height:56px; border-radius:14px; background:var(--bg2); border:1px solid var(--border); display:flex; align-items:center; justify-content:center; overflow:hidden; flex-shrink:0; }
+/* ===== BREWERY CARD ===== */
+.brewery-card {
+  background:var(--surface); border:1px solid var(--border);
+  border-radius:var(--radius-lg); box-shadow:var(--shadow);
+  animation:slideUp 0.4s cubic-bezier(0.16,1,0.3,1); overflow:hidden;
+}
+@keyframes slideUp {
+  from{opacity:0;transform:translateY(12px)} to{opacity:1;transform:translateY(0)}
+}
+.bc-header { display:flex; align-items:center; gap:16px; padding:28px 28px 0; }
+.bc-logo {
+  width:52px; height:52px; border-radius:var(--radius);
+  background:var(--bg2); border:1px solid var(--border);
+  display:flex; align-items:center; justify-content:center;
+  overflow:hidden; flex-shrink:0;
+}
 .bc-logo img { width:100%; height:100%; object-fit:contain; }
-.bc-logo-fallback { font-size:28px; }
+.bc-logo-fallback { font-size:26px; }
 .bc-title { flex:1; }
-.bc-name-jp { font-family:var(--font-serif); font-size:22px; font-weight:600; line-height:1.3; }
-.bc-name-en { font-size:12px; color:var(--text3); margin-top:2px; }
-.bc-body { padding:20px 24px; }
-.bc-website { display:inline-flex; align-items:center; gap:6px; padding:6px 14px; background:var(--accent-glow); border:1px solid rgba(58,110,165,0.15); border-radius:20px; font-size:13px; font-weight:500; color:var(--accent); margin-bottom:16px; text-decoration:none; }
-.bc-website:hover { background:rgba(58,110,165,0.18); }
-.bc-info-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:16px; }
+.bc-name-jp {
+  font-family:var(--font-serif); font-size:22px; font-weight:600;
+  line-height:1.3; letter-spacing:-0.3px;
+}
+.bc-name-en { font-size:13px; color:var(--text3); margin-top:2px; font-weight:400; }
+.bc-body { padding:20px 28px; }
+.bc-website {
+  display:inline-flex; align-items:center; gap:6px;
+  padding:6px 14px; background:var(--bg2); border:1px solid var(--border);
+  border-radius:20px; font-size:13px; font-weight:500;
+  color:var(--text2); margin-bottom:16px; text-decoration:none;
+  transition:var(--transition);
+}
+.bc-website:hover { background:var(--bg3); color:var(--text); }
+.bc-info-grid { display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-bottom:18px; }
 .bc-info-item { display:flex; align-items:flex-start; gap:8px; }
-.bc-info-label { font-size:10px; color:var(--text3); text-transform:uppercase; letter-spacing:0.5px; font-weight:600; }
-.bc-info-value { font-size:12px; color:var(--text); margin-top:1px; }
-.bc-history { font-size:13px; color:var(--text2); line-height:1.7; margin-bottom:16px; padding:14px 16px; background:var(--surface2); border-radius:var(--radius-sm); border-left:3px solid var(--gold); }
-.bc-products-badge { display:flex; align-items:center; gap:10px; padding:14px 18px; background:linear-gradient(135deg, var(--green2), rgba(52,168,83,0.05)); border:1px solid rgba(52,168,83,0.2); border-radius:var(--radius); margin-bottom:4px; }
-.bc-products-number { font-size:28px; font-weight:700; color:var(--green); }
-.bc-products-label { font-size:13px; color:var(--green); font-weight:500; line-height:1.3; }
+.bc-info-label {
+  font-size:10px; color:var(--text3); text-transform:uppercase;
+  letter-spacing:0.5px; font-weight:600;
+}
+.bc-info-value { font-size:13px; color:var(--text); margin-top:1px; }
+.bc-history {
+  font-size:13px; color:var(--text2); line-height:1.8; margin-bottom:18px;
+  padding:16px 18px; background:var(--surface2); border-radius:var(--radius-sm);
+  border-left:2px solid var(--gold);
+}
+.bc-products-badge {
+  display:flex; align-items:center; gap:12px;
+  padding:16px 20px; background:var(--green-soft);
+  border:1px solid rgba(22,163,74,0.12); border-radius:var(--radius); margin-bottom:4px;
+}
+.bc-products-number { font-size:28px; font-weight:800; color:var(--green); letter-spacing:-1px; }
+.bc-products-label { font-size:13px; color:var(--green); font-weight:600; line-height:1.3; }
 .bc-products-sublabel { font-size:11px; color:var(--text3); font-weight:400; }
 .bc-map { border-top:1px solid var(--border); }
-.bc-sources { padding:10px 24px; background:var(--surface2); border-top:1px solid var(--border); font-size:10px; color:var(--text3); display:flex; align-items:center; gap:6px; flex-wrap:wrap; }
-.bc-source-tag { padding:2px 8px; background:var(--bg); border-radius:10px; }
-.bc-cta { padding:20px 24px; border-top:1px solid var(--border); text-align:center; }
-.bc-cta-text { font-size:14px; color:var(--text2); margin-bottom:14px; }
-.bc-cta-actions { display:flex; gap:10px; justify-content:center; align-items:center; }
-.bc-retry { font-size:12px; color:var(--text3); background:none; border:none; cursor:pointer; padding:8px 14px; }
-.bc-retry:hover { color:var(--accent); }
+.bc-sources {
+  padding:12px 28px; background:var(--surface2); border-top:1px solid var(--border);
+  font-size:10px; color:var(--text3); display:flex; align-items:center; gap:6px; flex-wrap:wrap;
+}
+.bc-source-tag { padding:2px 8px; background:var(--bg2); border-radius:10px; font-weight:500; }
+.bc-cta { padding:24px 28px; border-top:1px solid var(--border); text-align:center; }
+.bc-cta-text { font-size:15px; color:var(--text2); margin-bottom:16px; font-weight:500; }
+.bc-cta-actions { display:flex; gap:12px; justify-content:center; align-items:center; }
+.bc-retry {
+  font-size:13px; color:var(--text3); background:none; border:none;
+  cursor:pointer; padding:8px 14px; transition:var(--transition);
+}
+.bc-retry:hover { color:var(--text); }
 
-/* CLAIM / REGISTER PAGE */
-.claim-page { max-width:560px; margin:0 auto; padding:32px 24px 60px; }
-.claim-breadcrumb { display:flex; align-items:center; gap:8px; font-size:12px; color:var(--text3); margin-bottom:24px; }
-.claim-breadcrumb a { color:var(--accent); cursor:pointer; text-decoration:none; }
-.claim-breadcrumb a:hover { text-decoration:underline; }
+/* ===== CLAIM / REGISTER PAGE ===== */
+.claim-page { max-width:520px; margin:0 auto; padding:48px 24px 80px; }
+.claim-breadcrumb {
+  display:flex; align-items:center; gap:8px; font-size:12px;
+  color:var(--text3); margin-bottom:32px;
+}
+.claim-breadcrumb a { color:var(--text2); cursor:pointer; text-decoration:none; font-weight:500; }
+.claim-breadcrumb a:hover { color:var(--text); }
 .claim-breadcrumb .sep { color:var(--border2); }
 
-.claim-brewery { display:flex; align-items:center; gap:12px; padding:14px 18px; background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); margin-bottom:24px; }
-.claim-brewery-logo { width:36px; height:36px; border-radius:8px; background:var(--bg2); border:1px solid var(--border); display:flex; align-items:center; justify-content:center; overflow:hidden; flex-shrink:0; }
+.claim-brewery {
+  display:flex; align-items:center; gap:14px;
+  padding:16px 20px; background:var(--surface); border:1px solid var(--border);
+  border-radius:var(--radius); margin-bottom:28px; box-shadow:var(--shadow-sm);
+}
+.claim-brewery-logo {
+  width:40px; height:40px; border-radius:var(--radius-sm);
+  background:var(--bg2); border:1px solid var(--border);
+  display:flex; align-items:center; justify-content:center;
+  overflow:hidden; flex-shrink:0;
+}
 .claim-brewery-logo img { width:100%; height:100%; object-fit:contain; }
-.claim-brewery-name { font-family:var(--font-serif); font-size:16px; font-weight:600; }
-.claim-brewery-site { font-size:11px; color:var(--text3); }
+.claim-brewery-name { font-family:var(--font-serif); font-size:17px; font-weight:600; }
+.claim-brewery-site { font-size:12px; color:var(--text3); margin-top:1px; }
 
-.claim-section { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:24px; margin-bottom:16px; }
-.claim-section-title { font-size:15px; font-weight:600; margin-bottom:6px; }
-.claim-section-desc { font-size:13px; color:var(--text3); line-height:1.6; margin-bottom:20px; }
+.claim-section {
+  background:var(--surface); border:1px solid var(--border);
+  border-radius:var(--radius); padding:28px; margin-bottom:16px;
+  box-shadow:var(--shadow-sm);
+}
+.claim-section-title { font-size:16px; font-weight:600; margin-bottom:8px; letter-spacing:-0.2px; }
+.claim-section-desc { font-size:14px; color:var(--text3); line-height:1.7; margin-bottom:24px; }
 
 /* Verification methods */
-.verif-methods { display:flex; flex-direction:column; gap:10px; margin-bottom:20px; }
-.verif-method { display:flex; align-items:flex-start; gap:12px; padding:14px 16px; background:var(--surface2); border:1px solid var(--bg2); border-radius:var(--radius-sm); transition:var(--transition); }
-.verif-method.recommended { border-color:var(--green); background:var(--green2); }
-.verif-method-icon { width:32px; height:32px; border-radius:8px; background:var(--bg); display:flex; align-items:center; justify-content:center; font-size:16px; flex-shrink:0; }
+.verif-methods { display:flex; flex-direction:column; gap:8px; margin-bottom:20px; }
+.verif-method {
+  display:flex; align-items:flex-start; gap:14px;
+  padding:16px 18px; background:var(--surface2); border:1px solid var(--border);
+  border-radius:var(--radius-sm); transition:var(--transition);
+}
+.verif-method.recommended { border-color:var(--green); background:var(--green-soft); }
+.verif-method-icon {
+  width:32px; height:32px; border-radius:var(--radius-sm);
+  background:var(--bg2); display:flex; align-items:center;
+  justify-content:center; font-size:16px; flex-shrink:0;
+}
 .verif-method.recommended .verif-method-icon { background:var(--green); color:#fff; font-size:14px; }
-.verif-method-title { font-size:13px; font-weight:600; }
-.verif-method-desc { font-size:11px; color:var(--text3); margin-top:2px; line-height:1.5; }
-.verif-method-badge { display:inline-flex; padding:2px 8px; border-radius:10px; font-size:10px; font-weight:600; margin-top:4px; }
-.verif-method-badge.auto { background:var(--green2); color:var(--green); }
-.verif-method-badge.manual { background:var(--orange2); color:var(--orange); }
+.verif-method-title { font-size:13px; font-weight:600; letter-spacing:-0.1px; }
+.verif-method-desc { font-size:12px; color:var(--text3); margin-top:3px; line-height:1.6; }
+.verif-method-badge {
+  display:inline-flex; padding:2px 8px; border-radius:10px;
+  font-size:10px; font-weight:600; margin-top:6px;
+}
+.verif-method-badge.auto { background:var(--green-soft); color:var(--green); }
+.verif-method-badge.manual { background:var(--orange-soft); color:var(--orange); }
 
 /* Form inside claim */
-.claim-form label { display:block; font-size:11px; font-weight:600; color:var(--text2); margin:14px 0 6px; text-transform:uppercase; letter-spacing:0.5px; }
+.claim-form label {
+  display:block; font-size:12px; font-weight:600; color:var(--text2);
+  margin:16px 0 6px; letter-spacing:-0.1px;
+}
 .claim-form label:first-child { margin-top:0; }
-.claim-form input { width:100%; height:44px; background:var(--surface2); border:1px solid var(--border); border-radius:var(--radius-sm); padding:0 14px; font:400 14px var(--font); color:var(--text); outline:none; transition:var(--transition); }
-.claim-form input:focus { border-color:var(--accent); }
-.domain-match-alert { margin-top:10px; padding:12px 16px; border-radius:var(--radius-sm); font-size:12px; line-height:1.5; display:none; }
-.domain-match-alert.match { background:var(--green2); border:1px solid rgba(52,168,83,0.2); color:var(--green); }
-.domain-match-alert.no-match { background:var(--orange2); border:1px solid rgba(230,126,34,0.2); color:var(--orange); }
+.claim-form input {
+  width:100%; height:44px; background:var(--surface);
+  border:1px solid var(--border); border-radius:var(--radius-sm);
+  padding:0 14px; font:400 14px var(--font); color:var(--text);
+  outline:none; transition:var(--transition);
+}
+.claim-form input:focus { border-color:var(--text3); box-shadow:0 0 0 3px var(--accent-glow); }
+.domain-match-alert {
+  margin-top:12px; padding:12px 16px; border-radius:var(--radius-sm);
+  font-size:13px; line-height:1.5; display:none; font-weight:500;
+}
+.domain-match-alert.match { background:var(--green-soft); border:1px solid rgba(22,163,74,0.15); color:var(--green); }
+.domain-match-alert.no-match { background:var(--orange-soft); border:1px solid rgba(234,88,12,0.15); color:var(--orange); }
 
 /* Email sent state */
-.email-sent-card { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:32px; text-align:center; display:none; }
-.email-sent-icon { font-size:48px; margin-bottom:12px; }
-.email-sent-title { font-size:18px; font-weight:600; margin-bottom:8px; }
-.email-sent-desc { font-size:13px; color:var(--text3); line-height:1.6; margin-bottom:20px; }
+.email-sent-card {
+  background:var(--surface); border:1px solid var(--border);
+  border-radius:var(--radius); padding:40px 32px; text-align:center;
+  display:none; box-shadow:var(--shadow-sm);
+}
+.email-sent-icon { font-size:48px; margin-bottom:16px; }
+.email-sent-title { font-size:20px; font-weight:700; margin-bottom:10px; letter-spacing:-0.3px; }
+.email-sent-desc { font-size:14px; color:var(--text3); line-height:1.7; margin-bottom:24px; }
 
-/* DASHBOARD */
-.dashboard { max-width:800px; margin:0 auto; padding:32px 24px 60px; }
-.dash-header { display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:16px; margin-bottom:32px; }
-.dash-brewery { font-family:var(--font-serif); font-size:24px; font-weight:600; display:flex; align-items:center; gap:8px; }
-.dash-verified-badge { display:inline-flex; align-items:center; gap:4px; padding:3px 10px; border-radius:20px; font-size:11px; font-weight:600; margin-top:4px; }
-.dash-verified-badge.verified { background:var(--green2); color:var(--green); }
-.dash-verified-badge.pending { background:#fff3cd; color:#856404; }
-.upload-section { background:var(--surface); border:2px dashed var(--border); border-radius:var(--radius-lg); padding:48px 32px; text-align:center; margin-bottom:32px; transition:var(--transition); cursor:pointer; }
-.upload-section:hover { border-color:var(--accent); background:var(--surface2); }
-.upload-section.dragover { border-color:var(--accent); background:var(--accent-glow); }
-.upload-icon { font-size:48px; margin-bottom:12px; }
-.upload-title { font-size:16px; font-weight:600; margin-bottom:6px; }
-.upload-desc { font-size:13px; color:var(--text3); margin-bottom:16px; line-height:1.6; }
-.upload-formats { font-size:11px; color:var(--text3); }
-.upload-formats strong { color:var(--text2); }
+/* ===== DASHBOARD ===== */
+.dashboard { max-width:720px; margin:0 auto; padding:48px 24px 80px; }
+.dash-header {
+  display:flex; align-items:center; justify-content:space-between;
+  flex-wrap:wrap; gap:16px; margin-bottom:36px;
+}
+.dash-brewery {
+  font-family:var(--font-serif); font-size:26px; font-weight:700;
+  display:flex; align-items:center; gap:10px; letter-spacing:-0.3px;
+}
+.dash-verified-badge {
+  display:inline-flex; align-items:center; gap:4px;
+  padding:4px 12px; border-radius:20px; font-size:12px; font-weight:600; margin-top:4px;
+}
+.dash-verified-badge.verified { background:var(--green-soft); color:var(--green); }
+.dash-verified-badge.pending { background:#fef3c7; color:#92400e; }
+.upload-section {
+  background:var(--surface); border:1.5px dashed var(--border2);
+  border-radius:var(--radius-lg); padding:56px 32px; text-align:center;
+  margin-bottom:32px; transition:var(--transition); cursor:pointer;
+}
+.upload-section:hover { border-color:var(--text3); background:var(--surface2); }
+.upload-section.dragover { border-color:var(--text); background:var(--accent-glow); }
+.upload-icon { font-size:40px; margin-bottom:16px; opacity:0.7; }
+.upload-title { font-size:17px; font-weight:600; margin-bottom:8px; letter-spacing:-0.2px; }
+.upload-desc { font-size:14px; color:var(--text3); margin-bottom:20px; line-height:1.7; }
+.upload-formats { font-size:12px; color:var(--text3); }
+.upload-formats strong { color:var(--text2); font-weight:500; }
 .uploaded-files { margin-bottom:32px; }
-.uploaded-file { display:flex; align-items:center; justify-content:space-between; background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-sm); padding:14px 18px; margin-bottom:8px; }
+.uploaded-file {
+  display:flex; align-items:center; justify-content:space-between;
+  background:var(--surface); border:1px solid var(--border);
+  border-radius:var(--radius-sm); padding:14px 18px; margin-bottom:8px;
+}
 .uf-info { display:flex; align-items:center; gap:12px; }
-.uf-icon { font-size:24px; }
+.uf-icon { font-size:22px; opacity:0.8; }
 .uf-name { font-size:13px; font-weight:500; }
-.uf-meta { font-size:11px; color:var(--text3); }
-.uf-status { padding:4px 10px; border-radius:12px; font-size:11px; font-weight:500; }
-.uf-status.processing { background:#fff3cd; color:#856404; }
-.uf-status.done { background:var(--green2); color:var(--green); }
+.uf-meta { font-size:12px; color:var(--text3); }
+.uf-status { padding:4px 10px; border-radius:12px; font-size:11px; font-weight:600; }
+.uf-status.processing { background:#fef3c7; color:#92400e; }
+.uf-status.done { background:var(--green-soft); color:var(--green); }
 
+/* ===== DEMO BUTTONS ===== */
+.demo-links { margin-top:20px; display:flex; gap:8px; flex-wrap:wrap; justify-content:center; }
+.demo-btn {
+  background:var(--surface); border:1px solid var(--border);
+  border-radius:20px; padding:6px 16px; font:500 12px var(--font);
+  color:var(--text2); cursor:pointer; transition:var(--transition);
+  letter-spacing:-0.1px;
+}
+.demo-btn:hover { border-color:var(--text3); color:var(--text); background:var(--bg2); }
+
+/* ===== RESPONSIVE ===== */
 @media(max-width:640px) {
   .topbar-nav { display:none; }
-  .hero-kanji { font-size:36px; }
+  .hero { padding:100px 20px 40px; }
+  .hero-kanji { font-size:40px; }
   .hero.has-results .hero-kanji { font-size:22px; }
   .search-box input { height:52px; font-size:15px; }
-  .bc-header { padding:20px 18px 0; }
-  .bc-body { padding:16px 18px; }
+  .search-box { max-width:100%; }
+  .inline-result { max-width:100%; }
+  .bc-header { padding:20px 20px 0; }
+  .bc-body { padding:18px 20px; }
   .bc-info-grid { grid-template-columns:1fr; }
-  .bc-cta { padding:16px 18px; }
+  .bc-cta { padding:20px; }
   .bc-cta-actions { flex-direction:column; }
-  .claim-page { padding:20px 16px 40px; }
+  .claim-page { padding:28px 16px 40px; }
+  .claim-section { padding:22px; }
   .topbar-user-name { display:none; }
+  .dashboard { padding:28px 16px 40px; }
 }
 </style>
 </head>
@@ -207,7 +433,10 @@ body { font-family:var(--font); background:var(--bg); color:var(--text); min-hei
 
 <div class="topbar">
   <div class="topbar-left">
-    <div class="topbar-logo" onclick="goHome()">酒蔵 <span class="logo-mark">PLATFORM</span></div>
+    <div class="topbar-logo" onclick="goHome()">
+      sake<span class="logo-mark">platform</span>
+      <span class="logo-jp">酒蔵</span>
+    </div>
     <nav class="topbar-nav" id="topbar-nav">
       <a class="active" id="nav-search" onclick="navTo('search')"></a>
       <a id="nav-register" onclick="navTo('register')" style="display:none"></a>
@@ -237,11 +466,11 @@ body { font-family:var(--font); background:var(--bg); color:var(--text); min-hei
       <button class="search-go" id="search-go-btn" onclick="clearTimeout(state.debounceTimer);startSearch()">→</button>
     </div>
     <div class="search-hint" id="search-hint"></div>
-    <div id="demo-links" style="margin-top:14px;display:flex;gap:8px;flex-wrap:wrap;justify-content:center">
-      <span style="font-size:11px;color:var(--text3)" id="demo-label"></span>
-      <button onclick="runDemo('kenbishi')" style="background:none;border:1px solid var(--border);border-radius:16px;padding:4px 12px;font:500 11px var(--font);color:var(--accent);cursor:pointer">剣菱 Kenbishi</button>
-      <button onclick="runDemo('dassai')" style="background:none;border:1px solid var(--border);border-radius:16px;padding:4px 12px;font:500 11px var(--font);color:var(--accent);cursor:pointer">獺祭 Dassai</button>
-      <button onclick="runDemo('tatenokawa')" style="background:none;border:1px solid var(--border);border-radius:16px;padding:4px 12px;font:500 11px var(--font);color:var(--accent);cursor:pointer">楯野川 Tatenokawa</button>
+    <div id="demo-links" class="demo-links">
+      <span style="font-size:12px;color:var(--text3);display:flex;align-items:center" id="demo-label"></span>
+      <button class="demo-btn" onclick="runDemo('kenbishi')">剣菱 Kenbishi</button>
+      <button class="demo-btn" onclick="runDemo('dassai')">獺祭 Dassai</button>
+      <button class="demo-btn" onclick="runDemo('tatenokawa')">楯野川 Tatenokawa</button>
     </div>
     <div class="inline-result" id="inline-result" style="display:none"></div>
   </div>
@@ -262,7 +491,6 @@ body { font-family:var(--font); background:var(--bg); color:var(--text); min-hei
     <div class="claim-section" id="claim-verification-section">
       <div class="claim-section-title" id="claim-title"></div>
       <div class="claim-section-desc" id="claim-desc"></div>
-
       <div class="verif-methods" id="verif-methods"></div>
     </div>
 
@@ -274,12 +502,12 @@ body { font-family:var(--font); background:var(--bg); color:var(--text); min-hei
         <input type="text" id="inp-name">
         <label id="lbl-email"></label>
         <input type="email" id="inp-email" oninput="checkDomainMatch()">
-        <div id="demo-email-hint" style="margin-top:6px;padding:8px 12px;background:var(--accent-glow);border-radius:var(--radius-sm);font-size:11px;color:var(--accent);display:none;cursor:pointer" onclick="fillDemoEmail()"></div>
+        <div id="demo-email-hint" style="margin-top:8px;padding:10px 14px;background:var(--accent-glow);border:1px solid var(--border);border-radius:var(--radius-sm);font-size:12px;color:var(--text2);display:none;cursor:pointer" onclick="fillDemoEmail()"></div>
         <div class="domain-match-alert match" id="domain-match"></div>
         <div class="domain-match-alert no-match" id="domain-no-match"></div>
         <label id="lbl-pass"></label>
         <input type="password" id="inp-pass">
-        <button class="btn btn-gold btn-lg btn-full" style="margin-top:24px" onclick="register()" id="btn-register"></button>
+        <button class="btn btn-primary btn-lg btn-full" style="margin-top:28px" onclick="register()" id="btn-register"></button>
       </div>
     </div>
 
@@ -328,7 +556,6 @@ const I18N = {
     hero_title:'酒蔵を探す', hero_sub:'TROVA LA TUA SAKAGURA',
     search_placeholder:'Nome della sakagura...',
     search_hint:'Inserisci il nome. Cercheremo nel web <strong>dominio, storia, dati aziendali e prodotti</strong> da fonti internazionali.',
-    // Progress steps
     ps_geo:'Ricerca posizione e dominio',
     ps_geo_detail:'Cerco sito web ufficiale...',
     ps_wiki:'Raccolta storia e dati aziendali',
@@ -341,7 +568,6 @@ const I18N = {
     ps_found_sources:'Raccolte {n} fonti',
     ps_found_products:'Trovati {n} prodotti',
     ps_done:'Scheda pronta',
-    // Result
     found_confirm:'È la tua sakagura?',
     btn_confirm:'Sì, registra e fai il claim →',
     btn_not_me:'Non è questa',
@@ -349,10 +575,9 @@ const I18N = {
     products_sublabel:'da sito ufficiale, importatori e database internazionali',
     not_found:'Nessun risultato. Prova con un altro nome o in giapponese.',
     demo_label:'Prova demo:',
-    demo_email_hint:'Per testare la verifica dominio, usa: test@{domain}',
+    demo_email_hint:'💡 Per testare la verifica dominio, usa: test@{domain}',
     nav_search:'Cerca', nav_register:'Claim', nav_dashboard:'Dashboard',
     bc_search:'Cerca', bc_claim:'Claim sakagura',
-    // Claim page
     claim_title:'Come dimostrare che è la tua sakagura',
     claim_desc:'Per proteggere le sakagura da claim non autorizzati, verifichiamo la tua identità. Il modo più veloce è usare un\'email con lo stesso dominio del sito ufficiale.',
     verif_email_title:'Email con dominio ufficiale',
@@ -367,7 +592,6 @@ const I18N = {
     verif_social_title:'Social media ufficiali',
     verif_social_desc:'Pubblica un codice di verifica dall\'account social ufficiale della sakagura.',
     verif_social_badge:'Verifica manuale',
-    // Form
     form_title:'Registrati e fai il claim',
     lbl_name:'Nome e cognome', lbl_email:'Email aziendale', lbl_pass:'Password',
     domain_match_yes:'✓ Dominio email verificato — riceverai il badge automaticamente!',
@@ -376,7 +600,6 @@ const I18N = {
     email_sent_title:'Controlla la tua email!',
     email_sent_desc:'Abbiamo inviato un link di conferma a {email}. Clicca il link per attivare il tuo account e completare il claim.',
     btn_enter:'Entra nella dashboard →',
-    // Dashboard
     upload_title:'Carica le tue schede tecniche',
     upload_desc:'Carica i documenti che hai oggi — PDF, Excel, Word, o foto.\nLi leggiamo e strutturiamo automaticamente.',
     upload_formats:'Formati: <strong>PDF, XLSX, CSV, DOCX, JPG, PNG</strong>',
@@ -408,7 +631,7 @@ const I18N = {
     products_sublabel:'from official site, importers and international databases',
     not_found:'No results found. Try a different name or in Japanese.',
     demo_label:'Try demo:',
-    demo_email_hint:'To test domain verification, use: test@{domain}',
+    demo_email_hint:'💡 To test domain verification, use: test@{domain}',
     nav_search:'Search', nav_register:'Claim', nav_dashboard:'Dashboard',
     bc_search:'Search', bc_claim:'Claim brewery',
     claim_title:'How to prove this is your brewery',
@@ -464,7 +687,7 @@ const I18N = {
     products_sublabel:'公式サイト、輸入業者、国際データベースより',
     not_found:'結果なし。別の名前か日本語で試してください。',
     demo_label:'デモを試す:',
-    demo_email_hint:'ドメイン認証をテストするには: test@{domain}',
+    demo_email_hint:'💡 ドメイン認証をテストするには: test@{domain}',
     nav_search:'検索', nav_register:'クレーム', nav_dashboard:'ダッシュボード',
     bc_search:'検索', bc_claim:'酒蔵クレーム',
     claim_title:'あなたの酒蔵であることを証明する方法',
@@ -590,7 +813,6 @@ async function startSearch(){
 
   function aborted(){return signal.aborted;}
 
-  // Render progress timeline
   function renderTimeline(steps){
     if(aborted())return;
     ir.innerHTML=`<div class="progress-timeline">${steps.map((s,i)=>`
@@ -617,7 +839,6 @@ async function startSearch(){
   if(aborted())return;
   let domain='',displayName=name,address='',prefecture='',lat=null,lng=null;
   if(geo){displayName=geo.displayName||name;address=geo.address||'';prefecture=geo.prefecture||'';lat=geo.lat;lng=geo.lng;}
-  // Try domain guess
   const slug=name.toLowerCase().replace(/[^a-z0-9]/g,'');
   if(!domain && slug.length>2) domain=slug+'.co.jp';
   steps[0]={label:t('ps_geo'),detail:domain?t('ps_found_domain').replace('{domain}',domain):'✓',state:'done'};
@@ -667,7 +888,7 @@ async function startSearch(){
   state.searching=false;
 
   if(!company.name_jp&&!company.website&&!geo&&!wiki){
-    ir.innerHTML=`<div class="progress-timeline"><div style="padding:8px;text-align:center;color:var(--text3)">${esc(t('not_found'))}</div></div>`;
+    ir.innerHTML=`<div class="progress-timeline"><div style="padding:12px;text-align:center;color:var(--text3);font-size:14px">${esc(t('not_found'))}</div></div>`;
     setTimeout(()=>{ir.style.display='none';hero.classList.remove('has-results');document.getElementById('search-hint').style.display='';document.getElementById('demo-links').style.display='flex';},4000);
     return;
   }
@@ -701,7 +922,7 @@ function showBreweryCard(data){
     <div class="bc-header"><div class="bc-logo">${logo}</div><div class="bc-title"><div class="bc-name-jp">${esc(c.name_jp)}</div>${c.name_en?`<div class="bc-name-en">${esc(c.name_en)}</div>`:''}</div></div>
     <div class="bc-body">${website?`<a class="bc-website" href="https://${esc(website)}" target="_blank">🌐 ${esc(website)}</a>`:''}${grid}${hist}${prods}</div>
     ${map}${srcHtml}
-    <div class="bc-cta"><div class="bc-cta-text">${esc(t('found_confirm'))}</div><div class="bc-cta-actions"><button class="btn btn-gold btn-lg" onclick="confirmBrewery()">${esc(t('btn_confirm'))}</button><button class="bc-retry" onclick="resetSearch()">${esc(t('btn_not_me'))}</button></div></div>
+    <div class="bc-cta"><div class="bc-cta-text">${esc(t('found_confirm'))}</div><div class="bc-cta-actions"><button class="btn btn-primary btn-lg" onclick="confirmBrewery()">${esc(t('btn_confirm'))}</button><button class="bc-retry" onclick="resetSearch()">${esc(t('btn_not_me'))}</button></div></div>
   </div>`;
 }
 
@@ -737,7 +958,6 @@ function setupClaimPage(){
   document.getElementById('claim-desc').textContent=t('claim_desc');
   document.getElementById('form-title').textContent=t('form_title');
 
-  // Build verification methods
   const dom=website||'sakagura.co.jp';
   document.getElementById('verif-methods').innerHTML=`
     <div class="verif-method recommended">
@@ -768,9 +988,8 @@ function setupClaimPage(){
   document.getElementById('inp-email').placeholder='you@'+(website||'brewery.co.jp');
   document.getElementById('domain-match').textContent=t('domain_match_yes');
   document.getElementById('domain-no-match').textContent=t('domain_match_no').replace('{domain}',dom);
-  // Demo email hint
   const demoHint=document.getElementById('demo-email-hint');
-  demoHint.textContent='💡 '+t('demo_email_hint').replace('{domain}',dom);
+  demoHint.textContent=t('demo_email_hint').replace('{domain}',dom);
   demoHint.style.display='block';
   demoHint.dataset.email='test@'+dom;
   document.getElementById('claim-form-section').style.display='';
@@ -819,7 +1038,7 @@ function register(){
 function enterDashboard(){
   if(!state.brewery||!state.user){showPage('search');return;}
   const c=state.brewery.company;
-  document.getElementById('dash-name').innerHTML=esc(c.name_jp)+(state.user.domainMatch?` <span style="display:inline-flex;width:22px;height:22px;border-radius:50%;background:#34a853;color:#fff;font-size:12px;align-items:center;justify-content:center">✓</span>`:'');
+  document.getElementById('dash-name').innerHTML=esc(c.name_jp)+(state.user.domainMatch?` <span style="display:inline-flex;width:22px;height:22px;border-radius:50%;background:#16a34a;color:#fff;font-size:12px;align-items:center;justify-content:center">✓</span>`:'');
   document.getElementById('dash-bc-name')&&(document.getElementById('dash-bc-name').textContent=c.name_jp);
   const b=document.getElementById('dash-badge');
   if(state.user.domainMatch){b.className='dash-verified-badge verified';b.textContent=t('verified_owner');}
