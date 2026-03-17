@@ -564,9 +564,6 @@ body { font-family:var(--font); background:var(--bg); color:var(--text); min-hei
     <div class="search-hint" id="search-hint"></div>
     <div id="demo-links" class="demo-links">
       <span style="font-size:12px;color:var(--text3);display:flex;align-items:center" id="demo-label"></span>
-      <button class="demo-btn" onclick="runDemo('kenbishi')">剣菱 Kenbishi</button>
-      <button class="demo-btn" onclick="runDemo('dassai')">獺祭 Dassai</button>
-      <button class="demo-btn" onclick="runDemo('tatenokawa')">楯野川 Tatenokawa</button>
     </div>
     <div class="inline-result" id="inline-result" style="display:none"></div>
   </div>
@@ -945,6 +942,37 @@ function runDemo(name){
   startSearch();
 }
 
+// ---- SEARCH HISTORY ----
+function getHistory(){
+  try{return JSON.parse(localStorage.getItem('sp_history')||'[]');}catch(e){return [];}
+}
+function addToHistory(name){
+  let h=getHistory().filter(x=>x.toLowerCase()!==name.toLowerCase());
+  h.unshift(name);
+  if(h.length>8)h=h.slice(0,8);
+  localStorage.setItem('sp_history',JSON.stringify(h));
+  renderHistory();
+}
+function renderHistory(){
+  const container=document.getElementById('demo-links');
+  const label=document.getElementById('demo-label');
+  const h=getHistory();
+  // Remove old buttons (keep the label span)
+  container.querySelectorAll('.demo-btn').forEach(b=>b.remove());
+  if(!h.length){
+    label.style.display='none';
+    return;
+  }
+  label.style.display='flex';
+  h.forEach(name=>{
+    const btn=document.createElement('button');
+    btn.className='demo-btn';
+    btn.textContent=name;
+    btn.onclick=()=>runDemo(name);
+    container.appendChild(btn);
+  });
+}
+
 function onSearchInput(){
   clearTimeout(state.debounceTimer);
   const val=document.getElementById('search-input').value.trim();
@@ -960,6 +988,7 @@ async function startSearch(){
   if(name===state.lastQuery&&(state.foundData||state.candidates.length))return;
   if(state.abortCtrl){state.abortCtrl.abort();}
   state.lastQuery=name;
+  addToHistory(name);
   state.abortCtrl=new AbortController();
   const signal=state.abortCtrl.signal;
 
@@ -1538,6 +1567,7 @@ function updateSettingsLang(){
 }
 
 applyLang();
+renderHistory();
 if(state.user&&state.brewery)enterDashboard();
 else showPage('search');
 </script>
