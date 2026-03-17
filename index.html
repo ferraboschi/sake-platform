@@ -27,6 +27,8 @@
   --green-soft: rgba(22,163,74,0.06);
   --orange: #ea580c;
   --orange-soft: rgba(234,88,12,0.06);
+  --blue: #2563eb;
+  --blue-soft: rgba(37,99,235,0.06);
   --radius: 12px;
   --radius-sm: 8px;
   --radius-lg: 16px;
@@ -55,14 +57,8 @@ body { font-family:var(--font); background:var(--bg); color:var(--text); min-hei
   letter-spacing:-0.3px; display:flex; align-items:center; gap:8px;
   cursor:pointer; white-space:nowrap; user-select:none;
 }
-.topbar-logo .logo-mark {
-  font-size:15px; font-weight:700; color:var(--text);
-  letter-spacing:-0.3px;
-}
-.topbar-logo .logo-jp {
-  font-family:var(--font-serif); font-size:14px; font-weight:500;
-  color:var(--text3); margin-left:4px;
-}
+.topbar-logo .logo-mark { font-size:15px; font-weight:700; color:var(--text); letter-spacing:-0.3px; }
+.topbar-logo .logo-jp { font-family:var(--font-serif); font-size:14px; font-weight:500; color:var(--text3); margin-left:4px; }
 .topbar-nav { display:flex; gap:2px; }
 .topbar-nav a {
   color:var(--text3); font:500 13px var(--font);
@@ -111,9 +107,7 @@ body { font-family:var(--font); background:var(--bg); color:var(--text); min-hei
 .btn-full { width:100%; }
 .btn-gold { background:var(--text); color:#fff; }
 .btn-gold:hover { background:var(--accent-hover); }
-.btn-outline {
-  background:transparent; color:var(--text); border:1px solid var(--border2);
-}
+.btn-outline { background:transparent; color:var(--text); border:1px solid var(--border2); }
 .btn-outline:hover { background:var(--bg2); border-color:var(--text3); }
 
 /* ===== SEARCH / HERO ===== */
@@ -140,7 +134,7 @@ body { font-family:var(--font); background:var(--bg); color:var(--text); min-hei
 .search-box input {
   width:100%; height:56px; background:var(--surface);
   border:1px solid var(--border); border-radius:var(--radius);
-  padding:0 56px 0 20px; font:400 16px var(--font);
+  padding:0 20px; font:400 16px var(--font);
   color:var(--text); outline:none; transition:var(--transition);
   box-shadow:var(--shadow-sm);
 }
@@ -148,15 +142,6 @@ body { font-family:var(--font); background:var(--bg); color:var(--text); min-hei
 .search-box input:focus {
   border-color:var(--text3); box-shadow:0 0 0 3px var(--accent-glow), var(--shadow);
 }
-.search-go {
-  position:absolute; right:8px; top:50%; transform:translateY(-50%);
-  width:40px; height:40px; border-radius:var(--radius-sm);
-  background:var(--text); border:none; color:#fff; font-size:16px;
-  cursor:pointer; display:flex; align-items:center; justify-content:center;
-  transition:var(--transition);
-}
-.search-go:hover { background:var(--accent-hover); }
-.search-go:disabled { opacity:0.3; cursor:not-allowed; }
 
 .search-hint {
   margin-top:24px; font-size:13px; color:var(--text3);
@@ -189,9 +174,7 @@ body { font-family:var(--font); background:var(--bg); color:var(--text); min-hei
   border-color:var(--text); color:var(--text); background:var(--accent-glow);
   animation:pulse 1.8s ease infinite;
 }
-.pt-step.done .pt-icon {
-  border-color:var(--green); color:#fff; background:var(--green); font-size:10px;
-}
+.pt-step.done .pt-icon { border-color:var(--green); color:#fff; background:var(--green); font-size:10px; }
 @keyframes pulse {
   0%,100%{box-shadow:0 0 0 0 rgba(24,24,27,0.12)}
   50%{box-shadow:0 0 0 6px rgba(24,24,27,0)}
@@ -201,6 +184,35 @@ body { font-family:var(--font); background:var(--bg); color:var(--text); min-hei
 .pt-step.done .pt-label { color:var(--green); }
 .pt-detail { font-size:12px; color:var(--text3); margin-top:2px; }
 .pt-step.done .pt-detail { color:var(--green); }
+
+/* ===== CANDIDATE LIST (multiple results) ===== */
+.candidate-list {
+  background:var(--surface); border:1px solid var(--border);
+  border-radius:var(--radius); box-shadow:var(--shadow);
+  overflow:hidden; animation:slideUp 0.4s cubic-bezier(0.16,1,0.3,1);
+}
+.candidate-list-title {
+  padding:16px 20px 12px; font-size:13px; font-weight:600;
+  color:var(--text2); border-bottom:1px solid var(--border);
+}
+.candidate-item {
+  display:flex; align-items:center; gap:14px;
+  padding:14px 20px; border-bottom:1px solid var(--border);
+  cursor:pointer; transition:var(--transition);
+}
+.candidate-item:last-child { border-bottom:none; }
+.candidate-item:hover { background:var(--bg2); }
+.candidate-logo {
+  width:36px; height:36px; border-radius:var(--radius-sm);
+  background:var(--bg2); border:1px solid var(--border);
+  display:flex; align-items:center; justify-content:center;
+  overflow:hidden; flex-shrink:0; font-size:18px;
+}
+.candidate-logo img { width:100%; height:100%; object-fit:contain; }
+.candidate-info { flex:1; min-width:0; }
+.candidate-name { font-size:14px; font-weight:600; letter-spacing:-0.1px; }
+.candidate-meta { font-size:12px; color:var(--text3); margin-top:2px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.candidate-arrow { color:var(--text3); font-size:14px; flex-shrink:0; }
 
 /* ===== BREWERY CARD ===== */
 .brewery-card {
@@ -237,10 +249,7 @@ body { font-family:var(--font); background:var(--bg); color:var(--text); min-hei
 .bc-website:hover { background:var(--bg3); color:var(--text); }
 .bc-info-grid { display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-bottom:18px; }
 .bc-info-item { display:flex; align-items:flex-start; gap:8px; }
-.bc-info-label {
-  font-size:10px; color:var(--text3); text-transform:uppercase;
-  letter-spacing:0.5px; font-weight:600;
-}
+.bc-info-label { font-size:10px; color:var(--text3); text-transform:uppercase; letter-spacing:0.5px; font-weight:600; }
 .bc-info-value { font-size:13px; color:var(--text); margin-top:1px; }
 .bc-history {
   font-size:13px; color:var(--text2); line-height:1.8; margin-bottom:18px;
@@ -255,6 +264,18 @@ body { font-family:var(--font); background:var(--bg); color:var(--text); min-hei
 .bc-products-number { font-size:28px; font-weight:800; color:var(--green); letter-spacing:-1px; }
 .bc-products-label { font-size:13px; color:var(--green); font-weight:600; line-height:1.3; }
 .bc-products-sublabel { font-size:11px; color:var(--text3); font-weight:400; }
+
+/* Multilingual hint */
+.bc-lang-hint {
+  display:flex; align-items:center; gap:10px;
+  padding:14px 18px; background:var(--blue-soft);
+  border:1px solid rgba(37,99,235,0.12); border-radius:var(--radius);
+  margin-top:12px; margin-bottom:4px;
+}
+.bc-lang-hint-icon { font-size:18px; flex-shrink:0; }
+.bc-lang-hint-text { font-size:12px; color:var(--blue); line-height:1.5; }
+.bc-lang-hint-text strong { font-weight:600; }
+
 .bc-map { border-top:1px solid var(--border); }
 .bc-sources {
   padding:12px 28px; background:var(--surface2); border-top:1px solid var(--border);
@@ -326,7 +347,7 @@ body { font-family:var(--font); background:var(--bg); color:var(--text); min-hei
 .verif-method-badge.auto { background:var(--green-soft); color:var(--green); }
 .verif-method-badge.manual { background:var(--orange-soft); color:var(--orange); }
 
-/* Form inside claim */
+/* Form */
 .claim-form label {
   display:block; font-size:12px; font-weight:600; color:var(--text2);
   margin:16px 0 6px; letter-spacing:-0.1px;
@@ -346,7 +367,7 @@ body { font-family:var(--font); background:var(--bg); color:var(--text); min-hei
 .domain-match-alert.match { background:var(--green-soft); border:1px solid rgba(22,163,74,0.15); color:var(--green); }
 .domain-match-alert.no-match { background:var(--orange-soft); border:1px solid rgba(234,88,12,0.15); color:var(--orange); }
 
-/* Email sent state */
+/* Email sent */
 .email-sent-card {
   background:var(--surface); border:1px solid var(--border);
   border-radius:var(--radius); padding:40px 32px; text-align:center;
@@ -462,8 +483,7 @@ body { font-family:var(--font); background:var(--bg); color:var(--text); min-hei
     <div class="hero-kanji" id="hero-kanji"></div>
     <div class="hero-sub" id="hero-sub"></div>
     <div class="search-box">
-      <input type="text" id="search-input" autocomplete="off" oninput="onSearchInput()" onkeydown="if(event.key==='Enter'){clearTimeout(state.debounceTimer);startSearch();}">
-      <button class="search-go" id="search-go-btn" onclick="clearTimeout(state.debounceTimer);startSearch()">→</button>
+      <input type="text" id="search-input" autocomplete="off" oninput="onSearchInput()">
     </div>
     <div class="search-hint" id="search-hint"></div>
     <div id="demo-links" class="demo-links">
@@ -487,14 +507,12 @@ body { font-family:var(--font); background:var(--bg); color:var(--text); min-hei
 
     <div class="claim-brewery" id="claim-brewery"></div>
 
-    <!-- Verification explanation -->
     <div class="claim-section" id="claim-verification-section">
       <div class="claim-section-title" id="claim-title"></div>
       <div class="claim-section-desc" id="claim-desc"></div>
       <div class="verif-methods" id="verif-methods"></div>
     </div>
 
-    <!-- Registration form -->
     <div class="claim-section" id="claim-form-section">
       <div class="claim-section-title" id="form-title"></div>
       <div class="claim-form" id="claim-form">
@@ -511,7 +529,6 @@ body { font-family:var(--font); background:var(--bg); color:var(--text); min-hei
       </div>
     </div>
 
-    <!-- Email sent -->
     <div class="email-sent-card" id="email-sent">
       <div class="email-sent-icon">📧</div>
       <div class="email-sent-title" id="email-sent-title"></div>
@@ -554,27 +571,35 @@ body { font-family:var(--font); background:var(--bg); color:var(--text); min-hei
 const I18N = {
   it: {
     hero_title:'酒蔵を探す', hero_sub:'TROVA LA TUA SAKAGURA',
-    search_placeholder:'Nome della sakagura...',
-    search_hint:'Inserisci il nome. Cercheremo nel web <strong>dominio, storia, dati aziendali e prodotti</strong> da fonti internazionali.',
-    ps_geo:'Ricerca posizione e dominio',
-    ps_geo_detail:'Cerco sito web ufficiale...',
+    search_placeholder:'Nome della sakagura o della brewery...',
+    search_hint:'Inserisci il nome di qualsiasi produttore di sake nel mondo. Cercheremo <strong>sito web, storia, dati aziendali e prodotti</strong> da fonti internazionali.',
+    ps_geo:'Ricerca posizione e sito web',
+    ps_geo_detail:'Cerco in tutto il mondo...',
     ps_wiki:'Raccolta storia e dati aziendali',
-    ps_wiki_detail:'Navigo siti e fonti pubbliche...',
+    ps_wiki_detail:'Navigo fonti in italiano, inglese e giapponese...',
     ps_products:'Ricerca prodotti da fonti internazionali',
-    ps_products_detail:'Cerco su importatori, database e retailers...',
+    ps_products_detail:'Cerco su importatori, database e retailers globali...',
     ps_merge:'Unione e verifica informazioni',
-    ps_merge_detail:'Unisco le fonti e preparo la scheda...',
-    ps_found_domain:'Trovato: {domain}',
+    ps_merge_detail:'Unisco le fonti e preparo le schede...',
+    ps_found_geo:'Trovate {n} corrispondenze',
     ps_found_sources:'Raccolte {n} fonti',
     ps_found_products:'Trovati {n} prodotti',
-    ps_done:'Scheda pronta',
+    ps_done:'Risultati pronti',
+    // Candidate list
+    candidates_title:'Abbiamo trovato {n} risultati — scegli:',
+    candidates_single:'Trovata una corrispondenza:',
+    candidate_country_jp:'Giappone',
+    // Brewery card
     found_confirm:'È la tua sakagura?',
     btn_confirm:'Sì, registra e fai il claim →',
     btn_not_me:'Non è questa',
+    btn_back_results:'← Vedi altri risultati',
     products_found:'prodotti trovati',
     products_sublabel:'da sito ufficiale, importatori e database internazionali',
-    not_found:'Nessun risultato. Prova con un altro nome o in giapponese.',
-    demo_label:'Prova demo:',
+    not_found:'Nessun risultato. Prova con un altro nome, in giapponese o in inglese.',
+    // Multilingual hint
+    lang_hint:'<strong>Profilo multilingua:</strong> Dopo la registrazione potrai arricchire il profilo della tua sakagura in italiano, inglese e giapponese per raggiungere clienti e importatori in tutto il mondo.',
+    demo_label:'Prova:',
     demo_email_hint:'💡 Per testare la verifica dominio, usa: test@{domain}',
     nav_search:'Cerca', nav_register:'Claim', nav_dashboard:'Dashboard',
     bc_search:'Cerca', bc_claim:'Claim sakagura',
@@ -606,31 +631,36 @@ const I18N = {
     upload_processing:'Elaborazione...', upload_done:'Elaborato',
     verified_owner:'✓ Owner Verificato', pending_verif:'⏳ Verifica in corso',
     logout:'Esci',
-    founded_label:'Fondata', address_label:'Indirizzo', phone_label:'Telefono', prefecture_label:'Prefettura',
+    founded_label:'Fondata', address_label:'Indirizzo', phone_label:'Telefono', prefecture_label:'Prefettura', country_label:'Paese',
   },
   en: {
     hero_title:'酒蔵を探す', hero_sub:'FIND YOUR SAKAGURA',
     search_placeholder:'Brewery name...',
-    search_hint:'Enter the name. We\'ll search the web for <strong>domain, history, company data and products</strong> from international sources.',
-    ps_geo:'Searching location and domain',
-    ps_geo_detail:'Looking for official website...',
+    search_hint:'Enter the name of any sake producer worldwide. We\'ll search for <strong>website, history, company data and products</strong> from international sources.',
+    ps_geo:'Searching location and website',
+    ps_geo_detail:'Searching worldwide...',
     ps_wiki:'Collecting history and company data',
-    ps_wiki_detail:'Navigating sites and public sources...',
+    ps_wiki_detail:'Navigating sources in English, Italian and Japanese...',
     ps_products:'Searching products from international sources',
-    ps_products_detail:'Searching importers, databases and retailers...',
+    ps_products_detail:'Searching global importers, databases and retailers...',
     ps_merge:'Merging and verifying information',
-    ps_merge_detail:'Combining sources and preparing profile...',
-    ps_found_domain:'Found: {domain}',
+    ps_merge_detail:'Combining sources and preparing profiles...',
+    ps_found_geo:'Found {n} matches',
     ps_found_sources:'Collected {n} sources',
     ps_found_products:'Found {n} products',
-    ps_done:'Profile ready',
+    ps_done:'Results ready',
+    candidates_title:'We found {n} results — choose:',
+    candidates_single:'Found a match:',
+    candidate_country_jp:'Japan',
     found_confirm:'Is this your brewery?',
     btn_confirm:'Yes, register and claim →',
     btn_not_me:'Not this one',
+    btn_back_results:'← See other results',
     products_found:'products found',
     products_sublabel:'from official site, importers and international databases',
-    not_found:'No results found. Try a different name or in Japanese.',
-    demo_label:'Try demo:',
+    not_found:'No results found. Try a different name, in Japanese or English.',
+    lang_hint:'<strong>Multilingual profile:</strong> After registration you can enrich your brewery profile in English, Italian and Japanese to reach clients and importers worldwide.',
+    demo_label:'Try:',
     demo_email_hint:'💡 To test domain verification, use: test@{domain}',
     nav_search:'Search', nav_register:'Claim', nav_dashboard:'Dashboard',
     bc_search:'Search', bc_claim:'Claim brewery',
@@ -662,31 +692,36 @@ const I18N = {
     upload_processing:'Processing...', upload_done:'Processed',
     verified_owner:'✓ Verified Owner', pending_verif:'⏳ Verification pending',
     logout:'Logout',
-    founded_label:'Founded', address_label:'Address', phone_label:'Phone', prefecture_label:'Prefecture',
+    founded_label:'Founded', address_label:'Address', phone_label:'Phone', prefecture_label:'Prefecture', country_label:'Country',
   },
   ja: {
     hero_title:'酒蔵を探す', hero_sub:'あなたの酒蔵を見つける',
     search_placeholder:'酒蔵の名前...',
-    search_hint:'名前を入力。<strong>ドメイン、歴史、会社情報、商品</strong>を国際的な情報源から検索します。',
-    ps_geo:'位置とドメインの検索',
-    ps_geo_detail:'公式サイトを検索中...',
+    search_hint:'世界中の酒蔵の名前を入力。<strong>ウェブサイト、歴史、会社情報、商品</strong>を国際的な情報源から検索します。',
+    ps_geo:'位置とウェブサイトの検索',
+    ps_geo_detail:'世界中を検索中...',
     ps_wiki:'歴史と会社情報の収集',
-    ps_wiki_detail:'サイトと公開情報を調査中...',
+    ps_wiki_detail:'日本語・英語・イタリア語の情報源を調査中...',
     ps_products:'国際情報源から商品検索',
-    ps_products_detail:'輸入業者、データベース、小売業者を検索中...',
+    ps_products_detail:'世界の輸入業者、データベース、小売業者を検索中...',
     ps_merge:'情報の統合と検証',
     ps_merge_detail:'情報源を統合してプロフィールを作成中...',
-    ps_found_domain:'発見: {domain}',
+    ps_found_geo:'{n}件の一致を発見',
     ps_found_sources:'{n}件の情報源を収集',
     ps_found_products:'{n}件の商品を発見',
-    ps_done:'プロフィール完成',
+    ps_done:'結果準備完了',
+    candidates_title:'{n}件の結果が見つかりました — 選択してください:',
+    candidates_single:'一致するものが見つかりました:',
+    candidate_country_jp:'日本',
     found_confirm:'あなたの酒蔵ですか？',
     btn_confirm:'はい、登録してクレーム →',
     btn_not_me:'違います',
+    btn_back_results:'← 他の結果を見る',
     products_found:'件の商品',
     products_sublabel:'公式サイト、輸入業者、国際データベースより',
-    not_found:'結果なし。別の名前か日本語で試してください。',
-    demo_label:'デモを試す:',
+    not_found:'結果なし。別の名前、日本語または英語で試してください。',
+    lang_hint:'<strong>多言語プロフィール:</strong> 登録後、日本語・英語・イタリア語で酒蔵プロフィールを充実させ、世界中のクライアントや輸入業者にアピールできます。',
+    demo_label:'デモ:',
     demo_email_hint:'💡 ドメイン認証をテストするには: test@{domain}',
     nav_search:'検索', nav_register:'クレーム', nav_dashboard:'ダッシュボード',
     bc_search:'検索', bc_claim:'酒蔵クレーム',
@@ -718,7 +753,7 @@ const I18N = {
     upload_processing:'処理中...', upload_done:'処理済み',
     verified_owner:'✓ 認証済み', pending_verif:'⏳ メール確認待ち',
     logout:'ログアウト',
-    founded_label:'創業', address_label:'住所', phone_label:'電話', prefecture_label:'都道府県',
+    founded_label:'創業', address_label:'住所', phone_label:'電話', prefecture_label:'都道府県', country_label:'国',
   }
 };
 
@@ -728,7 +763,7 @@ let state = {
   user: JSON.parse(localStorage.getItem('sp_user')||'null'),
   brewery: JSON.parse(localStorage.getItem('sp_brewery')||'null'),
   files: JSON.parse(localStorage.getItem('sp_files')||'[]'),
-  searching:false, foundData:null, currentPage:'search',
+  searching:false, foundData:null, candidates:[], currentPage:'search',
   debounceTimer:null, abortCtrl:null, lastQuery:''
 };
 
@@ -797,13 +832,13 @@ function onSearchInput(){
 async function startSearch(){
   const name=document.getElementById('search-input').value.trim();
   if(!name||name.length<MIN_CHARS)return;
-  if(name===state.lastQuery&&state.foundData)return;
+  if(name===state.lastQuery&&(state.foundData||state.candidates.length))return;
   if(state.abortCtrl){state.abortCtrl.abort();}
   state.lastQuery=name;
   state.abortCtrl=new AbortController();
   const signal=state.abortCtrl.signal;
 
-  state.searching=true;state.foundData=null;
+  state.searching=true;state.foundData=null;state.candidates=[];
   const hero=document.getElementById('hero');
   const ir=document.getElementById('inline-result');
   hero.classList.add('has-results');
@@ -834,71 +869,190 @@ async function startSearch(){
   renderTimeline(steps);
 
   try{
-  // Step 1: Geocode
-  const geo=await geocodeLookup(name,signal);
+  // Step 1: Geocode — international, multiple results
+  const geoResults=await geocodeLookupMulti(name,signal);
   if(aborted())return;
-  let domain='',displayName=name,address='',prefecture='',lat=null,lng=null;
-  if(geo){displayName=geo.displayName||name;address=geo.address||'';prefecture=geo.prefecture||'';lat=geo.lat;lng=geo.lng;}
-  const slug=name.toLowerCase().replace(/[^a-z0-9]/g,'');
-  if(!domain && slug.length>2) domain=slug+'.co.jp';
-  steps[0]={label:t('ps_geo'),detail:domain?t('ps_found_domain').replace('{domain}',domain):'✓',state:'done'};
+  steps[0]={label:t('ps_geo'),detail:t('ps_found_geo').replace('{n}',geoResults.length),state:'done'};
   steps[1].state='active';
   renderTimeline(steps);
 
-  // Step 2: Wikipedia
+  // Step 2: Wikipedia — multilingual
   const wiki=await wikiLookup(name,signal);
   if(aborted())return;
-  const srcCount=(wiki?1:0)+(geo?1:0);
+  const srcCount=(wiki?1:0)+geoResults.length;
   steps[1]={label:t('ps_wiki'),detail:t('ps_found_sources').replace('{n}',srcCount),state:'done'};
   steps[2].state='active';
   renderTimeline(steps);
 
-  // Step 3: AI products
+  // Step 3: AI products (if API key available)
   let aiData=null;
   if(state.apiKey){
     aiData=await aiSearch(name,signal);
     if(aborted())return;
   }
   const pc=aiData?.products?.length||aiData?.product_count||0;
-  if(aiData?.company?.website) domain=aiData.company.website;
-  else if(wiki?.website) domain=wiki.website;
   steps[2]={label:t('ps_products'),detail:pc?t('ps_found_products').replace('{n}',pc):'✓',state:'done'};
   steps[3].state='active';
   renderTimeline(steps);
 
-  // Step 4: Merge
+  // Step 4: Merge — build candidates
   await new Promise(r=>setTimeout(r,400));
   if(aborted())return;
 
-  const company={
-    name_jp:aiData?.company?.name_jp||wiki?.name_jp||displayName,
-    name_en:aiData?.company?.name_en||wiki?.name_en||'',
-    website:aiData?.company?.website||wiki?.website||domain,
-    prefecture:aiData?.company?.prefecture||prefecture||wiki?.prefecture||'',
-    address:aiData?.company?.address||address||'',
-    phone:aiData?.company?.phone||'',
-    founded:aiData?.company?.founded||wiki?.founded||'',
-    history:wiki?.extract||aiData?.company?.history||'',
-  };
-  const productCount=pc;
-  const sources=aiData?.sources||[];
-
+  // Build candidate list from geo results + wiki + AI
+  const candidates=buildCandidates(geoResults,wiki,aiData,name);
   steps[3]={label:t('ps_merge'),detail:t('ps_done'),state:'done'};
   renderTimeline(steps);
   state.searching=false;
 
-  if(!company.name_jp&&!company.website&&!geo&&!wiki){
+  if(!candidates.length){
     ir.innerHTML=`<div class="progress-timeline"><div style="padding:12px;text-align:center;color:var(--text3);font-size:14px">${esc(t('not_found'))}</div></div>`;
     setTimeout(()=>{ir.style.display='none';hero.classList.remove('has-results');document.getElementById('search-hint').style.display='';document.getElementById('demo-links').style.display='flex';},4000);
     return;
   }
 
-  await new Promise(r=>setTimeout(r,600));
+  await new Promise(r=>setTimeout(r,500));
   if(aborted())return;
-  state.foundData={company,productCount,sources,_geo:geo?{lat,lng}:null,_products:aiData?.products||[]};
-  showBreweryCard(state.foundData);
+
+  state.candidates=candidates;
+
+  // If only 1 candidate, show brewery card directly
+  if(candidates.length===1){
+    state.foundData=candidates[0];
+    showBreweryCard(state.foundData);
+  } else {
+    showCandidateList(candidates);
+  }
 
   }catch(e){if(e.name==='AbortError')return;state.searching=false;}
+}
+
+// Build candidate list from multiple sources
+function buildCandidates(geoResults,wiki,aiData,searchName){
+  const seen=new Set();
+  const candidates=[];
+
+  // From AI data (richest source)
+  if(aiData?.company?.name_jp||aiData?.company?.name_en){
+    const c=aiData.company;
+    const key=(c.name_jp||c.name_en||'').toLowerCase();
+    if(key&&!seen.has(key)){
+      seen.add(key);
+      // Find matching geo
+      const matchGeo=geoResults.find(g=>{
+        const gn=(g.displayName||'').toLowerCase();
+        return gn.includes(key)||key.includes(gn);
+      })||geoResults[0];
+      candidates.push({
+        company:{
+          name_jp:c.name_jp||wiki?.name_jp||searchName,
+          name_en:c.name_en||wiki?.name_en||'',
+          website:c.website||wiki?.website||'',
+          prefecture:c.prefecture||matchGeo?.prefecture||wiki?.prefecture||'',
+          address:c.address||matchGeo?.address||'',
+          phone:c.phone||'',
+          founded:c.founded||wiki?.founded||'',
+          history:wiki?.extract||c.history||'',
+          country:matchGeo?.country||'',
+        },
+        productCount:aiData.products?.length||aiData.product_count||0,
+        sources:aiData.sources||[],
+        _geo:matchGeo?{lat:matchGeo.lat,lng:matchGeo.lng}:null,
+        _products:aiData.products||[]
+      });
+    }
+  }
+
+  // From geo results — each distinct location is a candidate
+  for(const geo of geoResults){
+    const key=(geo.displayName||'').toLowerCase();
+    if(seen.has(key))continue;
+    // Check if any existing candidate already covers this address
+    const addrKey=(geo.address||'').toLowerCase().substring(0,40);
+    if([...seen].some(s=>addrKey.includes(s)||s.includes(addrKey)))continue;
+    seen.add(key);
+    candidates.push({
+      company:{
+        name_jp:geo.displayName||searchName,
+        name_en:'',
+        website:'',
+        prefecture:geo.prefecture||'',
+        address:geo.address||'',
+        phone:'',
+        founded:candidates.length===0?(wiki?.founded||''):'',
+        history:candidates.length===0?(wiki?.extract||''):'',
+        country:geo.country||'',
+      },
+      productCount:0,
+      sources:[],
+      _geo:{lat:geo.lat,lng:geo.lng},
+      _products:[]
+    });
+  }
+
+  // If nothing from geo/AI but we have wiki, create one candidate
+  if(!candidates.length&&wiki){
+    candidates.push({
+      company:{
+        name_jp:wiki.name_jp||searchName,
+        name_en:wiki.name_en||'',
+        website:wiki.website||'',
+        prefecture:wiki.prefecture||'',
+        address:'',phone:'',
+        founded:wiki.founded||'',
+        history:wiki.extract||'',
+        country:'',
+      },
+      productCount:0,sources:[],_geo:null,_products:[]
+    });
+  }
+
+  // Fallback: if nothing found at all but we have a search name
+  if(!candidates.length&&geoResults.length){
+    const g=geoResults[0];
+    candidates.push({
+      company:{
+        name_jp:g.displayName||searchName,
+        name_en:'',website:'',
+        prefecture:g.prefecture||'',address:g.address||'',
+        phone:'',founded:'',history:'',country:g.country||'',
+      },
+      productCount:0,sources:[],
+      _geo:{lat:g.lat,lng:g.lng},_products:[]
+    });
+  }
+
+  return candidates.slice(0,8); // max 8 candidates
+}
+
+// Show list of candidates for user to pick from
+function showCandidateList(candidates){
+  const ir=document.getElementById('inline-result');
+  const title=t('candidates_title').replace('{n}',candidates.length);
+  ir.innerHTML=`<div class="candidate-list">
+    <div class="candidate-list-title">${esc(title)}</div>
+    ${candidates.map((c,i)=>{
+      const co=c.company;
+      const website=(co.website||'').replace(/^https?:\/\//,'').replace(/\/$/,'');
+      const fav=website?`<img src="https://www.google.com/s2/favicons?domain=${website}&sz=64" onerror="this.outerHTML='🏯'">`:'🏯';
+      const loc=[co.prefecture,co.country].filter(Boolean).join(', ');
+      const meta=[website,loc].filter(Boolean).join(' · ');
+      return `<div class="candidate-item" onclick="selectCandidate(${i})">
+        <div class="candidate-logo">${fav}</div>
+        <div class="candidate-info">
+          <div class="candidate-name">${esc(co.name_jp)}${co.name_en?' · '+esc(co.name_en):''}</div>
+          <div class="candidate-meta">${esc(meta)}</div>
+        </div>
+        <div class="candidate-arrow">→</div>
+      </div>`;
+    }).join('')}
+  </div>`;
+}
+
+function selectCandidate(idx){
+  if(!state.candidates[idx])return;
+  state.foundData=state.candidates[idx];
+  showBreweryCard(state.foundData);
 }
 
 function showBreweryCard(data){
@@ -910,6 +1064,7 @@ function showBreweryCard(data){
   const map=geo&&geo.lat?`<div class="bc-map"><iframe src="https://www.openstreetmap.org/export/embed.html?bbox=${geo.lng-0.006},${geo.lat-0.004},${geo.lng+0.006},${geo.lat+0.004}&layer=mapnik&marker=${geo.lat},${geo.lng}" width="100%" height="140" style="border:0" loading="lazy"></iframe></div>`:'';
   const hist=c.history?`<div class="bc-history">${esc(c.history)}</div>`:'';
   const info=[];
+  if(c.country)info.push({l:t('country_label'),v:c.country});
   if(c.prefecture)info.push({l:t('prefecture_label'),v:c.prefecture});
   if(c.founded)info.push({l:t('founded_label'),v:c.founded});
   if(c.address)info.push({l:t('address_label'),v:c.address});
@@ -917,19 +1072,23 @@ function showBreweryCard(data){
   const grid=info.length?`<div class="bc-info-grid">${info.map(i=>`<div class="bc-info-item"><div><div class="bc-info-label">${esc(i.l)}</div><div class="bc-info-value">${esc(i.v)}</div></div></div>`).join('')}</div>`:'';
   const prods=pc>0?`<div class="bc-products-badge"><div class="bc-products-number">${pc}</div><div><div class="bc-products-label">${esc(t('products_found'))}</div><div class="bc-products-sublabel">${esc(t('products_sublabel'))}</div></div></div>`:'';
   const srcHtml=(sources.length||website)?`<div class="bc-sources">${website?`<span class="bc-source-tag">${esc(website)}</span>`:''}${sources.map(s=>`<span class="bc-source-tag">${esc(s)}</span>`).join('')}</div>`:'';
+  // Multilingual hint
+  const langHint=`<div class="bc-lang-hint"><div class="bc-lang-hint-icon">🌐</div><div class="bc-lang-hint-text">${t('lang_hint')}</div></div>`;
+  // Back to results button (if multiple candidates)
+  const backBtn=state.candidates.length>1?`<button class="bc-retry" onclick="showCandidateList(state.candidates)" style="margin-right:auto">${esc(t('btn_back_results'))}</button>`:'';
 
   ir.innerHTML=`<div class="brewery-card">
     <div class="bc-header"><div class="bc-logo">${logo}</div><div class="bc-title"><div class="bc-name-jp">${esc(c.name_jp)}</div>${c.name_en?`<div class="bc-name-en">${esc(c.name_en)}</div>`:''}</div></div>
-    <div class="bc-body">${website?`<a class="bc-website" href="https://${esc(website)}" target="_blank">🌐 ${esc(website)}</a>`:''}${grid}${hist}${prods}</div>
+    <div class="bc-body">${website?`<a class="bc-website" href="https://${esc(website)}" target="_blank">🌐 ${esc(website)}</a>`:''}${grid}${hist}${prods}${langHint}</div>
     ${map}${srcHtml}
-    <div class="bc-cta"><div class="bc-cta-text">${esc(t('found_confirm'))}</div><div class="bc-cta-actions"><button class="btn btn-primary btn-lg" onclick="confirmBrewery()">${esc(t('btn_confirm'))}</button><button class="bc-retry" onclick="resetSearch()">${esc(t('btn_not_me'))}</button></div></div>
+    <div class="bc-cta"><div class="bc-cta-text">${esc(t('found_confirm'))}</div><div class="bc-cta-actions">${backBtn}<button class="btn btn-primary btn-lg" onclick="confirmBrewery()">${esc(t('btn_confirm'))}</button><button class="bc-retry" onclick="resetSearch()">${esc(t('btn_not_me'))}</button></div></div>
   </div>`;
 }
 
 function resetSearch(){
   if(state.abortCtrl){state.abortCtrl.abort();}
   clearTimeout(state.debounceTimer);
-  state.searching=false;state.foundData=null;state.lastQuery='';
+  state.searching=false;state.foundData=null;state.candidates=[];state.lastQuery='';
   const ir=document.getElementById('inline-result');
   ir.style.display='none';ir.innerHTML='';
   document.getElementById('hero').classList.remove('has-results');
@@ -1048,18 +1207,52 @@ function enterDashboard(){
 }
 
 // ==================== WEB APIS ====================
-async function geocodeLookup(name,signal){
-  try{const qs=[name+' 酒造',name+' sake brewery',name];
-    for(const q of qs){const r=await fetch(`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(q)}&format=json&addressdetails=1&limit=3&accept-language=ja`,{headers:{'User-Agent':'SakePlatform/2.0'},signal});
-      if(!r.ok)continue;const res=await r.json();if(!res.length)continue;
-      const b=res.find(r=>r.address?.country_code==='jp')||res[0];const a=b.address||{};
-      return{displayName:b.name||'',address:b.display_name||'',lat:+b.lat,lng:+b.lon,prefecture:a.province||a.state||''};}
-  }catch(e){if(e.name==='AbortError')throw e;}return null;
+
+// International geocode — returns MULTIPLE results, no Japan-only filter
+async function geocodeLookupMulti(name,signal){
+  const results=[];
+  const seen=new Set();
+  try{
+    // Search with multiple query variants to cast a wide net
+    const queries=[
+      name+' sake brewery',
+      name+' 酒造',
+      name+' sakagura',
+      name,
+    ];
+    for(const q of queries){
+      if(results.length>=6)break;
+      const r=await fetch(`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(q)}&format=json&addressdetails=1&limit=5&accept-language=${state.lang==='ja'?'ja':'en'}`,{headers:{'User-Agent':'SakePlatform/2.0'},signal});
+      if(!r.ok)continue;
+      const res=await r.json();
+      for(const item of res){
+        const key=Math.round(+item.lat*100)+','+Math.round(+item.lon*100);
+        if(seen.has(key))continue;
+        seen.add(key);
+        const a=item.address||{};
+        const country=a.country||'';
+        results.push({
+          displayName:item.name||'',
+          address:item.display_name||'',
+          lat:+item.lat,
+          lng:+item.lon,
+          prefecture:a.province||a.state||'',
+          country:country,
+          countryCode:a.country_code||'',
+        });
+      }
+    }
+  }catch(e){if(e.name==='AbortError')throw e;}
+  return results;
 }
 
+// Wikipedia — search in JA, EN, and IT
 async function wikiLookup(name,signal){
-  try{const terms=[name+'酒造',name+' 酒造',name];
-    for(const term of terms){const sr=await fetch(`https://ja.wikipedia.org/w/api.php?action=query&list=search&srsearch=${encodeURIComponent(term)}&format=json&origin=*&srlimit=3`,{signal});
+  try{
+    // Try Japanese Wikipedia first
+    const jaTerms=[name+'酒造',name+' 酒造',name];
+    for(const term of jaTerms){
+      const sr=await fetch(`https://ja.wikipedia.org/w/api.php?action=query&list=search&srsearch=${encodeURIComponent(term)}&format=json&origin=*&srlimit=3`,{signal});
       if(!sr.ok)continue;const sd=await sr.json();const results=sd.query?.search||[];
       const article=results.find(r=>r.snippet.includes('酒')||r.snippet.includes('醸造')||r.snippet.includes('蔵'))||results[0];
       if(!article)continue;
@@ -1069,22 +1262,47 @@ async function wikiLookup(name,signal){
       let extract=(page.extract||'').substring(0,400);
       if(extract.length===400)extract=extract.substring(0,extract.lastIndexOf('。')+1)||extract+'…';
       const fm=extract.match(/(\d{4})年.*?(創業|設立|開業)/)||extract.match(/(創業|設立|開業).*?(\d{4})年/);
-      return{extract,founded:fm?(fm[1].match(/\d{4}/)?.[0]||fm[2]):'',name_jp:article.title};}
-    const enr=await fetch(`https://en.wikipedia.org/w/api.php?action=query&list=search&srsearch=${encodeURIComponent(name+' sake brewery')}&format=json&origin=*&srlimit=3`,{signal});
-    if(enr.ok){const end=await enr.json();const enR=end.query?.search||[];
+      return{extract,founded:fm?(fm[1].match(/\d{4}/)?.[0]||fm[2]):'',name_jp:article.title};
+    }
+    // Try English Wikipedia
+    const enTerms=[name+' sake brewery',name+' sake',name];
+    for(const term of enTerms){
+      const enr=await fetch(`https://en.wikipedia.org/w/api.php?action=query&list=search&srsearch=${encodeURIComponent(term)}&format=json&origin=*&srlimit=3`,{signal});
+      if(!enr.ok)continue;const end=await enr.json();const enR=end.query?.search||[];
       const enA=enR.find(r=>r.snippet.toLowerCase().includes('sake')||r.snippet.toLowerCase().includes('brew'))||enR[0];
-      if(enA){const er2=await fetch(`https://en.wikipedia.org/w/api.php?action=query&titles=${encodeURIComponent(enA.title)}&prop=extracts&exintro=1&explaintext=1&format=json&origin=*`,{signal});
-        if(er2.ok){const ed2=await er2.json();const p2=Object.values(ed2.query?.pages||{})[0];
-          if(p2&&p2.missing===undefined){let ext=(p2.extract||'').substring(0,400);if(ext.length===400)ext=ext.substring(0,ext.lastIndexOf('.')+1)||ext+'…';return{extract:ext,name_en:enA.title};}}}}
-  }catch(e){if(e.name==='AbortError')throw e;}return null;
+      if(!enA)continue;
+      const er2=await fetch(`https://en.wikipedia.org/w/api.php?action=query&titles=${encodeURIComponent(enA.title)}&prop=extracts&exintro=1&explaintext=1&format=json&origin=*`,{signal});
+      if(!er2.ok)continue;const ed2=await er2.json();const p2=Object.values(ed2.query?.pages||{})[0];
+      if(!p2||p2.missing!==undefined)continue;
+      let ext=(p2.extract||'').substring(0,400);
+      if(ext.length===400)ext=ext.substring(0,ext.lastIndexOf('.')+1)||ext+'…';
+      return{extract:ext,name_en:enA.title};
+    }
+    // Try Italian Wikipedia
+    const itTerms=[name+' sake',name+' birrificio sake',name];
+    for(const term of itTerms){
+      const itr=await fetch(`https://it.wikipedia.org/w/api.php?action=query&list=search&srsearch=${encodeURIComponent(term)}&format=json&origin=*&srlimit=3`,{signal});
+      if(!itr.ok)continue;const itd=await itr.json();const itR=itd.query?.search||[];
+      const itA=itR.find(r=>r.snippet.toLowerCase().includes('sake')||r.snippet.toLowerCase().includes('giappone'))||itR[0];
+      if(!itA)continue;
+      const er3=await fetch(`https://it.wikipedia.org/w/api.php?action=query&titles=${encodeURIComponent(itA.title)}&prop=extracts&exintro=1&explaintext=1&format=json&origin=*`,{signal});
+      if(!er3.ok)continue;const ed3=await er3.json();const p3=Object.values(ed3.query?.pages||{})[0];
+      if(!p3||p3.missing!==undefined)continue;
+      let ext=(p3.extract||'').substring(0,400);
+      if(ext.length===400)ext=ext.substring(0,ext.lastIndexOf('.')+1)||ext+'…';
+      return{extract:ext,name_en:itA.title};
+    }
+  }catch(e){if(e.name==='AbortError')throw e;}
+  return null;
 }
 
 async function aiSearch(name,signal){
-  try{const p=`You are a comprehensive sake database. Search for the Japanese sake brewery "${name}".
-Find ALL information from EVERY source: official website, international importers (Sake Company, Tippsy Sake, Sake Inn, World Sake Imports, JFC, Mutual Trading), sake databases (Saketime, Sake-World), retailers worldwide (Wine-Searcher, Vivino, Total Wine), competition results (IWC, Kura Master, Joy of Sake), and export catalogs.
+  try{const p=`You are a comprehensive sake database. Search for the sake brewery or producer "${name}".
+This could be a Japanese brewery, an Italian craft sake producer, or any international sake maker.
+Find ALL information from EVERY source: official website, international importers (Sake Company, Tippsy Sake, Sake Inn, World Sake Imports, JFC, Mutual Trading), sake databases (Saketime, Sake-World), retailers worldwide (Wine-Searcher, Vivino, Total Wine), competition results (IWC, Kura Master, Joy of Sake), European sake producers, and export catalogs.
 Return ONLY valid JSON:
-{"company":{"name_jp":"","name_en":"","prefecture":"","address":"","phone":"","website":"","founded":"","history":"2-3 sentences"},"products":[{"name_jp":"","name_en":"","type":""}],"product_count":0,"sources":["source1.com","source2.com"]}
-CRITICAL: Find as MANY products as possible from ALL international sources.`;
+{"company":{"name_jp":"","name_en":"","prefecture":"","address":"","phone":"","website":"","founded":"","history":"2-3 sentences","country":""},"products":[{"name_jp":"","name_en":"","type":""}],"product_count":0,"sources":["source1.com","source2.com"]}
+CRITICAL: Find as MANY products as possible from ALL international sources. The brewery may be outside Japan.`;
     const r=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',signal,headers:{'Content-Type':'application/json','x-api-key':state.apiKey,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:8000,messages:[{role:'user',content:p}]})});
     if(!r.ok)return null;const d=await r.json();const txt=d.content[0].text;const m=txt.match(/\{[\s\S]*\}/);if(!m)return null;
     const parsed=JSON.parse(m[0]);
@@ -1106,7 +1324,7 @@ function renderUploaded(){
   el.innerHTML=state.files.map(f=>`<div class="uploaded-file"><div class="uf-info"><div class="uf-icon">${ic[f.type]||'📄'}</div><div><div class="uf-name">${esc(f.name)}</div><div class="uf-meta">${esc(f.size)} · ${esc(f.type)}</div></div></div><div class="uf-status ${f.status}">${f.status==='done'?esc(t('upload_done')):esc(t('upload_processing'))}</div></div>`).join('');
 }
 function logout(){
-  state.user=null;state.brewery=null;state.files=[];state.foundData=null;
+  state.user=null;state.brewery=null;state.files=[];state.foundData=null;state.candidates=[];
   localStorage.removeItem('sp_user');localStorage.removeItem('sp_brewery');localStorage.removeItem('sp_files');
   resetSearch();showPage('search');
 }
