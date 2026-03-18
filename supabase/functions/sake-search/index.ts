@@ -1,5 +1,5 @@
 // Sake Platform — Research Agent with SSE Streaming
-// Searches REAL web sources and streams progress to frontend
+// NO TEMPLATE LITERALS — all string concatenation for Monaco compatibility
 
 const ALLOWED_ORIGINS = [
   "https://sakeplatform.com",
@@ -23,8 +23,6 @@ function sbH() {
   return { url, headers: { "apikey": key, "Authorization": "Bearer " + key, "Content-Type": "application/json" } };
 }
 
-// ---- RESEARCH SOURCES ----
-
 async function searchLocalDB(name: string): Promise<any[]> {
   const { url, headers } = sbH();
   if (!url) return [];
@@ -41,7 +39,7 @@ async function searchWikipediaJA(query: string): Promise<{found: boolean, data: 
     const terms = [query + "酒造", query + " 酒造", query + " sake"];
     for (const term of terms) {
       const encoded = encodeURIComponent(term);
-      const sr = await fetch(`https://ja.wikipedia.org/w/api.php?action=query&list=search&srsearch=${encoded}&format=json&origin=*&srlimit=5`);
+      const sr = await fetch("https://ja.wikipedia.org/w/api.php?action=query&list=search&srsearch=" + encoded + "&format=json&origin=*&srlimit=5");
       if (!sr.ok) continue;
       const sd = await sr.json();
       const results = sd.query?.search || [];
@@ -50,16 +48,17 @@ async function searchWikipediaJA(query: string): Promise<{found: boolean, data: 
       ) || results[0];
       if (!article) continue;
 
-      const er = await fetch(`https://ja.wikipedia.org/w/api.php?action=query&titles=${encodeURIComponent(article.title)}&prop=extracts&exintro=1&explaintext=1&format=json&origin=*`);
+      const er = await fetch("https://ja.wikipedia.org/w/api.php?action=query&titles=" + encodeURIComponent(article.title) + "&prop=extracts&exintro=1&explaintext=1&format=json&origin=*");
       if (!er.ok) continue;
       const ed = await er.json();
       const page = Object.values(ed.query?.pages || {})[0] as any;
       if (!page || page.missing !== undefined) continue;
 
-      let extract = (page.extract || "").substring(0, 500);
-      const foundedMatch = extract.match(/(\d{4})年.*?(創業|設立|開業)/) || extract.match(/(創業|設立|開業).*?(\d{4})年/);
+      const extract = (page.extract || "").substring(0, 500);
+      const fm = extract.match(/(\d{4})年.*?(創業|設立|開業)/) || extract.match(/(創業|設立|開業).*?(\d{4})年/);
+      const yr = fm ? String(fm[1] || fm[2] || "") : "";
 
-      return { found: true, data: { title: article.title, extract, founded: foundedMatch ? (foundedMatch[1].match(/\d{4}/)?.[0] || foundedMatch[2]) : "", source: "ja.wikipedia.org" }};
+      return { found: true, data: { title: article.title, extract: extract, founded: yr, source: "ja.wikipedia.org" }};
     }
   } catch (_e) {}
   return { found: false, data: null };
@@ -69,23 +68,23 @@ async function searchWikipediaEN(query: string): Promise<{found: boolean, data: 
   try {
     const terms = [query + " sake brewery", query + " sake", query + " shuzo"];
     for (const term of terms) {
-      const sr = await fetch(`https://en.wikipedia.org/w/api.php?action=query&list=search&srsearch=${encodeURIComponent(term)}&format=json&origin=*&srlimit=5`);
+      const sr = await fetch("https://en.wikipedia.org/w/api.php?action=query&list=search&srsearch=" + encodeURIComponent(term) + "&format=json&origin=*&srlimit=5");
       if (!sr.ok) continue;
       const sd = await sr.json();
       const results = sd.query?.search || [];
       const article = results.find((r: any) =>
-        r.snippet.toLowerCase().includes("sake") || r.snippet.toLowerCase().includes("brew") || r.snippet.toLowerCase().includes("distill")
+        r.snippet.toLowerCase().includes("sake") || r.snippet.toLowerCase().includes("brew")
       ) || results[0];
       if (!article) continue;
 
-      const er = await fetch(`https://en.wikipedia.org/w/api.php?action=query&titles=${encodeURIComponent(article.title)}&prop=extracts&exintro=1&explaintext=1&format=json&origin=*`);
+      const er = await fetch("https://en.wikipedia.org/w/api.php?action=query&titles=" + encodeURIComponent(article.title) + "&prop=extracts&exintro=1&explaintext=1&format=json&origin=*");
       if (!er.ok) continue;
       const ed = await er.json();
       const page = Object.values(ed.query?.pages || {})[0] as any;
       if (!page || page.missing !== undefined) continue;
 
-      let extract = (page.extract || "").substring(0, 500);
-      return { found: true, data: { title: article.title, extract, source: "en.wikipedia.org" }};
+      const extract = (page.extract || "").substring(0, 500);
+      return { found: true, data: { title: article.title, extract: extract, source: "en.wikipedia.org" }};
     }
   } catch (_e) {}
   return { found: false, data: null };
@@ -93,17 +92,15 @@ async function searchWikipediaEN(query: string): Promise<{found: boolean, data: 
 
 async function searchJSS(query: string): Promise<{found: boolean, data: any[]}> {
   try {
-    const res = await fetch(`https://japansake.or.jp/sakagura/en/?s=${encodeURIComponent(query)}`, {
+    const res = await fetch("https://japansake.or.jp/sakagura/en/?s=" + encodeURIComponent(query), {
       headers: { "User-Agent": "SakePlatform/2.0" }
     });
     if (!res.ok) return { found: false, data: [] };
     const html = await res.text();
     const matches = [...html.matchAll(/<h3 class="serif">([^<]+)<\/h3>/g)];
-    const links = [...html.matchAll(/<a href="(https:\/\/japansake\.or\.jp\/sakagura\/en\/[^"]+)">/g)];
     if (matches.length > 0) {
-      const breweries = matches.map((m, i) => ({
+      const breweries = matches.map((m) => ({
         name: m[1].trim(),
-        url: links[i + 10]?.[1] || "", // skip navigation links
         source: "japansake.or.jp"
       })).filter(b => b.name.toLowerCase().includes(query.toLowerCase()) || query.toLowerCase().includes(b.name.toLowerCase().split(" ")[0]));
       return { found: breweries.length > 0, data: breweries };
@@ -115,7 +112,7 @@ async function searchJSS(query: string): Promise<{found: boolean, data: any[]}> 
 async function searchNominatim(query: string): Promise<{found: boolean, data: any}> {
   try {
     const q = query + " sake brewery";
-    const res = await fetch(`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(q)}&format=json&addressdetails=1&limit=3&accept-language=en`, {
+    const res = await fetch("https://nominatim.openstreetmap.org/search?q=" + encodeURIComponent(q) + "&format=json&addressdetails=1&limit=3&accept-language=en", {
       headers: { "User-Agent": "SakePlatform/2.0" }
     });
     if (!res.ok) return { found: false, data: null };
@@ -134,20 +131,7 @@ async function enrichWithClaude(query: string, webData: any): Promise<any[]> {
   if (!apiKey) return [];
 
   const context = JSON.stringify(webData, null, 2);
-  const prompt = `I searched the web for the sake brewery "${query}" and found this data from real sources:
-
-${context}
-
-Based on this real data, compile a structured result. If the web data clearly identifies a brewery, use that information. If not, use your knowledge to identify the brewery and list its real products.
-
-RULES:
-- Only use REAL information — do not invent products, websites, or details
-- If you recognize this brewery, add any additional facts you know
-- List REAL sake products this brewery makes (actual brand names)
-- If you cannot identify the brewery with confidence, set exact_match to false and suggest the closest known breweries
-
-Return a JSON array:
-[{"name_ja":"","name_en":"","website":"","prefecture":"","country":"","address":"","phone":"","founded":"","description":"","products_count":0,"products":[],"exact_match":true,"sources":[]}]`;
+  const prompt = "I searched the web for the sake brewery \"" + query + "\" and found this data from real sources:\n\n" + context + "\n\nBased on this real data, compile a structured result. If the web data clearly identifies a brewery, use that information. If not, use your knowledge to identify the brewery and list its real products.\n\nRULES:\n- Only use REAL information — do not invent products, websites, or details\n- If you recognize this brewery, add any additional facts you know\n- List REAL sake products this brewery makes (actual brand names)\n- If you cannot identify the brewery with confidence, set exact_match to false and suggest the closest known breweries\n- NEVER return an empty array\n\nReturn a JSON array:\n[{\"name_ja\":\"\",\"name_en\":\"\",\"website\":\"\",\"prefecture\":\"\",\"country\":\"\",\"address\":\"\",\"phone\":\"\",\"founded\":\"\",\"description\":\"\",\"products_count\":0,\"products\":[],\"exact_match\":true,\"sources\":[]}]";
 
   try {
     const res = await fetch("https://api.anthropic.com/v1/messages", {
@@ -173,7 +157,7 @@ async function saveResults(query: string, results: any[]) {
   try {
     await fetch(url + "/rest/v1/search_cache", {
       method: "POST", headers: { ...headers, "Prefer": "resolution=merge-duplicates" },
-      body: JSON.stringify({ query_normalized: query.toLowerCase(), results, result_count: results.length, searched_at: new Date().toISOString(), expires_at: new Date(Date.now() + 30*24*60*60*1000).toISOString() })
+      body: JSON.stringify({ query_normalized: query.toLowerCase(), results: results, result_count: results.length, searched_at: new Date().toISOString(), expires_at: new Date(Date.now() + 30*24*60*60*1000).toISOString() })
     });
     for (const r of results) {
       if (!r.name_en) continue;
@@ -204,12 +188,11 @@ Deno.serve(async (req) => {
 
     const name = query.trim().substring(0, 100);
 
-    // SSE Stream
     const encoder = new TextEncoder();
     const stream = new ReadableStream({
       async start(controller) {
         function send(event: string, data: any) {
-          controller.enqueue(encoder.encode(`event: ${event}\ndata: ${JSON.stringify(data)}\n\n`));
+          controller.enqueue(encoder.encode("event: " + event + "\ndata: " + JSON.stringify(data) + "\n\n"));
         }
 
         const webData: any = { query: name };
@@ -218,9 +201,9 @@ Deno.serve(async (req) => {
         send("step", { id: "db", status: "searching", label: "Database Sake Platform", detail: "Ricerca nel database locale..." });
         const dbResults = await searchLocalDB(name);
         if (dbResults.length > 0) {
-          send("step", { id: "db", status: "found", label: "Database Sake Platform", detail: `Trovate ${dbResults.length} sakagura nel database`, count: dbResults.length });
+          send("step", { id: "db", status: "found", label: "Database Sake Platform", detail: "Trovate " + dbResults.length + " sakagura nel database", count: dbResults.length });
           const results = dbResults.map(r => ({ name_ja: r.name_ja||"", name_en: r.name_en||"", website: r.website||"", prefecture: r.prefecture||"", country: r.country||"", address: r.address||"", phone: r.phone||"", founded: r.founded||"", description: r.description_en||"", products_count: 0, products: [], exact_match: true, sources: ["database"] }));
-          send("results", { results, source: "db" });
+          send("results", { results: results, source: "db" });
           send("done", {});
           controller.close();
           return;
@@ -228,20 +211,20 @@ Deno.serve(async (req) => {
         send("step", { id: "db", status: "empty", label: "Database Sake Platform", detail: "Non trovata nel database locale" });
 
         // STEP 2: Wikipedia JA
-        send("step", { id: "wiki_ja", status: "searching", label: "Wikipedia 日本語", detail: `Ricerca "${name}酒造" su Wikipedia giapponese...` });
+        send("step", { id: "wiki_ja", status: "searching", label: "Wikipedia 日本語", detail: "Ricerca \"" + name + "酒造\" su Wikipedia giapponese..." });
         const wikiJA = await searchWikipediaJA(name);
         if (wikiJA.found) {
-          send("step", { id: "wiki_ja", status: "found", label: "Wikipedia 日本語", detail: `Trovato: ${wikiJA.data.title}` });
+          send("step", { id: "wiki_ja", status: "found", label: "Wikipedia 日本語", detail: "Trovato: " + wikiJA.data.title });
           webData.wikipedia_ja = wikiJA.data;
         } else {
           send("step", { id: "wiki_ja", status: "empty", label: "Wikipedia 日本語", detail: "Nessun risultato diretto" });
         }
 
         // STEP 3: Wikipedia EN
-        send("step", { id: "wiki_en", status: "searching", label: "Wikipedia English", detail: `Searching "${name} sake brewery"...` });
+        send("step", { id: "wiki_en", status: "searching", label: "Wikipedia English", detail: "Searching \"" + name + " sake brewery\"..." });
         const wikiEN = await searchWikipediaEN(name);
         if (wikiEN.found) {
-          send("step", { id: "wiki_en", status: "found", label: "Wikipedia English", detail: `Found: ${wikiEN.data.title}` });
+          send("step", { id: "wiki_en", status: "found", label: "Wikipedia English", detail: "Found: " + wikiEN.data.title });
           webData.wikipedia_en = wikiEN.data;
         } else {
           send("step", { id: "wiki_en", status: "empty", label: "Wikipedia English", detail: "No direct results" });
@@ -251,7 +234,7 @@ Deno.serve(async (req) => {
         send("step", { id: "jss", status: "searching", label: "japansake.or.jp", detail: "Consulto il registro Japan Sake Brewers Association..." });
         const jss = await searchJSS(name);
         if (jss.found) {
-          send("step", { id: "jss", status: "found", label: "japansake.or.jp", detail: `Trovate ${jss.data.length} sakagura nel registro JSS` });
+          send("step", { id: "jss", status: "found", label: "japansake.or.jp", detail: "Trovate " + jss.data.length + " sakagura nel registro JSS" });
           webData.jss = jss.data;
         } else {
           send("step", { id: "jss", status: "empty", label: "japansake.or.jp", detail: "Non trovata nel registro JSS" });
@@ -261,7 +244,7 @@ Deno.serve(async (req) => {
         send("step", { id: "geo", status: "searching", label: "OpenStreetMap", detail: "Ricerca posizione geografica..." });
         const geo = await searchNominatim(name);
         if (geo.found) {
-          send("step", { id: "geo", status: "found", label: "OpenStreetMap", detail: `Posizione: ${geo.data.prefecture}, ${geo.data.country}` });
+          send("step", { id: "geo", status: "found", label: "OpenStreetMap", detail: "Posizione: " + geo.data.prefecture + ", " + geo.data.country });
           webData.geo = geo.data;
         } else {
           send("step", { id: "geo", status: "empty", label: "OpenStreetMap", detail: "Posizione non trovata" });
@@ -271,7 +254,6 @@ Deno.serve(async (req) => {
         send("step", { id: "ai", status: "searching", label: "Analisi AI", detail: "Analisi e arricchimento dati raccolti..." });
         const results = await enrichWithClaude(name, webData);
 
-        // Add sources to results
         for (const r of results) {
           r.sources = [];
           if (webData.wikipedia_ja) r.sources.push("ja.wikipedia.org");
@@ -282,15 +264,13 @@ Deno.serve(async (req) => {
 
         if (results.length > 0) {
           const totalProducts = results.reduce((s: number, r: any) => s + (r.products?.length || 0), 0);
-          send("step", { id: "ai", status: "found", label: "Analisi AI", detail: `${results.length} sakagura identificate, ${totalProducts} prodotti trovati` });
-
-          // Save for next time
+          send("step", { id: "ai", status: "found", label: "Analisi AI", detail: results.length + " sakagura identificate, " + totalProducts + " prodotti trovati" });
           saveResults(name, results).catch(() => {});
         } else {
           send("step", { id: "ai", status: "empty", label: "Analisi AI", detail: "Nessun risultato conclusivo" });
         }
 
-        send("results", { results, source: "research" });
+        send("results", { results: results, source: "research" });
         send("done", {});
         controller.close();
       }
