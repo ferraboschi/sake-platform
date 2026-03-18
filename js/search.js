@@ -1,4 +1,4 @@
-// Sake Platform — Search with LIVE progressive feedback
+// Sake Platform — Research Agent Search with SSE Streaming
 
 const DEBOUNCE_MS=800, MIN_CHARS=3;
 
@@ -35,26 +35,22 @@ function onSearchInput(){
   state.debounceTimer=setTimeout(()=>startSearch(),DEBOUNCE_MS);
 }
 
-// ---- LIVE PROGRESS RENDERER ----
-function renderLiveTimeline(ir, steps){
-  ir.innerHTML=`<div class="progress-timeline">${steps.map((s,i)=>`
-    <div class="pt-step ${s.state}">
-      <div class="pt-icon">${s.state==='done'?'✓':s.state==='active'?'⟳':(i+1)}</div>
+// ---- LIVE TIMELINE RENDERER ----
+function renderLiveStep(ir, steps){
+  ir.innerHTML=`<div class="progress-timeline">${steps.map(s=>{
+    const icon = s.status==='found'?'✓' : s.status==='empty'?'—' : s.status==='searching'?'⟳' : '·';
+    const cls = s.status==='found'?'done' : s.status==='searching'?'active' : s.status==='empty'?'done' : 'waiting';
+    return `<div class="pt-step ${cls}">
+      <div class="pt-icon">${icon}</div>
       <div>
-        <div class="pt-label">${esc(s.label)}</div>
-        <div class="pt-detail">${s.html||esc(s.detail)}</div>
+        <div class="pt-label">${esc(s.label||'')}</div>
+        <div class="pt-detail">${esc(s.detail||'')}</div>
       </div>
-    </div>`).join('')}</div>`;
+    </div>`;
+  }).join('')}</div>`;
 }
 
-// AI search progress messages (rotate every 2s while waiting)
-function getAIProgressMessages(){
-  return [
-    t('ai_msg_1'),t('ai_msg_2'),t('ai_msg_3'),t('ai_msg_4'),
-    t('ai_msg_5'),t('ai_msg_6'),t('ai_msg_7'),t('ai_msg_8'),
-  ];
-}
-
+// ---- MAIN SEARCH WITH SSE ----
 async function startSearch(){
   const name=document.getElementById('search-input').value.trim();
   if(!name||name.length<MIN_CHARS)return;
@@ -73,153 +69,167 @@ async function startSearch(){
   document.getElementById('demo-links').style.display='none';
   ir.style.display='block';
 
-  function aborted(){return signal.aborted;}
+  if(!state.proxyUrl){ir.innerHTML='<div class="progress-timeline"><div style="padding:12px;text-align:center;color:var(--text3)">Configurazione mancante</div></div>';return;}
 
-  if(!state.proxyUrl&&!state.apiKey){
-    ir.innerHTML=`<div class="progress-timeline"><div style="padding:12px;text-align:center;color:var(--text3);font-size:14px">${esc(t('search_error'))}</div></div>`;
-    state.searching=false;return;
-  }
+  // Steps tracker — each step gets added as SSE events arrive
+  const steps = [];
+  let finalResults = null;
 
-  // ---- STEP 1: Show "searching database" immediately ----
-  const steps=[
-    {label:t('ps_db'),detail:t('ps_db_detail'),state:'active'},
-    {label:t('ps_cache'),detail:t('ps_cache_detail'),state:'waiting'},
-    {label:t('ps_ai'),detail:t('ps_ai_detail'),state:'waiting'},
-  ];
-  renderLiveTimeline(ir,steps);
+  try {
+    const response = await fetch(state.proxyUrl, {
+      method: 'POST',
+      signal,
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({query: name})
+    });
 
-  // ---- LAUNCH FETCH + LIVE PROGRESS IN PARALLEL ----
-  let fetchDone=false;
-  let fetchResult=null;
-  let aiMsgIdx=0;
-  const aiMsgs=getAIProgressMessages();
-
-  // Timer that updates the UI every 2 seconds while fetch is pending
-  const progressTimer=setInterval(()=>{
-    if(fetchDone||aborted()){clearInterval(progressTimer);return;}
-    // After 1.5s: mark DB as done (no results), start cache
-    if(!steps[0].locked&&steps[0].state==='active'){
-      steps[0]={label:t('ps_db'),detail:t('ps_db_none'),state:'done',locked:true};
-      steps[1]={label:t('ps_cache'),detail:t('ps_cache_detail'),state:'active'};
-      renderLiveTimeline(ir,steps);
-      return;
-    }
-    // After 3s: mark cache as done, start AI
-    if(!steps[1].locked&&steps[1].state==='active'){
-      steps[1]={label:t('ps_cache'),detail:t('ps_cache_none'),state:'done',locked:true};
-      steps[2]={label:t('ps_ai'),detail:aiMsgs[0]||t('ps_ai_detail'),state:'active'};
-      renderLiveTimeline(ir,steps);
-      aiMsgIdx=1;
-      return;
-    }
-    // Every 2s after: rotate AI progress messages
-    if(steps[2].state==='active'&&aiMsgIdx<aiMsgs.length){
-      steps[2].detail=aiMsgs[aiMsgIdx];
-      renderLiveTimeline(ir,steps);
-      aiMsgIdx++;
-    }
-  },2000);
-
-  try{
-    const r=await fetch(state.proxyUrl,{method:'POST',signal,headers:{'Content-Type':'application/json'},body:JSON.stringify({query:name})});
-    fetchDone=true;clearInterval(progressTimer);
-    if(aborted())return;
-    if(!r.ok){
-      ir.innerHTML=`<div class="progress-timeline"><div style="padding:12px;text-align:center;color:var(--text3);font-size:14px">${esc(t('search_error'))}</div></div>`;
+    if(!response.ok){
+      ir.innerHTML=`<div class="progress-timeline"><div style="padding:12px;text-align:center;color:var(--text3)">${esc(t('search_error'))}</div></div>`;
       state.searching=false;return;
     }
-    const data=await r.json();
-    const source=data.source||'ai';
-    const aiCandidates=data.results||[];
 
-    // ---- UPDATE TIMELINE BASED ON ACTUAL SOURCE ----
-    if(source==='db'){
-      steps[0]={label:t('ps_db'),detail:t('ps_db_found').replace('{n}',aiCandidates.length),state:'done'};
-      steps[1]={label:t('ps_cache'),detail:'—',state:'done'};
-      steps[2]={label:t('ps_ai'),detail:'—',state:'done'};
-    } else if(source==='cache'){
-      steps[0]={label:t('ps_db'),detail:t('ps_db_none'),state:'done'};
-      steps[1]={label:t('ps_cache'),detail:t('ps_cache_found').replace('{n}',aiCandidates.length),state:'done'};
-      steps[2]={label:t('ps_ai'),detail:'—',state:'done'};
+    // Check if response is SSE stream or JSON
+    const contentType = response.headers.get('content-type') || '';
+
+    if(contentType.includes('text/event-stream')){
+      // ---- SSE MODE: Read stream and update UI in real time ----
+      const reader = response.body.getReader();
+      const decoder = new TextDecoder();
+      let buffer = '';
+
+      while(true){
+        if(signal.aborted)break;
+        const {done, value} = await reader.read();
+        if(done)break;
+        buffer += decoder.decode(value, {stream: true});
+
+        // Parse SSE events from buffer
+        const lines = buffer.split('\n');
+        buffer = lines.pop() || ''; // keep incomplete line in buffer
+
+        let currentEvent = '';
+        let currentData = '';
+
+        for(const line of lines){
+          if(line.startsWith('event: ')){
+            currentEvent = line.substring(7).trim();
+          } else if(line.startsWith('data: ')){
+            currentData = line.substring(6).trim();
+          } else if(line === ''){
+            // End of event — process it
+            if(currentEvent && currentData){
+              try{
+                const data = JSON.parse(currentData);
+                handleSSEEvent(ir, steps, currentEvent, data);
+                if(currentEvent === 'results'){
+                  finalResults = data;
+                }
+              }catch(e){}
+            }
+            currentEvent = '';
+            currentData = '';
+          }
+        }
+      }
     } else {
-      steps[0]={label:t('ps_db'),detail:t('ps_db_none'),state:'done'};
-      steps[1]={label:t('ps_cache'),detail:t('ps_cache_none'),state:'done'};
-      steps[2]={label:t('ps_ai'),detail:t('ps_ai_found').replace('{n}',aiCandidates.length),state:'done'};
+      // ---- JSON MODE: Fallback for non-SSE responses ----
+      const data = await response.json();
+      finalResults = { results: data.results || [], source: data.source || 'unknown' };
     }
 
-    // Show products count if available
-    const totalProducts=aiCandidates.reduce((sum,c)=>{
-      const pc=c.products_count||c.product_count||(c.products?c.products.length:0);
-      return sum+pc;
-    },0);
-    if(totalProducts>0){
-      steps.push({label:t('ps_products'),detail:t('ps_products_found').replace('{n}',totalProducts),state:'done'});
-    }
-
-    renderLiveTimeline(ir,steps);
-
-    if(!aiCandidates.length){
-      ir.innerHTML=`<div class="progress-timeline"><div style="padding:12px;text-align:center;color:var(--text3);font-size:14px">${esc(t('not_found'))}</div></div>`;
-      state.searching=false;
-      setTimeout(()=>{ir.style.display='none';hero.classList.remove('has-results');document.getElementById('search-hint').style.display='';document.getElementById('demo-links').style.display='flex';},4000);
-      return;
-    }
-
-    // ---- VERIFY WEBSITES ----
-    steps.push({label:t('ps_verify'),detail:t('ps_verify_detail'),state:'active'});
-    renderLiveTimeline(ir,steps);
-
-    const verified=await verifyWebsites(aiCandidates,signal);
-    if(aborted())return;
-    const verCount=verified.filter(c=>c._siteVerified).length;
-    steps[steps.length-1]={label:t('ps_verify'),detail:t('ps_verified_sites').replace('{n}',verCount).replace('{total}',verified.length),state:'done'};
-
-    // ---- ENRICH WITH GEO ----
-    steps.push({label:t('ps_enrich'),detail:t('ps_enrich_detail'),state:'active'});
-    renderLiveTimeline(ir,steps);
-
-    const enriched=await enrichWithGeo(verified,signal);
-    if(aborted())return;
-    steps[steps.length-1]={label:t('ps_enrich'),detail:t('ps_done'),state:'done'};
-    renderLiveTimeline(ir,steps);
     state.searching=false;
 
-    await new Promise(r=>setTimeout(r,400));
-    if(aborted())return;
+    // Process final results
+    if(finalResults && finalResults.results && finalResults.results.length > 0){
+      const aiCandidates = finalResults.results;
 
-    // ---- CONVERT TO CANDIDATES ----
-    state.candidates=enriched.map(c=>({
-      company:{
-        name_jp:c.name_ja||c.name_jp||'',
-        name_en:c.name_en||'',
-        website:c.website||'',
-        prefecture:c.prefecture||'',
-        address:c.address||'',
-        phone:c.phone||'',
-        founded:c.founded||'',
-        history:c.description||c.description_en||'',
-        country:c.country||'',
-      },
-      productCount:c.products_count||c.product_count||(c.products?c.products.length:0),
-      products:c.products||[],
-      sources:c.sources||[],
-      _geo:c._geo||null,
-      _products:[],
-      _siteVerified:c._siteVerified||false,
-      _exactMatch:c.exact_match!==false,
-    }));
+      // Verify websites
+      const verified = await verifyWebsites(aiCandidates, signal);
+      if(signal.aborted)return;
 
-    if(state.candidates.length===1){
-      state.foundData=state.candidates[0];
-      showBreweryCard(state.foundData);
+      // Convert to candidates
+      state.candidates = verified.map(c=>({
+        company:{
+          name_jp:c.name_ja||c.name_jp||'',
+          name_en:c.name_en||'',
+          website:c.website||'',
+          prefecture:c.prefecture||'',
+          address:c.address||'',
+          phone:c.phone||'',
+          founded:c.founded||'',
+          history:c.description||'',
+          country:c.country||'',
+        },
+        productCount:c.products_count||(c.products?c.products.length:0),
+        products:c.products||[],
+        sources:c.sources||[],
+        _geo:c._geo||null,
+        _products:[],
+        _siteVerified:c._siteVerified||false,
+        _exactMatch:c.exact_match!==false,
+      }));
+
+      if(state.candidates.length===1){
+        state.foundData=state.candidates[0];
+        showBreweryCard(state.foundData);
+      } else {
+        showCandidateList(state.candidates);
+      }
     } else {
-      showCandidateList(state.candidates);
+      // No results — show narrowing down form
+      showNarrowingForm(ir, name);
     }
-  }catch(e){
-    fetchDone=true;clearInterval(progressTimer);
+
+  } catch(e){
     if(e.name==='AbortError')return;
     state.searching=false;
+    ir.innerHTML=`<div class="progress-timeline"><div style="padding:12px;text-align:center;color:var(--text3)">${esc(t('search_error'))}</div></div>`;
   }
+}
+
+// ---- HANDLE SSE EVENTS ----
+function handleSSEEvent(ir, steps, event, data){
+  if(event === 'step'){
+    // Find existing step or add new one
+    const existing = steps.find(s => s.id === data.id);
+    if(existing){
+      Object.assign(existing, data);
+    } else {
+      steps.push(data);
+    }
+    renderLiveStep(ir, steps);
+  }
+}
+
+// ---- NARROWING DOWN FORM ----
+function showNarrowingForm(ir, originalQuery){
+  ir.innerHTML=`<div class="progress-timeline" style="text-align:center;padding:24px">
+    <div style="font-size:15px;font-weight:600;margin-bottom:8px">${esc(t('not_found_title'))}</div>
+    <div style="font-size:13px;color:var(--text3);margin-bottom:20px;line-height:1.6">${esc(t('not_found_help'))}</div>
+    <div style="display:flex;flex-direction:column;gap:10px;max-width:320px;margin:0 auto;text-align:left">
+      <label style="font-size:12px;font-weight:600;color:var(--text2)">${esc(t('narrow_kanji'))}</label>
+      <input type="text" id="narrow-kanji" placeholder="例: 鯉川酒造" style="height:40px;border:1px solid var(--border);border-radius:8px;padding:0 12px;font:400 14px var(--font);outline:none">
+      <label style="font-size:12px;font-weight:600;color:var(--text2)">${esc(t('narrow_prefecture'))}</label>
+      <input type="text" id="narrow-pref" placeholder="例: Yamagata" style="height:40px;border:1px solid var(--border);border-radius:8px;padding:0 12px;font:400 14px var(--font);outline:none">
+      <label style="font-size:12px;font-weight:600;color:var(--text2)">${esc(t('narrow_website'))}</label>
+      <input type="text" id="narrow-web" placeholder="例: koikawa.com" style="height:40px;border:1px solid var(--border);border-radius:8px;padding:0 12px;font:400 14px var(--font);outline:none">
+      <button class="btn btn-primary" style="margin-top:8px" onclick="retryWithDetails('${esc(originalQuery)}')">${esc(t('narrow_retry'))}</button>
+      <button class="btn btn-outline" onclick="resetSearch()">${esc(t('narrow_cancel'))}</button>
+    </div>
+  </div>`;
+}
+
+function retryWithDetails(originalQuery){
+  const kanji = document.getElementById('narrow-kanji')?.value || '';
+  const pref = document.getElementById('narrow-pref')?.value || '';
+  const web = document.getElementById('narrow-web')?.value || '';
+  // Build enhanced query
+  let q = originalQuery;
+  if(kanji) q = kanji;
+  if(pref) q += ' ' + pref;
+  document.getElementById('search-input').value = q;
+  state.lastQuery = ''; // force new search
+  startSearch();
 }
 
 // ---- CANDIDATE LIST ----
@@ -238,18 +248,23 @@ function showCandidateList(candidates){
         ?`<span style="color:var(--green);font-size:11px;font-weight:600">✓ ${esc(website)}</span>`
         :`<span style="color:var(--text3);font-size:11px">${esc(website)}</span>`):'';
       const locTag=loc?`<span style="font-size:11px;color:var(--text3)">${esc(loc)}</span>`:'';
-      const prodTag=c.productCount?`<span style="font-size:11px;color:var(--green);font-weight:500">${c.productCount} prodotti</span>`:'';
-      const exactTag=c._exactMatch?'':`<span style="font-size:10px;color:var(--orange);font-weight:500;background:var(--orange-soft);padding:1px 6px;border-radius:8px">suggerito</span>`;
+      const prodTag=c.productCount?`<span style="font-size:11px;color:var(--green);font-weight:500">${c.productCount} ${t('products_label')}</span>`:'';
+      const exactTag=c._exactMatch?'':`<span style="font-size:10px;color:var(--orange);font-weight:500;background:var(--orange-soft);padding:1px 6px;border-radius:8px">${t('suggested_tag')}</span>`;
+      const srcTag=c.sources&&c.sources.length?`<span style="font-size:10px;color:var(--text3)">${c.sources.join(', ')}</span>`:'';
       const meta=[siteTag,locTag,prodTag,exactTag].filter(Boolean).join(' · ');
       return `<div class="candidate-item" onclick="selectCandidate(${i})">
         <div class="candidate-logo">${fav}</div>
         <div class="candidate-info">
           <div class="candidate-name">${esc(co.name_jp)}${co.name_en&&co.name_en!==co.name_jp?' · '+esc(co.name_en):''}</div>
           <div class="candidate-meta">${meta||esc(co.address||'')}</div>
+          ${srcTag?`<div style="margin-top:2px">${srcTag}</div>`:''}
         </div>
         <div class="candidate-arrow">→</div>
       </div>`;
     }).join('')}
+    <div style="padding:14px 20px;border-top:1px solid var(--border);text-align:center">
+      <button class="btn btn-outline" style="font-size:12px" onclick="showNarrowingForm(document.getElementById('inline-result'),'${esc(state.lastQuery)}')">${esc(t('none_of_these'))}</button>
+    </div>
   </div>`;
 }
 
@@ -271,7 +286,7 @@ function resetSearch(){
   document.getElementById('search-input').focus();
 }
 
-// ==================== WEB APIS ====================
+// ---- WEBSITE VERIFICATION ----
 async function verifyWebsites(candidates,signal){
   const checks=candidates.map(async(c)=>{
     if(!c.website){c._siteVerified=false;return c;}
@@ -289,26 +304,4 @@ async function verifyWebsites(candidates,signal){
     }catch(e){c._siteVerified=false;return c;}
   });
   return Promise.all(checks);
-}
-
-async function enrichWithGeo(candidates,signal){
-  for(let i=0;i<candidates.length;i++){
-    if(signal.aborted)return candidates;
-    const c=candidates[i];
-    const q=[c.name_ja||c.name_jp,c.prefecture,c.country].filter(Boolean).join(' ');
-    if(!q)continue;
-    try{
-      if(i>0)await new Promise(r=>setTimeout(r,300));
-      const r=await fetch(`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(q)}&format=json&addressdetails=1&limit=1&accept-language=${state.lang==='ja'?'ja':'en'}`,{headers:{'User-Agent':'SakePlatform/2.0'},signal});
-      if(!r.ok)continue;
-      const res=await r.json();
-      if(res.length){
-        c._geo={lat:+res[0].lat,lng:+res[0].lon};
-        if(!c.address&&res[0].display_name)c.address=res[0].display_name;
-        if(!c.prefecture){const a=res[0].address||{};c.prefecture=a.province||a.state||'';}
-        if(!c.country){const a=res[0].address||{};c.country=a.country||'';}
-      }
-    }catch(e){if(e.name==='AbortError')throw e;}
-  }
-  return candidates;
 }
