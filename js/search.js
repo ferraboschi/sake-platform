@@ -1,4 +1,4 @@
-// Sake Platform — Search Functions
+// Sake Platform — Search Functions (with escalation UX feedback)
 
 const DEBOUNCE_MS=800, MIN_CHARS=3;
 
@@ -13,7 +13,6 @@ function runDemo(name){
 function getHistory(){
   try{return JSON.parse(localStorage.getItem('sp_history')||'[]');}catch(e){return [];}
 }
-
 function addToHistory(name){
   let h=getHistory().filter(x=>x.toLowerCase()!==name.toLowerCase());
   h.unshift(name);
@@ -21,17 +20,12 @@ function addToHistory(name){
   localStorage.setItem('sp_history',JSON.stringify(h));
   renderHistory();
 }
-
 function renderHistory(){
   const container=document.getElementById('demo-links');
   const label=document.getElementById('demo-label');
   const h=getHistory();
-  // Remove old buttons (keep the label span)
   container.querySelectorAll('.demo-btn').forEach(b=>b.remove());
-  if(!h.length){
-    label.style.display='none';
-    return;
-  }
+  if(!h.length){label.style.display='none';return;}
   label.style.display='flex';
   h.forEach(name=>{
     const btn=document.createElement('button');
@@ -83,21 +77,45 @@ async function startSearch(){
       </div>`).join('')}</div>`;
   }
 
-  // ---- PATH A: With proxy or API key → AI-first discovery ----
   if(state.proxyUrl||state.apiKey){
+    // ---- ESCALATION UX: Show progressive search levels ----
     const steps=[
-      {label:t('ps_discover'),detail:t('ps_discover_detail'),state:'active'},
-      {label:t('ps_verify'),detail:t('ps_verify_detail'),state:'waiting'},
-      {label:t('ps_enrich'),detail:t('ps_enrich_detail'),state:'waiting'},
+      {label:t('ps_db'),detail:t('ps_db_detail'),state:'active'},
+      {label:t('ps_cache'),detail:t('ps_cache_detail'),state:'waiting'},
+      {label:t('ps_ai'),detail:t('ps_ai_detail'),state:'waiting'},
     ];
     renderTimeline(steps);
 
     try{
-    // Step 1: AI Discovery — find ALL breweries with this name
-    const aiCandidates=await aiDiscoverAll(name,signal);
+    // Call the hybrid proxy — it returns source: "db"|"cache"|"ai"
+    const proxyUrl=state.proxyUrl;
+    if(!proxyUrl)return;
+
+    const r=await fetch(proxyUrl,{method:'POST',signal,headers:{'Content-Type':'application/json'},body:JSON.stringify({query:name})});
     if(aborted())return;
-    steps[0]={label:t('ps_discover'),detail:t('ps_found_breweries').replace('{n}',aiCandidates.length),state:'done'};
-    steps[1].state='active';
+    if(!r.ok){
+      ir.innerHTML=`<div class="progress-timeline"><div style="padding:12px;text-align:center;color:var(--text3);font-size:14px">${esc(t('search_error'))}</div></div>`;
+      state.searching=false;
+      return;
+    }
+    const data=await r.json();
+    const source=data.source||'ai';
+    const aiCandidates=data.results||[];
+
+    // Update timeline based on which level answered
+    if(source==='db'){
+      steps[0]={label:t('ps_db'),detail:t('ps_db_found').replace('{n}',aiCandidates.length),state:'done'};
+      steps[1]={label:t('ps_cache'),detail:t('ps_skipped'),state:'done'};
+      steps[2]={label:t('ps_ai'),detail:t('ps_skipped'),state:'done'};
+    } else if(source==='cache'){
+      steps[0]={label:t('ps_db'),detail:t('ps_db_none'),state:'done'};
+      steps[1]={label:t('ps_cache'),detail:t('ps_cache_found').replace('{n}',aiCandidates.length),state:'done'};
+      steps[2]={label:t('ps_ai'),detail:t('ps_skipped'),state:'done'};
+    } else {
+      steps[0]={label:t('ps_db'),detail:t('ps_db_none'),state:'done'};
+      steps[1]={label:t('ps_cache'),detail:t('ps_cache_none'),state:'done'};
+      steps[2]={label:t('ps_ai'),detail:t('ps_ai_found').replace('{n}',aiCandidates.length),state:'done'};
+    }
     renderTimeline(steps);
 
     if(!aiCandidates.length){
@@ -107,38 +125,41 @@ async function startSearch(){
       return;
     }
 
-    // Step 2: Verify websites — check each domain via favicon
+    // Verify websites + enrich with geo
+    steps.push({label:t('ps_verify'),detail:t('ps_verify_detail'),state:'active'});
+    renderTimeline(steps);
+
     const verified=await verifyWebsites(aiCandidates,signal);
     if(aborted())return;
     const verCount=verified.filter(c=>c._siteVerified).length;
-    steps[1]={label:t('ps_verify'),detail:t('ps_verified_sites').replace('{n}',verCount).replace('{total}',verified.length),state:'done'};
-    steps[2].state='active';
+    steps[steps.length-1]={label:t('ps_verify'),detail:t('ps_verified_sites').replace('{n}',verCount).replace('{total}',verified.length),state:'done'};
+
+    steps.push({label:t('ps_enrich'),detail:t('ps_enrich_detail'),state:'active'});
     renderTimeline(steps);
 
-    // Step 3: Enrich with geocode for coordinates
     const enriched=await enrichWithGeo(verified,signal);
     if(aborted())return;
-    steps[2]={label:t('ps_enrich'),detail:t('ps_done'),state:'done'};
+    steps[steps.length-1]={label:t('ps_enrich'),detail:t('ps_done'),state:'done'};
     renderTimeline(steps);
     state.searching=false;
 
     await new Promise(r=>setTimeout(r,400));
     if(aborted())return;
 
-    // Convert to our candidate format
+    // Convert to candidate format
     state.candidates=enriched.map(c=>({
       company:{
-        name_jp:c.name_jp||'',
+        name_jp:c.name_ja||c.name_jp||'',
         name_en:c.name_en||'',
         website:c.website||'',
         prefecture:c.prefecture||'',
         address:c.address||'',
         phone:c.phone||'',
         founded:c.founded||'',
-        history:c.description||'',
+        history:c.description||c.description_en||'',
         country:c.country||'',
       },
-      productCount:c.product_count||0,
+      productCount:c.products_count||c.product_count||0,
       sources:c.sources||[],
       _geo:c._geo||null,
       _products:[],
@@ -155,7 +176,7 @@ async function startSearch(){
     }catch(e){if(e.name==='AbortError')return;state.searching=false;}
 
   } else {
-    // ---- PATH B: No API key → Nominatim + Wikipedia fallback ----
+    // ---- PATH B: No proxy → Nominatim + Wikipedia fallback ----
     const steps=[
       {label:t('ps_geo'),detail:t('ps_geo_detail'),state:'active'},
       {label:t('ps_wiki'),detail:t('ps_wiki_detail'),state:'waiting'},
@@ -179,7 +200,6 @@ async function startSearch(){
     await new Promise(r=>setTimeout(r,300));
     if(aborted())return;
 
-    // Build candidates from geo results
     const candidates=[];
     for(const geo of geoResults){
       candidates.push({
@@ -207,14 +227,14 @@ async function startSearch(){
     renderTimeline(steps);
     state.searching=false;
 
+    await new Promise(r=>setTimeout(r,300));
+    if(aborted())return;
+
     if(!candidates.length){
       ir.innerHTML=`<div class="progress-timeline"><div style="padding:12px;text-align:center;color:var(--text3);font-size:14px">${esc(t('not_found'))}</div></div>`;
       setTimeout(()=>{ir.style.display='none';hero.classList.remove('has-results');document.getElementById('search-hint').style.display='';document.getElementById('demo-links').style.display='flex';},4000);
       return;
     }
-
-    await new Promise(r=>setTimeout(r,400));
-    if(aborted())return;
 
     state.candidates=candidates;
     if(candidates.length===1){
@@ -228,7 +248,7 @@ async function startSearch(){
   }
 }
 
-// Show list of candidates for user to pick from
+// Show list of candidates
 function showCandidateList(candidates){
   const ir=document.getElementById('inline-result');
   const title=t('candidates_title').replace('{n}',candidates.length);
@@ -277,28 +297,13 @@ function resetSearch(){
 
 // ==================== WEB APIS ====================
 
-// ---- AI DISCOVERY: Find ALL breweries via backend proxy ----
-async function aiDiscoverAll(name,signal){
-  try{
-    const proxyUrl=state.proxyUrl;
-    if(!proxyUrl)return [];
-    const r=await fetch(proxyUrl,{method:'POST',signal,headers:{
-      'Content-Type':'application/json'
-    },body:JSON.stringify({query:name})});
-    if(!r.ok)return [];
-    const d=await r.json();
-    return d.results||[];
-  }catch(e){if(e.name==='AbortError')throw e;return [];}
-}
-
-// ---- WEBSITE VERIFICATION: Check each domain via favicon load ----
+// ---- WEBSITE VERIFICATION ----
 async function verifyWebsites(candidates,signal){
   const checks=candidates.map(async(c)=>{
     if(!c.website){c._siteVerified=false;return c;}
     const domain=c.website.replace(/^https?:\/\//,'').replace(/^www\./,'').split('/')[0];
     if(!domain||domain.length<4){c._siteVerified=false;c.website='';return c;}
     try{
-      // Try loading favicon as lightweight domain check
       const verified=await new Promise((resolve)=>{
         const img=new Image();
         const timer=setTimeout(()=>{img.src='';resolve(false);},4000);
@@ -306,36 +311,27 @@ async function verifyWebsites(candidates,signal){
         img.onerror=()=>{clearTimeout(timer);resolve(false);};
         img.src=`https://www.google.com/s2/favicons?domain=${domain}&sz=32`;
       });
-      // Google favicon service returns a default globe icon for unknown domains
-      // but it always returns 200. We do a secondary check: try fetching via HEAD
-      // Actually, Google returns a valid image even for dead domains (the globe).
-      // So instead, just mark as verified if we got a domain, and let the user see it.
       c._siteVerified=verified;
       return c;
-    }catch(e){
-      c._siteVerified=false;return c;
-    }
+    }catch(e){c._siteVerified=false;return c;}
   });
   return Promise.all(checks);
 }
 
-// ---- GEOCODE ENRICHMENT: Get coordinates for each candidate ----
+// ---- GEOCODE ENRICHMENT ----
 async function enrichWithGeo(candidates,signal){
-  // Geocode each candidate in parallel (but respect Nominatim rate limits)
   for(let i=0;i<candidates.length;i++){
     if(signal.aborted)return candidates;
     const c=candidates[i];
-    const q=[c.name_jp,c.prefecture,c.country].filter(Boolean).join(' ');
+    const q=[c.name_ja||c.name_jp,c.prefecture,c.country].filter(Boolean).join(' ');
     if(!q)continue;
     try{
-      // Small delay between requests for Nominatim rate limit
       if(i>0)await new Promise(r=>setTimeout(r,300));
       const r=await fetch(`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(q)}&format=json&addressdetails=1&limit=1&accept-language=${state.lang==='ja'?'ja':'en'}`,{headers:{'User-Agent':'SakePlatform/2.0'},signal});
       if(!r.ok)continue;
       const res=await r.json();
       if(res.length){
         c._geo={lat:+res[0].lat,lng:+res[0].lon};
-        // Also fill in address if empty
         if(!c.address&&res[0].display_name)c.address=res[0].display_name;
         if(!c.prefecture){const a=res[0].address||{};c.prefecture=a.province||a.state||'';}
         if(!c.country){const a=res[0].address||{};c.country=a.country||'';}
@@ -345,10 +341,9 @@ async function enrichWithGeo(candidates,signal){
   return candidates;
 }
 
-// ---- FALLBACK: Nominatim multi-search (no API key path) ----
+// ---- FALLBACK APIs (Path B) ----
 async function geocodeLookupMulti(name,signal){
-  const results=[];
-  const seen=new Set();
+  const results=[];const seen=new Set();
   try{
     const queries=[name+' sake brewery',name+' 酒造',name+' sakagura',name];
     for(const q of queries){
@@ -358,8 +353,7 @@ async function geocodeLookupMulti(name,signal){
       const res=await r.json();
       for(const item of res){
         const key=Math.round(+item.lat*100)+','+Math.round(+item.lon*100);
-        if(seen.has(key))continue;
-        seen.add(key);
+        if(seen.has(key))continue;seen.add(key);
         const a=item.address||{};
         results.push({displayName:item.name||'',address:item.display_name||'',lat:+item.lat,lng:+item.lon,prefecture:a.province||a.state||'',country:a.country||'',countryCode:a.country_code||''});
       }
@@ -368,7 +362,6 @@ async function geocodeLookupMulti(name,signal){
   return results;
 }
 
-// ---- FALLBACK: Wikipedia lookup ----
 async function wikiLookup(name,signal){
   try{
     const jaTerms=[name+'酒造',name+' 酒造',name];
