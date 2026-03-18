@@ -1,17 +1,16 @@
-// Sake Platform — Anthropic API Proxy
+// Sake Platform — Anthropic API Proxy with Supabase Cache
 // Supabase Edge Function (Deno)
-// Protects API key server-side, adds CORS + rate limiting
+// FASE 1: Cache results in search_cache table, save breweries to DB
 
 const ALLOWED_ORIGINS = [
   "https://sakeplatform.com",
   "https://www.sakeplatform.com",
-  "http://localhost:3000", // dev
+  "http://localhost:3000",
 ];
 
-// Simple in-memory rate limiter (per IP, resets on cold start)
 const rateLimiter = new Map<string, { count: number; resetAt: number }>();
-const RATE_LIMIT = 20;       // max requests
-const RATE_WINDOW = 60_000;  // per 60 seconds
+const RATE_LIMIT = 20;
+const RATE_WINDOW = 60_000;
 
 function checkRateLimit(ip: string): boolean {
   const now = Date.now();
@@ -35,65 +34,118 @@ function corsHeaders(origin: string) {
   };
 }
 
+// Supabase client helper (uses service role for DB writes)
+function supabaseHeaders() {
+  const url = Deno.env.get("SUPABASE_URL") || "";
+  const key = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") || "";
+  return { url, headers: { "apikey": key, "Authorization": "Bearer " + key, "Content-Type": "application/json" } };
+}
+
+async function getCachedResults(query: string): Promise<any[] | null> {
+  const { url, headers } = supabaseHeaders();
+  if (!url) return null;
+  try {
+    const res = await fetch(
+      url + "/rest/v1/search_cache?query_normalized=eq." + encodeURIComponent(query) + "&expires_at=gt." + new Date().toISOString() + "&select=results",
+      { headers }
+    );
+    if (!res.ok) return null;
+    const rows = await res.json();
+    if (rows.length > 0 && rows[0].results) return rows[0].results;
+    return null;
+  } catch (_e) { return null; }
+}
+
+async function saveToCache(query: string, results: any[]) {
+  const { url, headers } = supabaseHeaders();
+  if (!url) return;
+  try {
+    await fetch(url + "/rest/v1/search_cache", {
+      method: "POST",
+      headers: { ...headers, "Prefer": "resolution=merge-duplicates" },
+      body: JSON.stringify({
+        query_normalized: query,
+        results: results,
+        result_count: results.length,
+        searched_at: new Date().toISOString(),
+        expires_at: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString()
+      })
+    });
+    for (const r of results) {
+      if (!r.name_en) continue;
+      await fetch(url + "/rest/v1/breweries", {
+        method: "POST",
+        headers: { ...headers, "Prefer": "resolution=ignore-duplicates" },
+        body: JSON.stringify({
+          name_ja: r.name_ja || r.name_jp || "",
+          name_en: r.name_en || "",
+          website: r.website || "",
+          prefecture: r.prefecture || "",
+          country: r.country || "",
+          address: r.address || "",
+          phone: r.phone || "",
+          founded: r.founded || "",
+          description_en: r.description || "",
+          source_data: r
+        })
+      });
+    }
+  } catch (_e) { /* non-critical */ }
+}
+
 Deno.serve(async (req) => {
   const origin = req.headers.get("origin") || "";
   const headers = corsHeaders(origin);
 
-  // Handle CORS preflight
   if (req.method === "OPTIONS") {
     return new Response(null, { status: 204, headers });
   }
-
-  // Only POST allowed
   if (req.method !== "POST") {
     return new Response(JSON.stringify({ error: "Method not allowed" }), {
-      status: 405,
-      headers: { ...headers, "Content-Type": "application/json" },
+      status: 405, headers: { ...headers, "Content-Type": "application/json" },
     });
   }
-
-  // Check origin
   if (!ALLOWED_ORIGINS.includes(origin)) {
     return new Response(JSON.stringify({ error: "Origin not allowed" }), {
-      status: 403,
-      headers: { ...headers, "Content-Type": "application/json" },
+      status: 403, headers: { ...headers, "Content-Type": "application/json" },
     });
   }
 
-  // Rate limit by IP
-  const ip = req.headers.get("x-forwarded-for")?.split(",")[0]?.trim()
-    || req.headers.get("cf-connecting-ip")
-    || "unknown";
+  const ip = req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || "unknown";
   if (!checkRateLimit(ip)) {
-    return new Response(JSON.stringify({ error: "Rate limit exceeded. Try again in a minute." }), {
-      status: 429,
-      headers: { ...headers, "Content-Type": "application/json" },
-    });
-  }
-
-  // Get API key from Supabase secrets
-  const apiKey = Deno.env.get("ANTHROPIC_API_KEY");
-  if (!apiKey) {
-    return new Response(JSON.stringify({ error: "API key not configured" }), {
-      status: 500,
-      headers: { ...headers, "Content-Type": "application/json" },
+    return new Response(JSON.stringify({ error: "Rate limit exceeded" }), {
+      status: 429, headers: { ...headers, "Content-Type": "application/json" },
     });
   }
 
   try {
     const body = await req.json();
     const { query } = body;
-
     if (!query || typeof query !== "string" || query.trim().length < 2) {
       return new Response(JSON.stringify({ error: "Invalid query" }), {
-        status: 400,
-        headers: { ...headers, "Content-Type": "application/json" },
+        status: 400, headers: { ...headers, "Content-Type": "application/json" },
       });
     }
 
-    const name = query.trim().substring(0, 100); // Cap at 100 chars
+    const name = query.trim().substring(0, 100);
+    const normalized = name.toLowerCase();
 
-    // Build the same prompt used in the frontend
+    // STEP 1: Check cache first
+    const cached = await getCachedResults(normalized);
+    if (cached && cached.length > 0) {
+      return new Response(JSON.stringify({ results: cached, count: cached.length, cached: true }), {
+        status: 200, headers: { ...headers, "Content-Type": "application/json" },
+      });
+    }
+
+    // STEP 2: No cache hit — call Anthropic
+    const apiKey = Deno.env.get("ANTHROPIC_API_KEY");
+    if (!apiKey) {
+      return new Response(JSON.stringify({ error: "API key not configured" }), {
+        status: 500, headers: { ...headers, "Content-Type": "application/json" },
+      });
+    }
+
     const prompt = `You are an expert sake industry database. I'm searching for "${name}".
 CRITICAL: There may be MULTIPLE different breweries/producers with this name or very similar names.
 For example, "otokoyama" has multiple distinct sakagura in different prefectures (Hokkaido, Yamagata, etc.).
@@ -124,7 +176,6 @@ CRITICAL RULES:
 5. Sort by relevance/prominence (most well-known first)
 6. Include name variations: "${name}" with different spacing, "${name}酒造", "${name} sake" etc.`;
 
-    // Call Anthropic API
     const anthropicRes = await fetch("https://api.anthropic.com/v1/messages", {
       method: "POST",
       headers: {
@@ -143,16 +194,14 @@ CRITICAL RULES:
       const errText = await anthropicRes.text();
       console.error("Anthropic API error:", anthropicRes.status, errText);
       return new Response(JSON.stringify({ error: "AI search failed", status: anthropicRes.status }), {
-        status: 502,
-        headers: { ...headers, "Content-Type": "application/json" },
+        status: 502, headers: { ...headers, "Content-Type": "application/json" },
       });
     }
 
     const data = await anthropicRes.json();
     const text = data.content?.[0]?.text || "";
 
-    // Extract JSON array from response
-    let results = [];
+    let results: any[] = [];
     const arrMatch = text.match(/\[[\s\S]*\]/);
     if (arrMatch) {
       try { results = JSON.parse(arrMatch[0]); } catch (_e) { /* ignore */ }
@@ -164,16 +213,17 @@ CRITICAL RULES:
       }
     }
 
-    return new Response(JSON.stringify({ results, count: results.length }), {
-      status: 200,
-      headers: { ...headers, "Content-Type": "application/json" },
+    // STEP 3: Save to cache and breweries table (async, don't block response)
+    saveToCache(normalized, results).catch(e => console.error("Cache save error:", e));
+
+    return new Response(JSON.stringify({ results, count: results.length, cached: false }), {
+      status: 200, headers: { ...headers, "Content-Type": "application/json" },
     });
 
   } catch (err) {
     console.error("Edge function error:", err);
     return new Response(JSON.stringify({ error: "Internal error" }), {
-      status: 500,
-      headers: { ...headers, "Content-Type": "application/json" },
+      status: 500, headers: { ...headers, "Content-Type": "application/json" },
     });
   }
 });
