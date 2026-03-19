@@ -294,9 +294,26 @@ function startCreateFromScratch(){
   </div>`;
 }
 
-function selectCandidate(idx){
+async function selectCandidate(idx){
   if(!state.candidates[idx])return;
   state.foundData=state.candidates[idx];
+  // Geocode if no coordinates yet
+  if(!state.foundData._geo){
+    const co=state.foundData.company;
+    const q=[co.name_jp,co.prefecture,co.country].filter(Boolean).join(' ');
+    if(q){
+      try{
+        const r=await fetch('https://nominatim.openstreetmap.org/search?q='+encodeURIComponent(q)+'&format=json&addressdetails=1&limit=1&accept-language=en',{headers:{'User-Agent':'SakePlatform/2.0'}});
+        if(r.ok){
+          const res=await r.json();
+          if(res.length){
+            state.foundData._geo={lat:+res[0].lat,lng:+res[0].lon};
+            if(!co.address&&res[0].display_name) co.address=res[0].display_name;
+          }
+        }
+      }catch(e){}
+    }
+  }
   showBreweryCard(state.foundData);
 }
 

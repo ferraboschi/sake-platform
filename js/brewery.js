@@ -60,9 +60,10 @@ function showBreweryCard(data){
     map+srcHtml+
     '<div class="bc-cta">'+
       '<div class="bc-cta-text">'+esc(t('found_confirm'))+'</div>'+
-      '<div class="bc-cta-actions">'+backBtn+
-        '<button class="btn btn-primary btn-lg" onclick="confirmBrewery()">'+esc(t('btn_confirm'))+'</button>'+
-        '<button class="bc-retry" onclick="notMyBrewery()">'+esc(t('btn_not_me'))+'</button>'+
+      '<div style="display:flex;flex-direction:column;gap:10px;align-items:center;width:100%;max-width:360px;margin:0 auto">'+
+        '<button class="btn btn-primary btn-lg btn-full" onclick="confirmBrewery()">'+esc(t('btn_confirm'))+'</button>'+
+        backBtn+
+        '<button class="btn btn-outline btn-full" style="font-size:13px" onclick="startCreateFromScratch()">'+esc(t('create_from_scratch'))+'</button>'+
       '</div>'+
     '</div>'+
   '</div>';
