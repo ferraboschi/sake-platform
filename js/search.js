@@ -232,39 +232,69 @@ function retryWithDetails(originalQuery){
   startSearch();
 }
 
-// ---- CANDIDATE LIST ----
+// ---- CANDIDATE LIST (Step 2: Selection) ----
 function showCandidateList(candidates){
   const ir=document.getElementById('inline-result');
-  const title=t('candidates_title').replace('{n}',candidates.length);
+  const queryName=esc(state.lastQuery);
+
+  // Build rich candidate cards
+  const cards=candidates.map((c,i)=>{
+    const co=c.company;
+    const website=(co.website||'').replace(/^https?:\/\//,'').replace(/^www\./,'').replace(/\/$/,'');
+    const fav=website?`<img src="https://www.google.com/s2/favicons?domain=${website}&sz=64" onerror="this.outerHTML='🏯'">`:'🏯';
+    const verified=c._siteVerified;
+    const exactTag=c._exactMatch?'':`<span style="font-size:10px;color:var(--orange);font-weight:500;background:var(--orange-soft);padding:2px 8px;border-radius:8px;margin-left:8px">${t('suggested_tag')}</span>`;
+
+    // Detail rows
+    const details=[];
+    if(co.prefecture||co.country) details.push(`<div style="font-size:12px;color:var(--text2)">📍 ${esc([co.prefecture,co.country].filter(Boolean).join(', '))}</div>`);
+    if(co.address && co.address!==co.prefecture) details.push(`<div style="font-size:11px;color:var(--text3)">${esc(co.address)}</div>`);
+    if(co.founded) details.push(`<div style="font-size:12px;color:var(--text2)">${esc(t('founded_label'))}: ${esc(co.founded)}</div>`);
+    if(website){
+      const siteColor=verified?'var(--green)':'var(--text3)';
+      const siteIcon=verified?'✓ ':'';
+      details.push(`<div style="font-size:12px;color:${siteColor};font-weight:500">${siteIcon}${esc(website)}</div>`);
+    }
+    if(c.productCount>0) details.push(`<div style="font-size:12px;color:var(--green);font-weight:500">${c.productCount} ${t('products_label')}</div>`);
+    if(c.products&&c.products.length>0){
+      const prodList=c.products.slice(0,4).map(p=>esc(p)).join(', ');
+      const more=c.products.length>4?' + '+(c.products.length-4):'';
+      details.push(`<div style="font-size:11px;color:var(--text3);font-style:italic">${prodList}${more}</div>`);
+    }
+    // Sources
+    if(c.sources&&c.sources.length>0){
+      details.push(`<div style="font-size:10px;color:var(--text3);margin-top:2px">${t('sources_label')}: ${c.sources.join(', ')}</div>`);
+    }
+
+    return `<div class="candidate-item" onclick="selectCandidate(${i})" style="align-items:flex-start;padding:18px 20px">
+      <div class="candidate-logo" style="margin-top:2px">${fav}</div>
+      <div class="candidate-info" style="gap:4px;display:flex;flex-direction:column">
+        <div class="candidate-name">${esc(co.name_jp)}${co.name_en&&co.name_en!==co.name_jp?' · '+esc(co.name_en):''}${exactTag}</div>
+        ${details.join('')}
+      </div>
+      <div class="candidate-arrow" style="margin-top:4px">→</div>
+    </div>`;
+  }).join('');
+
   ir.innerHTML=`<div class="candidate-list">
-    <div class="candidate-list-title">${esc(title)}</div>
-    ${candidates.map((c,i)=>{
-      const co=c.company;
-      const website=(co.website||'').replace(/^https?:\/\//,'').replace(/^www\./,'').replace(/\/$/,'');
-      const fav=website?`<img src="https://www.google.com/s2/favicons?domain=${website}&sz=64" onerror="this.outerHTML='🏯'">`:'🏯';
-      const loc=[co.prefecture,co.country].filter(Boolean).join(', ');
-      const verified=c._siteVerified;
-      const siteTag=website?(verified
-        ?`<span style="color:var(--green);font-size:11px;font-weight:600">✓ ${esc(website)}</span>`
-        :`<span style="color:var(--text3);font-size:11px">${esc(website)}</span>`):'';
-      const locTag=loc?`<span style="font-size:11px;color:var(--text3)">${esc(loc)}</span>`:'';
-      const prodTag=c.productCount?`<span style="font-size:11px;color:var(--green);font-weight:500">${c.productCount} ${t('products_label')}</span>`:'';
-      const exactTag=c._exactMatch?'':`<span style="font-size:10px;color:var(--orange);font-weight:500;background:var(--orange-soft);padding:1px 6px;border-radius:8px">${t('suggested_tag')}</span>`;
-      const srcTag=c.sources&&c.sources.length?`<span style="font-size:10px;color:var(--text3)">${c.sources.join(', ')}</span>`:'';
-      const meta=[siteTag,locTag,prodTag,exactTag].filter(Boolean).join(' · ');
-      return `<div class="candidate-item" onclick="selectCandidate(${i})">
-        <div class="candidate-logo">${fav}</div>
-        <div class="candidate-info">
-          <div class="candidate-name">${esc(co.name_jp)}${co.name_en&&co.name_en!==co.name_jp?' · '+esc(co.name_en):''}</div>
-          <div class="candidate-meta">${meta||esc(co.address||'')}</div>
-          ${srcTag?`<div style="margin-top:2px">${srcTag}</div>`:''}
-        </div>
-        <div class="candidate-arrow">→</div>
-      </div>`;
-    }).join('')}
-    <div style="padding:14px 20px;border-top:1px solid var(--border);text-align:center">
-      <button class="btn btn-outline" style="font-size:12px" onclick="showNarrowingForm(document.getElementById('inline-result'),'${esc(state.lastQuery)}')">${esc(t('none_of_these'))}</button>
+    <div class="candidate-list-title" style="padding:18px 20px 14px;font-size:14px">
+      ${t('candidates_question').replace('{name}',queryName)}
     </div>
+    ${cards}
+    <div style="padding:16px 20px;border-top:1px solid var(--border);display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
+      <button class="btn btn-outline" style="font-size:12px" onclick="showNarrowingForm(document.getElementById('inline-result'),'${queryName}')">${esc(t('none_of_these'))}</button>
+      <button class="btn btn-outline" style="font-size:12px;border-color:var(--green);color:var(--green)" onclick="startCreateFromScratch()">${esc(t('create_from_scratch'))}</button>
+    </div>
+  </div>`;
+}
+
+function startCreateFromScratch(){
+  // TODO: implement create-from-scratch flow (FASE 2)
+  const ir=document.getElementById('inline-result');
+  ir.innerHTML=`<div class="progress-timeline" style="text-align:center;padding:32px">
+    <div style="font-size:40px;margin-bottom:12px">🏯</div>
+    <div style="font-size:15px;font-weight:600;margin-bottom:8px">${esc(t('create_scratch_title'))}</div>
+    <div style="font-size:13px;color:var(--text3);line-height:1.6">${esc(t('create_scratch_desc'))}</div>
   </div>`;
 }
 
