@@ -45,6 +45,7 @@ function applyLang(){
   document.getElementById('hero-kanji').textContent=t('hero_title');
   document.getElementById('hero-sub').textContent=t('hero_sub');
   document.getElementById('search-input').placeholder=t('search_placeholder');
+  document.getElementById('search-go-btn').textContent=t('search_go');
   document.getElementById('search-hint').innerHTML=t('search_hint');
   document.getElementById('demo-label').textContent=t('demo_label');
   document.getElementById('nav-search').textContent=t('nav_search');

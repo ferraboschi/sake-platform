@@ -3,6 +3,7 @@ const I18N = {
   it: {
     hero_title:'酒蔵を探す', hero_sub:'TROVA LA TUA SAKAGURA',
     search_placeholder:'Nome della sakagura o della brewery...',
+    search_go:'Cerca',
     search_hint:'Inserisci il nome di qualsiasi produttore di sake nel mondo. Cercheremo <strong>sito web, storia, dati aziendali e prodotti</strong> da fonti internazionali.',
     ps_db:'Ricerca nel database Sake Platform',
     ps_db_detail:'Consulto il database con oltre 300 sakagura registrate...',
@@ -123,6 +124,7 @@ const I18N = {
   en: {
     hero_title:'酒蔵を探す', hero_sub:'FIND YOUR SAKAGURA',
     search_placeholder:'Brewery name...',
+    search_go:'Search',
     search_hint:'Enter the name of any sake producer worldwide. We\'ll search for <strong>website, history, company data and products</strong> from international sources.',
     ps_db:'Searching Sake Platform database',
     ps_db_detail:'Checking our database of 300+ registered sakagura...',
@@ -240,6 +242,7 @@ const I18N = {
   ja: {
     hero_title:'酒蔵を探す', hero_sub:'あなたの酒蔵を見つける',
     search_placeholder:'酒蔵の名前...',
+    search_go:'検索',
     search_hint:'世界中の酒蔵の名前を入力。<strong>ウェブサイト、歴史、会社情報、商品</strong>を国際的な情報源から検索します。',
     ps_db:'Sake Platformデータベースを検索',
     ps_db_detail:'300以上の登録済み酒蔵のデータベースを確認中...',

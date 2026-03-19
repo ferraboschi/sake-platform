@@ -1,11 +1,10 @@
 // Sake Platform — Research Agent Search with SSE Streaming
 
-const DEBOUNCE_MS=800, MIN_CHARS=3;
+const MIN_CHARS=3;
 
 function runDemo(name){
   document.getElementById('search-input').value=name;
   document.getElementById('demo-links').style.display='none';
-  clearTimeout(state.debounceTimer);
   startSearch();
 }
 
@@ -48,13 +47,11 @@ function renderHistory(){
   });
 }
 
-function onSearchInput(){
-  clearTimeout(state.debounceTimer);
-  const val=document.getElementById('search-input').value.trim();
-  if(!val && state.foundData){resetSearch();return;}
-  if(val===state.lastQuery)return;
-  if(val.length<MIN_CHARS)return;
-  state.debounceTimer=setTimeout(()=>startSearch(),DEBOUNCE_MS);
+function onSearchKeydown(e){
+  if(e.key==='Enter'){
+    e.preventDefault();
+    startSearch();
+  }
 }
 
 // ---- LIVE TIMELINE RENDERER ----

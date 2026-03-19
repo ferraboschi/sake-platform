@@ -41,7 +41,8 @@
     <div class="hero-kanji" id="hero-kanji"></div>
     <div class="hero-sub" id="hero-sub"></div>
     <div class="search-box">
-      <input type="text" id="search-input" autocomplete="off" oninput="onSearchInput()">
+      <input type="text" id="search-input" autocomplete="off" onkeydown="onSearchKeydown(event)">
+      <button class="search-go-btn" id="search-go-btn" onclick="startSearch()"></button>
     </div>
     <div class="search-hint" id="search-hint"></div>
     <div id="demo-links" class="demo-links">

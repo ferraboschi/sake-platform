@@ -121,9 +121,9 @@ body { font-family:var(--font); background:var(--bg); color:var(--text); min-hei
 }
 .hero.has-results .hero-sub { font-size:11px; margin-bottom:20px; }
 
-.search-box { position:relative; width:100%; max-width:480px; }
+.search-box { position:relative; width:100%; max-width:480px; display:flex; gap:8px; }
 .search-box input {
-  width:100%; height:56px; background:var(--surface);
+  flex:1; min-width:0; height:56px; background:var(--surface);
   border:1px solid var(--border); border-radius:var(--radius);
   padding:0 20px; font:400 16px var(--font);
   color:var(--text); outline:none; transition:var(--transition);
@@ -133,6 +133,14 @@ body { font-family:var(--font); background:var(--bg); color:var(--text); min-hei
 .search-box input:focus {
   border-color:var(--text3); box-shadow:0 0 0 3px var(--accent-glow), var(--shadow);
 }
+.search-go-btn {
+  height:56px; padding:0 24px; background:var(--text); color:#fff;
+  border:none; border-radius:var(--radius); font:600 15px var(--font);
+  cursor:pointer; transition:var(--transition); white-space:nowrap;
+  letter-spacing:-0.2px; flex-shrink:0;
+}
+.search-go-btn:hover { background:var(--accent-hover); }
+.search-go-btn:active { transform:scale(0.97); }
 
 .search-hint {
   margin-top:24px; font-size:13px; color:var(--text3);
