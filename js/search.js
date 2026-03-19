@@ -13,17 +13,39 @@ function runDemo(name){
 function getHistory(){try{return JSON.parse(localStorage.getItem('sp_history')||'[]');}catch(e){return [];}}
 function addToHistory(name){
   let h=getHistory().filter(x=>x.toLowerCase()!==name.toLowerCase());
-  h.unshift(name);if(h.length>8)h=h.slice(0,8);
+  h.unshift(name);if(h.length>5)h=h.slice(0,5);
+  localStorage.setItem('sp_history',JSON.stringify(h));renderHistory();
+}
+function removeFromHistory(name){
+  let h=getHistory().filter(x=>x.toLowerCase()!==name.toLowerCase());
   localStorage.setItem('sp_history',JSON.stringify(h));renderHistory();
 }
 function renderHistory(){
   const container=document.getElementById('demo-links');
   const label=document.getElementById('demo-label');
   const h=getHistory();
-  container.querySelectorAll('.demo-btn').forEach(b=>b.remove());
+  container.querySelectorAll('.demo-btn,.demo-item').forEach(b=>b.remove());
   if(!h.length){label.style.display='none';return;}
   label.style.display='flex';
-  h.forEach(name=>{const btn=document.createElement('button');btn.className='demo-btn';btn.textContent=name;btn.onclick=()=>runDemo(name);container.appendChild(btn);});
+  h.forEach(name=>{
+    const wrap=document.createElement('span');
+    wrap.className='demo-item';
+    wrap.style.cssText='display:inline-flex;align-items:center;gap:0;background:var(--surface);border:1px solid var(--border);border-radius:20px;overflow:hidden;transition:0.2s ease';
+    const btn=document.createElement('button');
+    btn.style.cssText='background:none;border:none;padding:6px 4px 6px 14px;font:500 12px var(--font);color:var(--text2);cursor:pointer;letter-spacing:-0.1px';
+    btn.textContent=name;
+    btn.onclick=()=>runDemo(name);
+    const del=document.createElement('button');
+    del.style.cssText='background:none;border:none;padding:4px 10px 4px 4px;font-size:11px;color:var(--text3);cursor:pointer;line-height:1;opacity:0.5;transition:0.15s';
+    del.textContent='✕';
+    del.title='Remove';
+    del.onmouseenter=()=>{del.style.opacity='1';del.style.color='var(--orange)'};
+    del.onmouseleave=()=>{del.style.opacity='0.5';del.style.color='var(--text3)'};
+    del.onclick=(e)=>{e.stopPropagation();removeFromHistory(name)};
+    wrap.appendChild(btn);
+    wrap.appendChild(del);
+    container.appendChild(wrap);
+  });
 }
 
 function onSearchInput(){
