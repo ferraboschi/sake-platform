@@ -54,7 +54,6 @@ function renderLiveStep(ir, steps){
 async function startSearch(){
   const name=document.getElementById('search-input').value.trim();
   if(!name||name.length<MIN_CHARS)return;
-  if(name===state.lastQuery&&(state.foundData||state.candidates.length))return;
   if(state.abortCtrl){state.abortCtrl.abort();}
   state.lastQuery=name;
   addToHistory(name);
