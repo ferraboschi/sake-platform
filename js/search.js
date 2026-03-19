@@ -169,12 +169,8 @@ async function startSearch(){
         _exactMatch:c.exact_match!==false,
       }));
 
-      if(state.candidates.length===1){
-        state.foundData=state.candidates[0];
-        showBreweryCard(state.foundData);
-      } else {
-        showCandidateList(state.candidates);
-      }
+      // Always show the candidate list — user must choose
+      showCandidateList(state.candidates);
     } else {
       // No results — show narrowing down form
       showNarrowingForm(ir, name);
