@@ -6,274 +6,122 @@
 - **Frontend**: Modulare, file separati HTML/CSS/JS, niente framework, niente build tools
 - **Auth**: Email + password, sessione persistente 30 giorni, conferma email una tantum
 - **Ruoli utente**: Produttore (sakagura) e Importatore
-- **Spunta blu**: Opzionale, via verifica email dominio o documento manuale
+- **Spunta blu**: Opzionale, via verifica email dominio o documento manuale ("scrivici")
 - **Monetizzazione**: Free per ora
-- **Multilingua**: IT/EN/JA su tutto, editing facile per i produttori
+- **Multilingua**: IT/EN/JA su tutto, selettore lingua con bandiere sempre a portata di mano
 - **Campi custom**: I produttori possono aggiungere/rimuovere campi dai prodotti (JSONB)
 - **Foto**: Drag & drop upload da parte dei produttori
 - **Export**: Link pubblico, PDF (full + light), iframe embed
-- **Knowledge base**: search_cache su Supabase, dati che crescono con l'uso (no RAG esterno)
+- **Knowledge base**: search_cache su Supabase, dati che crescono con l'uso
 - **Dominio**: sakeplatform.com (GitHub Pages)
 - **Repo**: github.com/ferraboschi/sake-platform
 - **Supabase project**: znetpzffrsqyeaezelyl (eu-central-1)
-- **Edge Function proxy**: sake-search (già live)
+- **Edge Function**: sake-search (live, SSE streaming, ricerca web reale)
 
 ---
 
-## FASE 0 — Ristrutturazione Codice
+## Flusso Utente Principale (4 step)
 
-**Obiettivo**: Migrare da file singolo (index.html ~1500 righe) a struttura modulare.
+### Step 1 — Ricerca (STESSA PAGINA della home)
+L'utente inserisce il nome della sakagura. NELLA STESSA PAGINA, sotto al campo di ricerca, la ricerca parte e mostra in tempo reale cosa sta succedendo: dove sta cercando, in quale sito, cosa trova. Deve impiegare il tempo necessario e mostrare che sta cercando e raccogliendo dati. La qualita dei risultati e prioritaria, non la velocita.
 
-**Cosa fare**:
-- Creare struttura cartelle: `/css/`, `/js/`, root `index.html`
-- Separare: `css/style.css`, `js/config.js`, `js/i18n.js`, `js/router.js`, `js/auth.js`, `js/search.js`, `js/brewery.js`, `js/dashboard.js`, `js/utils.js`
-- `index.html` diventa shell leggera (~50 righe) che carica i moduli e gestisce il routing tra le pagine (SPA con hash routing: #search, #brewery, #register, #dashboard)
-- Ogni file JS < 300 righe
-- Verificare che tutto funziona identicamente al sito attuale
-- Push su GitHub Pages, test live
+### Step 2 — Selezione (STESSA PAGINA)
+Mostra le opzioni trovate con dati sufficienti per essere sicuri (nome JA/EN, prefettura, indirizzo, sito web, anno fondazione, numero prodotti). Chiede: "E una di queste la sakagura NOME che stavi cercando?" Con pulsante "Nessuna di queste" (narrowing down) e pulsante "CREA DA ZERO" (creazione manuale).
 
-**Criterio di completamento**: il sito su sakeplatform.com funziona esattamente come prima ma con codice modulare.
+### Step 3 — Pagina Dettaglio Sakagura (NUOVA PAGINA, URL propria)
+Se il cliente seleziona una sakagura, si apre una PAGINA DEDICATA con URL propria che include la prefettura (es. sakeplatform.com/#/brewery/yamagata/koikawa). File JS separato. Contiene:
+- Dettagli completi: nome JA/EN, indirizzo, telefono, sito web verificato, anno fondazione
+- Mappa con posizione
+- Testo descrittivo con le fonti citate
+- Selettore lingua con bandiere IT/EN/JA sempre visibile in alto
+- Numero di prodotti collegati alla sakagura
+- Pulsante "Claim questa sakagura" con spiegazione dei due metodi:
+  1. Verifica email: usa email con stesso dominio del sito (verifica automatica)
+  2. Contattaci: scrivi a verify@sakeplatform.com con documento
 
----
-
-## FASE 1 — Database Supabase + Cache Ricerche
-
-**Obiettivo**: Creare le tabelle su Supabase e far sì che le ricerche vengano salvate e riutilizzate.
-
-**Tabelle da creare**:
-
-```sql
--- Sakagura trovate e confermate
-breweries (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  name_ja TEXT,
-  name_en TEXT NOT NULL,
-  website TEXT,
-  prefecture TEXT,
-  country TEXT,
-  address TEXT,
-  phone TEXT,
-  founded TEXT,
-  description_it TEXT,
-  description_en TEXT,
-  description_ja TEXT,
-  logo_url TEXT,
-  claimed_by UUID REFERENCES users(id),
-  verified BOOLEAN DEFAULT FALSE,
-  source_data JSONB,  -- dati grezzi dalle fonti
-  created_at TIMESTAMPTZ DEFAULT now(),
-  updated_at TIMESTAMPTZ DEFAULT now()
-)
-
--- Prodotti (sake) legati alle sakagura
-products (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  brewery_id UUID REFERENCES breweries(id) ON DELETE CASCADE,
-  name_ja TEXT,
-  name_en TEXT NOT NULL,
-  type TEXT,  -- junmai, daiginjo, etc.
-  rice TEXT,
-  polishing_ratio TEXT,
-  alcohol TEXT,
-  volume TEXT,
-  description_it TEXT,
-  description_en TEXT,
-  description_ja TEXT,
-  image_url TEXT,
-  extra_fields JSONB DEFAULT '{}',  -- campi custom del produttore
-  sources JSONB DEFAULT '[]',  -- da dove abbiamo trovato questo prodotto
-  created_at TIMESTAMPTZ DEFAULT now(),
-  updated_at TIMESTAMPTZ DEFAULT now()
-)
-
--- Cache delle ricerche AI (knowledge base)
-search_cache (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  query_normalized TEXT NOT NULL UNIQUE,  -- lowercase, trimmed
-  results JSONB NOT NULL,
-  result_count INTEGER,
-  searched_at TIMESTAMPTZ DEFAULT now(),
-  expires_at TIMESTAMPTZ DEFAULT (now() + interval '30 days')
-)
-
--- Utenti
-users (
-  id UUID PRIMARY KEY REFERENCES auth.users(id),
-  email TEXT NOT NULL,
-  name TEXT,
-  role TEXT CHECK (role IN ('producer', 'importer')) NOT NULL,
-  brewery_id UUID REFERENCES breweries(id),
-  verified BOOLEAN DEFAULT FALSE,
-  created_at TIMESTAMPTZ DEFAULT now()
-)
-
--- Relazione importatore <-> sakagura
-importer_links (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  importer_id UUID REFERENCES users(id) ON DELETE CASCADE,
-  brewery_id UUID REFERENCES breweries(id) ON DELETE CASCADE,
-  status TEXT CHECK (status IN ('pending', 'active', 'rejected')) DEFAULT 'pending',
-  invited_by UUID REFERENCES users(id),
-  created_at TIMESTAMPTZ DEFAULT now(),
-  UNIQUE(importer_id, brewery_id)
-)
-
--- File caricati (schede tecniche, foto)
-files (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  brewery_id UUID REFERENCES breweries(id) ON DELETE CASCADE,
-  uploaded_by UUID REFERENCES users(id),
-  file_name TEXT NOT NULL,
-  file_type TEXT,  -- pdf, xlsx, jpg, png
-  storage_path TEXT NOT NULL,  -- path in Supabase Storage
-  processed_data JSONB,  -- dati estratti dal file
-  created_at TIMESTAMPTZ DEFAULT now()
-)
-```
-
-**Logica di ricerca con cache**:
-1. Utente cerca "otokoyama"
-2. Normalizza query → "otokoyama"
-3. Cerca in `search_cache` dove `query_normalized = 'otokoyama'` AND `expires_at > now()`
-4. Se trovato → restituisci risultati dal cache (0 costi API)
-5. Se non trovato → chiama Edge Function → salva risultati in `search_cache` + crea/aggiorna righe in `breweries`
-6. La prossima ricerca per "otokoyama" è istantanea
-
-**Aggiornare Edge Function** per:
-- Controllare cache prima di chiamare Claude
-- Salvare risultati nel DB dopo ogni ricerca
-- Arricchire il prompt con dati esistenti dal DB
-
-**Criterio di completamento**: le ricerche vengono salvate su Supabase, la seconda ricerca per lo stesso nome è istantanea, i dati delle sakagura persistono nel DB.
+### Step 4 — Richiesta scheda tecnica (dopo il claim)
+Dopo il claim si chiede di caricare la scheda tecnica attuale (PDF, Excel, foto). Il sistema la elabora e popola i campi prodotto.
 
 ---
 
-## FASE 2 — Autenticazione e Registrazione
+## FASE 0 — Ristrutturazione Codice (COMPLETATA)
 
-**Obiettivo**: Login con email + password, ruoli produttore/importatore, claim sakagura.
-
-**Cosa fare**:
-- Setup Supabase Auth (email + password)
-- Pagina di registrazione: scelta ruolo (Produttore / Importatore), nome, email, password
-- Conferma email (una volta sola via link Supabase)
-- Login con email + password, opzione "ricordami" (sessione 30 giorni)
-- Flusso claim sakagura per produttore:
-  - Cerca sakagura → seleziona → "Questa è la mia sakagura" → registrazione
-  - Se email ha dominio del sito sakagura → spunta blu automatica
-  - Altrimenti → account attivo ma senza spunta, messaggio "Per la spunta blu invia documento a verify@sakeplatform.com"
-- Flusso importatore:
-  - Registrazione come importatore (nome azienda, paese, email, password)
-  - Nessuna spunta blu necessaria
-  - Dopo login vede la ricerca sakagura + "Segui questa sakagura"
-
-**Configurare email transazionale**:
-- Setup Resend (o Supabase built-in) per email di conferma
-- DNS records per sakeplatform.com (SPF, DKIM)
-
-**Criterio di completamento**: un utente può registrarsi, fare login, fare logout, tornare con la sessione attiva. Il claim funziona con verifica email dominio.
+Codice modulare in /js/, /css/. 8 file separati.
 
 ---
 
-## FASE 3 — Dashboard Produttore
+## FASE 1 — Database + Ricerca Agente (PARZIALMENTE COMPLETATA)
 
-**Obiettivo**: Il produttore gestisce la sua sakagura, i prodotti, le schede tecniche.
-
-**Cosa fare**:
-- Dashboard con sidebar: Profilo, Prodotti, File, Importatori
-- **Profilo sakagura**: modifica nome, descrizione (IT/EN/JA), indirizzo, telefono, sito web. Upload logo via drag & drop.
-- **Prodotti**: lista prodotti trovati automaticamente + possibilità di aggiungere manualmente. Per ogni prodotto: editing multilingua, upload foto drag & drop, campi custom (aggiungi/rimuovi). Il multilingua deve essere semplice: tabs IT/EN/JA con textarea, si vede subito cosa è compilato e cosa no.
-- **File**: upload schede tecniche (PDF, Excel, foto). Il sistema estrae i dati automaticamente (via Claude) e propone di popolare i campi prodotto. Il produttore conferma/modifica.
-- **Importatori**: lista di importatori che seguono la sakagura, possibilità di invitare un importatore via email.
-
-**Storage Supabase**: bucket `brewery-assets` per logo e foto prodotti, bucket `tech-sheets` per i file caricati.
-
-**Criterio di completamento**: il produttore può editare il profilo, gestire prodotti con multilingua, caricare foto e schede tecniche.
+Completato: tabelle Supabase, 76 sakagura pre-caricate, Edge Function SSE, frontend SSE consumer, narrowing down.
+Da completare: piu dettagli nella ricerca, pagina risultato separata (FASE 1.5).
 
 ---
 
-## FASE 4 — Dashboard Importatore
+## FASE 1.5 — Pagina Dettaglio Sakagura (NUOVA)
 
-**Obiettivo**: L'importatore segue sakagura, vede prodotti e schede tecniche.
+Obiettivo: Creare la pagina dedicata per ogni sakagura con URL propria.
 
-**Cosa fare**:
-- Dashboard importatore: Sakagura Seguite, Cerca Sakagura, Profilo
-- **Sakagura seguite**: lista delle sakagura che seguo con stato (pending/attivo). Per ogni sakagura attiva: vedo i prodotti, le schede tecniche, posso scaricare PDF.
-- **Cerca e segui**: stessa ricerca della home, ma con bottone "Segui questa sakagura" → richiesta inviata al produttore.
-- **Invita produttore**: se la sakagura non è ancora claimata, l'importatore può inserire email del produttore → il sistema manda un invito.
-- **Notifiche**: quando un produttore aggiorna un prodotto o carica una nuova scheda, l'importatore vede la notifica.
-
-**Criterio di completamento**: l'importatore può seguire sakagura, vedere prodotti aggiornati, scaricare schede.
-
----
-
-## FASE 5 — Profilo Pubblico e Export
-
-**Obiettivo**: Ogni sakagura ha una pagina pubblica condivisibile con export PDF e iframe.
-
-**Cosa fare**:
-- **URL pubblico**: `sakeplatform.com/#/brewery/{id}` — pagina bella, responsive, con logo, info, prodotti, foto. Nessun login richiesto.
-- **PDF Full**: scheda tecnica completa, tutti i campi, multilingua, foto. Formato A4, professionale.
-- **PDF Light**: versione commerciale, una pagina, foto grande, nome sake, tipo, food pairing, flavor profile. Bella da stampare e inoltrare.
-- **Iframe embed**: `<iframe src="sakeplatform.com/embed/{id}">` — widget leggero che mostra i prodotti della sakagura. Funziona su qualsiasi sito.
-- **Scelta lingua**: il link pubblico e il PDF possono essere generati nella lingua scelta (IT/EN/JA).
-
-**Criterio di completamento**: ogni sakagura ha un link pubblico funzionante, PDF scaricabili, iframe embedabile.
+Cosa fare:
+- Nuovo file js/brewery-page.js
+- URL pattern: sakeplatform.com/#/brewery/{prefecture}/{slug}
+- Header con nome JA/EN, logo/favicon, badge verificato
+- Selettore lingua con bandiere IT/EN/JA sempre visibile in alto
+- Info grid: prefettura, paese, indirizzo, telefono, sito web verificato, anno fondazione
+- Mappa OpenStreetMap embedded
+- Descrizione con fonti citate
+- Numero prodotti collegati
+- Pulsante "Claim questa sakagura" con spiegazione claim
+- La pagina deve poter essere condivisa (URL stabile) e funzionare senza login
 
 ---
 
-## FASE 6 — Inviti e Team
+## FASE 2 — Autenticazione, Claim e Registrazione
 
-**Obiettivo**: Il produttore può invitare colleghi nella sua azienda.
+Flusso claim aggiornato:
+1. Dalla pagina dettaglio sakagura -> clicca "Claim questa sakagura"
+2. Form registrazione con email dominio (auto) OPPURE "scrivici"
+3. Nome, email, password
+4. Se email ha dominio del sito -> spunta blu automatica
+5. Se no -> account attivo senza spunta, messaggio "contattaci"
 
-**Cosa fare**:
-- Invito via email: il produttore inserisce email del collega → il collega riceve un link → si registra come produttore collegato alla stessa sakagura.
-- Ruoli interni: owner (chi ha fatto il claim) e member (colleghi invitati).
-- Il member può editare prodotti e caricare file ma non può eliminare la sakagura o trasferire ownership.
+Pulsante "CREA DA ZERO" (nuovo):
+- Dalla pagina risultati, se nessuna opzione corrisponde
+- Schermata creazione manuale: nome, prefettura, paese, sito web, descrizione
+- Dopo creazione -> stessa pagina dettaglio, stessa logica claim
 
-**Criterio di completamento**: più persone della stessa sakagura possono accedere e collaborare.
+Flusso importatore: invariato.
 
 ---
 
-## Note Tecniche Trasversali
+## FASE 2.5 — Upload Scheda Tecnica (NUOVA)
 
-**Struttura file frontend**:
-```
-/
-├── index.html          (shell + router, ~50 righe)
-├── css/
-│   └── style.css       (tutto lo stile)
-├── js/
-│   ├── config.js       (costanti, URL Supabase, versione)
-│   ├── i18n.js         (traduzioni IT/EN/JA)
-│   ├── router.js       (SPA hash routing)
-│   ├── auth.js         (login, registrazione, sessione)
-│   ├── search.js       (ricerca, cache, candidati)
-│   ├── brewery.js      (profilo sakagura, prodotti)
-│   ├── dashboard.js    (dashboard produttore/importatore)
-│   ├── export.js       (PDF, link, iframe)
-│   └── utils.js        (helper condivisi, esc, toast, etc.)
-├── supabase/
-│   └── functions/
-│       └── sake-search/
-│           └── index.ts (Edge Function proxy — già live)
-└── SAKE-PLATFORM-PROJECT.md (questo file)
-```
+Subito dopo il claim, chiedere al produttore la scheda tecnica attuale.
+- Drag & drop per PDF, Excel, Word, foto
+- Claude estrae i dati automaticamente
+- Propone di popolare i campi prodotto
+- Il produttore conferma/modifica
 
-**Supabase Project**:
-- Project ref: `znetpzffrsqyeaezelyl`
-- Region: eu-central-1
-- Edge Function: `sake-search` (live)
-- URL: `https://znetpzffrsqyeaezelyl.supabase.co`
+---
 
-**Git**:
-- Repo: `github.com/ferraboschi/sake-platform`
-- Branch: `main`
-- Deploy: GitHub Pages automatico su push
-- Auth token: da `~/.config/gh/hosts.yml`
-- Commit con: `-c user.name="ferraboschi" -c user.email="lorenzo@ef-ti.com"`
+## FASE 3 — Dashboard Produttore (invariata)
+## FASE 4 — Dashboard Importatore (invariata)
+## FASE 5 — Profilo Pubblico e Export (pagina pubblica gia in FASE 1.5, qui si aggiungono PDF e iframe)
+## FASE 6 — Inviti e Team (invariata)
 
-**Convenzioni**:
-- Ogni fase viene committata separatamente con messaggio chiaro
-- Ogni fase deve funzionare indipendentemente (il sito non si rompe mai)
-- I dati vecchi in localStorage vengono migrati al DB dove possibile
-- Le Edge Functions gestiscono la logica server-side (no secrets nel frontend)
+---
+
+## Note Tecniche
+
+Struttura file frontend:
+- index.html (shell + router)
+- css/style.css
+- js/config.js, i18n.js, router.js, auth.js
+- js/search.js (ricerca SSE, timeline live, narrowing down)
+- js/brewery-page.js (NUOVO - pagina dettaglio sakagura)
+- js/brewery.js, dashboard.js, export.js, utils.js
+- supabase/functions/sake-search/index.ts (SSE, NO template literals)
+
+Supabase: znetpzffrsqyeaezelyl, eu-central-1
+Git: ferraboschi/sake-platform, main branch
+Edge Function: ZERO backtick, solo concatenazione stringhe
+Priorita: qualita risultati > velocita
