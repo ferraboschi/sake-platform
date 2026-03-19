@@ -8,6 +8,9 @@ function showBreweryCard(data){
   const fav=website?'https://www.google.com/s2/favicons?domain='+website+'&sz=128':'';
   const logo=fav?'<img src="'+fav+'" onerror="this.parentElement.innerHTML=\'<div class=bc-logo-fallback>🏯</div>\'">' : '<div class="bc-logo-fallback">🏯</div>';
 
+  // Hide search box on brewery card view
+  document.querySelector('.search-box').style.display='none';
+
   // Map section
   const map=geo&&geo.lat?'<div class="bc-map"><iframe src="https://www.openstreetmap.org/export/embed.html?bbox='+(geo.lng-0.008)+','+(geo.lat-0.006)+','+(geo.lng+0.008)+','+(geo.lat+0.006)+'&layer=mapnik&marker='+geo.lat+','+geo.lng+'" width="100%" height="180" style="border:0;border-radius:0" loading="lazy"></iframe></div>':'';
 
@@ -48,22 +51,24 @@ function showBreweryCard(data){
   // Language switcher hint
   const langHint='<div class="bc-lang-hint"><div class="bc-lang-hint-icon">🌐</div><div class="bc-lang-hint-text">'+t('lang_hint')+'</div></div>';
 
-  // Back to results button
-  const backBtn=state.candidates.length>1?'<button class="bc-retry" onclick="showCandidateList(state.candidates)" style="margin-right:auto">'+esc(t('btn_back_results'))+'</button>':'';
+  // Inline language switcher above the card
+  const langSwitcher='<div class="bc-inline-lang"><button class="lang-btn'+(state.lang==='it'?' active':'')+'" onclick="switchLang(\'it\');showBreweryCard(state.foundData)">IT</button><button class="lang-btn'+(state.lang==='en'?' active':'')+'" onclick="switchLang(\'en\');showBreweryCard(state.foundData)">EN</button><button class="lang-btn'+(state.lang==='ja'?' active':'')+'" onclick="switchLang(\'ja\');showBreweryCard(state.foundData)">JA</button></div>';
 
   // Verified badge
   const verifiedBadge=data._siteVerified&&website?'<span style="display:inline-flex;align-items:center;gap:4px;font-size:11px;color:var(--green);font-weight:600;background:var(--green-soft);padding:2px 8px;border-radius:10px;margin-left:8px">✓ '+t('verified_label')+'</span>':'';
 
-  ir.innerHTML='<div class="brewery-card">'+
+  ir.innerHTML=langSwitcher+'<div class="brewery-card">'+
     '<div class="bc-header"><div class="bc-logo">'+logo+'</div><div class="bc-title"><div class="bc-name-jp">'+esc(c.name_jp)+verifiedBadge+'</div>'+(c.name_en?'<div class="bc-name-en">'+esc(c.name_en)+'</div>':'')+'</div></div>'+
     '<div class="bc-body">'+(website?'<a class="bc-website" href="https://'+esc(website)+'" target="_blank" rel="noopener">🌐 '+esc(website)+'</a>':'')+grid+hist+prodsHtml+langHint+'</div>'+
     map+srcHtml+
     '<div class="bc-cta">'+
-      '<div class="bc-cta-text">'+esc(t('found_confirm'))+'</div>'+
-      '<div style="display:flex;flex-direction:column;gap:10px;align-items:center;width:100%;max-width:360px;margin:0 auto">'+
-        '<button class="btn btn-primary btn-lg btn-full" onclick="confirmBrewery()">'+esc(t('btn_confirm'))+'</button>'+
-        backBtn+
-        '<button class="btn btn-outline btn-full" style="font-size:13px" onclick="startCreateFromScratch()">'+esc(t('create_from_scratch'))+'</button>'+
+      '<div style="display:flex;flex-direction:column;gap:10px;align-items:center;width:100%;max-width:400px;margin:0 auto">'+
+        '<button class="btn btn-primary btn-lg btn-full" onclick="confirmBrewery()">'+esc(t('btn_claim'))+'</button>'+
+        '<div style="display:flex;gap:8px;width:100%">'+
+          '<button class="btn btn-outline btn-full" style="font-size:12px" onclick="notMyBrewery()">'+esc(t('btn_not_my_brewery'))+'</button>'+
+          '<button class="btn btn-outline btn-full" style="font-size:12px;border-color:var(--text3)" onclick="showNarrowingForm(document.getElementById(\'inline-result\'),state.lastQuery)">'+esc(t('btn_add_details'))+'</button>'+
+        '</div>'+
+        '<button class="btn btn-outline btn-full" style="font-size:12px;border-color:var(--green);color:var(--green)" onclick="startCreateFromScratch()">'+esc(t('create_from_scratch'))+'</button>'+
       '</div>'+
     '</div>'+
   '</div>';

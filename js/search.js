@@ -217,6 +217,7 @@ function handleSSEEvent(ir, steps, event, data){
 
 // ---- NARROWING DOWN FORM ----
 function showNarrowingForm(ir, originalQuery){
+  document.querySelector('.search-box').style.display='flex';
   ir.innerHTML=`<div class="progress-timeline" style="text-align:center;padding:24px">
     <div style="font-size:15px;font-weight:600;margin-bottom:8px">${esc(t('not_found_title'))}</div>
     <div style="font-size:13px;color:var(--text3);margin-bottom:20px;line-height:1.6">${esc(t('not_found_help'))}</div>
@@ -249,6 +250,8 @@ function retryWithDetails(originalQuery){
 // ---- CANDIDATE LIST (Step 2: Selection) ----
 function showCandidateList(candidates){
   const ir=document.getElementById('inline-result');
+  // Restore search box if hidden by brewery card view
+  document.querySelector('.search-box').style.display='flex';
   const queryName=esc(state.lastQuery);
 
   // Build rich candidate cards
@@ -342,6 +345,7 @@ function resetSearch(){
   const ir=document.getElementById('inline-result');
   ir.style.display='none';ir.innerHTML='';
   document.getElementById('hero').classList.remove('has-results');
+  document.querySelector('.search-box').style.display='flex';
   document.getElementById('search-hint').style.display='';document.getElementById('demo-links').style.display='flex';
   document.getElementById('search-input').value='';
   document.getElementById('search-input').focus();
