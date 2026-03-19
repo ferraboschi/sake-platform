@@ -23,14 +23,49 @@ function sbH() {
   return { url, headers: { "apikey": key, "Authorization": "Bearer " + key, "Content-Type": "application/json" } };
 }
 
+// Normalizza il nome della sakagura per deduplicazione
+// DEVE restare sincronizzata con la funzione SQL normalize_brewery_name()
+function normalizeBreweryName(name: string): string {
+  var result = name.toLowerCase().trim();
+  // Rimuovi suffissi tra parentesi (es. "(Hokkaido)", "(Yamagata)")
+  result = result.replace(/\s*\([^)]*\)$/gi, "");
+  // Rimuovi suffissi aziendali
+  result = result.replace(
+    /\s*(co\.?,?\s*ltd\.?|inc\.?|corporation|corp\.?|kabushiki\s*kaisha|kabushiki\s*gaisha|k\.k\.|株式会社|有限会社|合名会社|合資会社)$/gi,
+    ""
+  );
+  // Rimuovi suffissi sake/shuzo
+  result = result.replace(
+    /\s*(sake\s*brew(ing|ery)?|shuzo|shuzou|jouzo|jozo|酒造|醸造|酒類)$/gi,
+    ""
+  );
+  // Normalizza a slug
+  result = result.replace(/[^a-z0-9\u3000-\u9fff]+/g, "-");
+  result = result.replace(/^-+|-+$/g, "");
+  return result;
+}
+
 async function searchLocalDB(name: string): Promise<any[]> {
-  const { url, headers } = sbH();
+  var { url, headers } = sbH();
   if (!url) return [];
   try {
-    const t = encodeURIComponent(name.toLowerCase());
-    const res = await fetch(url + "/rest/v1/breweries?or=(name_en.ilike.*" + t + "*,name_ja.ilike.*" + t + "*)&limit=10", { headers });
+    var slug = normalizeBreweryName(name);
+    var t = encodeURIComponent(name.toLowerCase());
+    var s = encodeURIComponent(slug);
+    // Cerca per slug (match normalizzato) O per nome parziale
+    var res = await fetch(url + "/rest/v1/breweries?or=(slug.eq." + s + ",name_en.ilike.*" + t + "*,name_ja.ilike.*" + t + "*)&order=slug,created_at.asc&limit=10", { headers: headers });
     if (!res.ok) return [];
-    return await res.json();
+    var rows: any[] = await res.json();
+    // Dedup lato client: raggruppa per slug+prefecture
+    var grouped = new Map();
+    for (var i = 0; i < rows.length; i++) {
+      var row = rows[i];
+      var key = (row.slug || normalizeBreweryName(row.name_en || "")) + "|" + (row.prefecture || "");
+      if (!grouped.has(key)) {
+        grouped.set(key, row);
+      }
+    }
+    return Array.from(grouped.values());
   } catch (_e) { return []; }
 }
 
@@ -152,21 +187,40 @@ async function enrichWithClaude(query: string, webData: any): Promise<any[]> {
 
 async function saveResults(query: string, results: any[]) {
   if (!results.length) return;
-  const { url, headers } = sbH();
+  var { url, headers } = sbH();
   if (!url) return;
   try {
+    // Salva in cache (query_normalized ha UNIQUE, merge funziona)
     await fetch(url + "/rest/v1/search_cache", {
       method: "POST", headers: { ...headers, "Prefer": "resolution=merge-duplicates" },
-      body: JSON.stringify({ query_normalized: query.toLowerCase(), results: results, result_count: results.length, searched_at: new Date().toISOString(), expires_at: new Date(Date.now() + 30*24*60*60*1000).toISOString() })
+      body: JSON.stringify({ query_normalized: query.toLowerCase().trim(), results: results, result_count: results.length, searched_at: new Date().toISOString(), expires_at: new Date(Date.now() + 30*24*60*60*1000).toISOString() })
     });
-    for (const r of results) {
+    // Salva/aggiorna sakagura con UPSERT su slug + prefecture (UNIQUE constraint)
+    for (var i = 0; i < results.length; i++) {
+      var r = results[i];
       if (!r.name_en) continue;
+      var slug = normalizeBreweryName(r.name_en);
       await fetch(url + "/rest/v1/breweries", {
-        method: "POST", headers: { ...headers, "Prefer": "resolution=ignore-duplicates" },
-        body: JSON.stringify({ name_ja: r.name_ja||"", name_en: r.name_en||"", website: r.website||"", prefecture: r.prefecture||"", country: r.country||"", address: r.address||"", phone: r.phone||"", founded: r.founded||"", description_en: r.description||"", source_data: r })
+        method: "POST",
+        headers: { ...headers, "Prefer": "resolution=merge-duplicates" },
+        body: JSON.stringify({
+          slug: slug,
+          name_ja: r.name_ja || "",
+          name_en: r.name_en || "",
+          website: r.website || "",
+          prefecture: r.prefecture || "",
+          country: r.country || "",
+          address: r.address || "",
+          phone: r.phone || "",
+          founded: r.founded || "",
+          description_en: r.description || "",
+          source_data: r
+        })
       });
     }
-  } catch (_e) {}
+  } catch (_e) {
+    console.error("saveResults error:", _e);
+  }
 }
 
 // ---- MAIN HANDLER WITH SSE ----
