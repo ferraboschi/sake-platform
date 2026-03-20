@@ -32,6 +32,7 @@
 }
 
 * { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior:smooth; scroll-padding-top:72px; }
 body { font-family:var(--font); background:var(--bg); color:var(--text); min-height:100vh; -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale; }
 
 /* ===== TOPBAR ===== */
@@ -50,6 +51,17 @@ body { font-family:var(--font); background:var(--bg); color:var(--text); min-hei
 }
 .topbar-logo .logo-mark { font-size:15px; font-weight:700; color:var(--text); letter-spacing:-0.3px; }
 .topbar-logo .logo-jp { font-family:var(--font-serif); font-size:14px; font-weight:500; color:var(--text3); margin-left:4px; }
+.topbar-menu {
+  display:flex; gap:2px;
+  position:absolute; left:50%; transform:translateX(-50%);
+}
+.topbar-menu a {
+  color:var(--text3); font:500 13px var(--font);
+  padding:6px 14px; border-radius:6px; cursor:pointer;
+  transition:var(--transition); text-decoration:none; letter-spacing:-0.1px;
+  white-space:nowrap;
+}
+.topbar-menu a:hover { color:var(--text); background:var(--bg2); }
 .topbar-nav { display:flex; gap:2px; }
 .topbar-nav a {
   color:var(--text3); font:500 13px var(--font);
@@ -514,6 +526,7 @@ body { font-family:var(--font); background:var(--bg); color:var(--text); min-hei
 /* ===== RESPONSIVE ===== */
 @media(max-width:640px) {
   .topbar-nav { display:none; }
+  .topbar-menu { display:none !important; }
   .hero { padding:100px 20px 40px; }
   .hero-kanji { font-size:40px; }
   .hero.has-results .hero-kanji { font-size:22px; }

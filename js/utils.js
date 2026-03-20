@@ -30,12 +30,30 @@ function showPage(n){
   document.getElementById('nav-landing').style.display=(state.user||state.brewery)?'inline-block':'none';
   document.getElementById('nav-register').style.display=state.brewery?'':'none';
   document.getElementById('nav-dashboard').style.display=(state.user&&state.brewery)?'':'none';
+  // Show anchor menu on landing, nav on other pages
+  const menu=document.getElementById('topbar-menu');
+  const nav=document.getElementById('topbar-nav');
+  if(n==='landing'){
+    if(menu)menu.style.display='flex';
+    if(nav)nav.style.display='none';
+  } else {
+    if(menu)menu.style.display='none';
+    if(nav)nav.style.display='flex';
+  }
   const u=document.getElementById('topbar-user');
   if(state.user){u.style.display='flex';document.getElementById('topbar-user-name').textContent=state.user.name;}
   else{u.style.display='none';}
 }
 
 function navTo(n){showPage(n);}
+
+function scrollToSection(id){
+  if(state.currentPage!=='landing'){showPage('landing');}
+  setTimeout(()=>{
+    const el=document.getElementById('section-'+id);
+    if(el)el.scrollIntoView({behavior:'smooth',block:'start'});
+  },50);
+}
 
 function goHome(){showPage(state.user&&state.brewery?'dashboard':'landing');}
 
@@ -45,6 +63,10 @@ function applyLang(){
   document.querySelectorAll('.lang-btn').forEach(b=>b.classList.toggle('active',b.dataset.lang===state.lang));
   const navLanding=document.getElementById('nav-landing');
   if(navLanding)navLanding.textContent=t('nav_landing');
+  // Topbar anchor menu
+  document.getElementById('menu-how').textContent=t('menu_how');
+  document.getElementById('menu-breweries').textContent=t('menu_breweries');
+  document.getElementById('menu-importers').textContent=t('menu_importers');
   document.getElementById('hero-kanji').textContent=t('hero_title');
   document.getElementById('hero-sub').textContent=t('hero_sub');
   document.getElementById('search-input').placeholder=t('search_placeholder');
