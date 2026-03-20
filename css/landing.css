@@ -1,0 +1,558 @@
+/* ===== LANDING PAGE STYLES ===== */
+/* Napkin.ai-inspired design for Sake Platform landing page */
+
+/* ===== HERO SECTION ===== */
+#page-landing {
+  background: var(--bg);
+}
+
+.landing-hero {
+  min-height: calc(100vh - 56px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 100px 24px 80px;
+  background: #fafafa;
+  position: relative;
+}
+
+.hero-container {
+  max-width: 900px;
+  text-align: center;
+}
+
+.hero-headline {
+  font-size: 64px;
+  font-weight: 800;
+  line-height: 1.2;
+  color: var(--text);
+  margin-bottom: 24px;
+  letter-spacing: -0.8px;
+}
+
+.hero-headline .highlight {
+  background: linear-gradient(120deg, rgba(37, 99, 235, 0.15) 0%, rgba(37, 99, 235, 0.15) 100%);
+  padding: 0 8px;
+  border-radius: 4px;
+}
+
+.hero-subheading {
+  font-size: 20px;
+  line-height: 1.8;
+  color: var(--text2);
+  margin-bottom: 48px;
+  max-width: 700px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.hero-cta {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-bottom: 60px;
+}
+
+.hero-search {
+  position: relative;
+  max-width: 520px;
+  width: 100%;
+  display: flex;
+  gap: 8px;
+}
+
+.hero-search input {
+  flex: 1;
+  height: 52px;
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 0 20px;
+  font: 400 16px var(--font);
+  color: var(--text);
+  outline: none;
+  transition: var(--transition);
+  box-shadow: var(--shadow-sm);
+}
+
+.hero-search input:focus {
+  border-color: var(--text3);
+  box-shadow: 0 0 0 3px var(--accent-glow), var(--shadow);
+}
+
+.hero-search input::placeholder {
+  color: var(--text3);
+}
+
+.hero-search-btn {
+  height: 52px;
+  padding: 0 28px;
+  background: var(--text);
+  color: white;
+  border: none;
+  border-radius: var(--radius);
+  font: 600 15px var(--font);
+  cursor: pointer;
+  transition: var(--transition);
+  white-space: nowrap;
+  letter-spacing: -0.2px;
+  flex-shrink: 0;
+}
+
+.hero-search-btn:hover {
+  background: var(--accent-hover);
+}
+
+.hero-search-btn:active {
+  transform: scale(0.97);
+}
+
+.hero-visual {
+  width: 100%;
+  max-width: 520px;
+  min-height: 320px;
+  background: white;
+  border: 2px dashed var(--border2);
+  border-radius: var(--radius-lg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text3);
+  font-size: 14px;
+  margin: 0 auto;
+}
+
+/* ===== HOW IT WORKS SECTION ===== */
+.landing-how {
+  background: white;
+  padding: 120px 24px;
+}
+
+.landing-section {
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.landing-section-title {
+  font-size: 56px;
+  font-weight: 800;
+  color: var(--text);
+  margin-bottom: 80px;
+  text-align: center;
+  letter-spacing: -0.6px;
+}
+
+.steps-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 48px;
+  margin-bottom: 40px;
+}
+
+.step {
+  display: flex;
+  flex-direction: column;
+}
+
+.step-number {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: var(--text);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  font-weight: 700;
+  margin-bottom: 24px;
+  flex-shrink: 0;
+}
+
+.step-title {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 12px;
+  letter-spacing: -0.3px;
+}
+
+.step-desc {
+  font-size: 16px;
+  line-height: 1.8;
+  color: var(--text2);
+  margin-bottom: 24px;
+}
+
+.step-visual {
+  width: 100%;
+  min-height: 280px;
+  background: var(--surface2);
+  border: 2px dashed var(--border2);
+  border-radius: var(--radius-lg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text3);
+  font-size: 14px;
+}
+
+/* ===== FOR BREWERIES SECTION ===== */
+.landing-breweries {
+  background: var(--green-soft);
+  padding: 120px 24px;
+}
+
+.landing-breweries .landing-section-title {
+  margin-bottom: 60px;
+}
+
+.benefits-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 24px;
+  margin-bottom: 60px;
+}
+
+.benefit-card {
+  background: white;
+  padding: 32px 24px;
+  border-radius: var(--radius-lg);
+  border: 1px solid rgba(22, 163, 74, 0.12);
+  box-shadow: var(--shadow-sm);
+  transition: var(--transition);
+}
+
+.benefit-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow);
+}
+
+.benefit-icon {
+  font-size: 32px;
+  margin-bottom: 16px;
+  display: block;
+}
+
+.benefit-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 10px;
+  letter-spacing: -0.2px;
+}
+
+.benefit-desc {
+  font-size: 15px;
+  line-height: 1.7;
+  color: var(--text2);
+}
+
+.breweries-visual {
+  width: 100%;
+  max-width: 700px;
+  min-height: 340px;
+  background: white;
+  border: 2px dashed var(--border2);
+  border-radius: var(--radius-lg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text3);
+  font-size: 14px;
+  margin: 0 auto;
+}
+
+/* ===== FOR IMPORTERS SECTION ===== */
+.landing-importers {
+  background: white;
+  padding: 120px 24px;
+}
+
+.importers-content {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 60px;
+  align-items: center;
+}
+
+.importers-text h3 {
+  font-size: 48px;
+  font-weight: 800;
+  color: var(--text);
+  margin-bottom: 24px;
+  letter-spacing: -0.6px;
+}
+
+.importers-text p {
+  font-size: 18px;
+  line-height: 1.8;
+  color: var(--text2);
+  margin-bottom: 20px;
+}
+
+.importers-visual {
+  width: 100%;
+  min-height: 380px;
+  background: var(--surface2);
+  border: 2px dashed var(--border2);
+  border-radius: var(--radius-lg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text3);
+  font-size: 14px;
+}
+
+/* ===== BOTTOM CTA SECTION ===== */
+.landing-cta {
+  background: linear-gradient(135deg, var(--text) 0%, #27272a 100%);
+  padding: 100px 24px;
+  color: white;
+  text-align: center;
+}
+
+.landing-cta .landing-section-title {
+  color: white;
+  margin-bottom: 60px;
+}
+
+.cta-search {
+  position: relative;
+  max-width: 560px;
+  width: 100%;
+  margin: 0 auto;
+  display: flex;
+  gap: 8px;
+}
+
+.cta-search input {
+  flex: 1;
+  height: 56px;
+  background: white;
+  border: none;
+  border-radius: var(--radius);
+  padding: 0 20px;
+  font: 400 16px var(--font);
+  color: var(--text);
+  outline: none;
+  transition: var(--transition);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+}
+
+.cta-search input::placeholder {
+  color: var(--text3);
+}
+
+.cta-search input:focus {
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15), 0 0 0 3px rgba(255, 255, 255, 0.1);
+}
+
+.cta-search-btn {
+  height: 56px;
+  padding: 0 32px;
+  background: white;
+  color: var(--text);
+  border: none;
+  border-radius: var(--radius);
+  font: 600 15px var(--font);
+  cursor: pointer;
+  transition: var(--transition);
+  white-space: nowrap;
+  letter-spacing: -0.2px;
+  flex-shrink: 0;
+  font-weight: 700;
+}
+
+.cta-search-btn:hover {
+  background: var(--bg2);
+}
+
+.cta-search-btn:active {
+  transform: scale(0.97);
+}
+
+/* ===== FOOTER ===== */
+.landing-footer {
+  background: var(--surface2);
+  padding: 40px 24px;
+  text-align: center;
+  border-top: 1px solid var(--border);
+}
+
+.footer-content {
+  max-width: 1100px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+}
+
+.footer-text {
+  font-size: 14px;
+  color: var(--text2);
+}
+
+.footer-links {
+  display: flex;
+  gap: 24px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.footer-links a {
+  font-size: 14px;
+  color: var(--text2);
+  text-decoration: none;
+  transition: var(--transition);
+}
+
+.footer-links a:hover {
+  color: var(--text);
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 768px) {
+  .landing-hero {
+    padding: 80px 20px 60px;
+  }
+
+  .hero-headline {
+    font-size: 44px;
+  }
+
+  .hero-subheading {
+    font-size: 18px;
+    margin-bottom: 40px;
+  }
+
+  .hero-cta {
+    flex-direction: column;
+    margin-bottom: 50px;
+  }
+
+  .hero-search {
+    max-width: 100%;
+  }
+
+  .hero-visual {
+    min-height: 280px;
+  }
+
+  .landing-how,
+  .landing-breweries,
+  .landing-importers,
+  .landing-cta {
+    padding: 80px 20px;
+  }
+
+  .landing-section-title {
+    font-size: 40px;
+    margin-bottom: 60px;
+  }
+
+  .steps-grid {
+    gap: 36px;
+  }
+
+  .benefit-card {
+    padding: 24px 20px;
+  }
+
+  .importers-content {
+    grid-template-columns: 1fr;
+    gap: 40px;
+  }
+
+  .importers-text h3 {
+    font-size: 36px;
+  }
+
+  .cta-search {
+    flex-direction: column;
+  }
+
+  .cta-search input,
+  .cta-search-btn {
+    width: 100%;
+  }
+
+  .footer-links {
+    gap: 16px;
+  }
+}
+
+@media (max-width: 640px) {
+  .landing-hero {
+    padding: 60px 16px 40px;
+  }
+
+  .hero-headline {
+    font-size: 32px;
+  }
+
+  .hero-subheading {
+    font-size: 16px;
+    margin-bottom: 32px;
+  }
+
+  .hero-visual {
+    min-height: 240px;
+    font-size: 12px;
+  }
+
+  .landing-how,
+  .landing-breweries,
+  .landing-importers,
+  .landing-cta {
+    padding: 60px 16px;
+  }
+
+  .landing-section-title {
+    font-size: 28px;
+    margin-bottom: 40px;
+  }
+
+  .steps-grid {
+    gap: 28px;
+  }
+
+  .step-number {
+    width: 48px;
+    height: 48px;
+    font-size: 20px;
+  }
+
+  .step-title {
+    font-size: 18px;
+  }
+
+  .step-desc {
+    font-size: 15px;
+  }
+
+  .step-visual {
+    min-height: 240px;
+    font-size: 12px;
+  }
+
+  .benefits-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .importers-text h3 {
+    font-size: 28px;
+  }
+
+  .importers-visual {
+    min-height: 280px;
+  }
+
+  .cta-search-btn {
+    padding: 0 20px;
+  }
+}

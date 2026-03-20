@@ -7,6 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Noto+Sans+JP:wght@300;400;500;600;700;800&family=Noto+Serif+JP:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/style.css?v=2">
+<link rel="stylesheet" href="css/landing.css?v=1">
 </head>
 <body>
 
@@ -17,6 +18,7 @@
       <span class="logo-jp">酒蔵</span>
     </div>
     <nav class="topbar-nav" id="topbar-nav">
+      <a id="nav-landing" onclick="navTo('landing')" style="display:none"></a>
       <a class="active" id="nav-search" onclick="navTo('search')"></a>
       <a id="nav-register" onclick="navTo('register')" style="display:none"></a>
       <a id="nav-dashboard" onclick="navTo('dashboard')" style="display:none"></a>
@@ -35,8 +37,124 @@
   </div>
 </div>
 
+<!-- PAGE: LANDING -->
+<div class="screen active" id="page-landing">
+  <!-- Hero Section -->
+  <section class="landing-hero">
+    <div class="hero-container">
+      <h1 class="hero-headline">
+        The platform for <span class="highlight">sake breweries</span> worldwide
+      </h1>
+      <p class="hero-subheading">
+        Search, discover and claim your sakagura. Build your international brewery profile with AI-powered research. 世界の酒蔵プラットフォーム
+      </p>
+      <div class="hero-cta">
+        <div class="hero-search">
+          <input type="text" id="landing-search-input" autocomplete="off" placeholder="Search a brewery..." onkeydown="if(event.key==='Enter')landingStartSearch()">
+          <button class="hero-search-btn" onclick="landingStartSearch()">Search →</button>
+        </div>
+      </div>
+      <div class="hero-visual">[ Visual: Search demo screenshot ]</div>
+    </div>
+  </section>
+
+  <!-- How It Works Section -->
+  <section class="landing-how">
+    <div class="landing-section">
+      <h2 class="landing-section-title">How it works</h2>
+      <div class="steps-grid">
+        <div class="step">
+          <div class="step-number">①</div>
+          <h3 class="step-title">Search</h3>
+          <p class="step-desc">Type any brewery name. Our AI searches Wikipedia, JSS, OpenStreetMap and more to find your sakagura.</p>
+          <div class="step-visual">[ Visual: step 1 illustration ]</div>
+        </div>
+        <div class="step">
+          <div class="step-number">②</div>
+          <h3 class="step-title">Verify</h3>
+          <p class="step-desc">Review the brewery profile: location, history, products, website. Confirm it's the right one.</p>
+          <div class="step-visual">[ Visual: step 2 illustration ]</div>
+        </div>
+        <div class="step">
+          <div class="step-number">③</div>
+          <h3 class="step-title">Claim</h3>
+          <p class="step-desc">Register as the owner. Verify with your official email domain for instant verification.</p>
+          <div class="step-visual">[ Visual: step 3 illustration ]</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- For Breweries Section -->
+  <section class="landing-breweries">
+    <div class="landing-section">
+      <h2 class="landing-section-title">Why claim your sakagura?</h2>
+      <div class="benefits-grid">
+        <div class="benefit-card">
+          <span class="benefit-icon">🌍</span>
+          <h3 class="benefit-title">International visibility</h3>
+          <p class="benefit-desc">Multilingual profile in EN, IT, and JA. Reach customers and importers worldwide.</p>
+        </div>
+        <div class="benefit-card">
+          <span class="benefit-icon">✓</span>
+          <h3 class="benefit-title">Verified badge</h3>
+          <p class="benefit-desc">Build trust with importers and distributors. Show you're the official brewery.</p>
+        </div>
+        <div class="benefit-card">
+          <span class="benefit-icon">📦</span>
+          <h3 class="benefit-title">Product catalog</h3>
+          <p class="benefit-desc">Showcase your sake lineup, tasting notes, and specifications in your profile.</p>
+        </div>
+        <div class="benefit-card">
+          <span class="benefit-icon">🔗</span>
+          <h3 class="benefit-title">Direct connections</h3>
+          <p class="benefit-desc">Importers find you directly. Manage inquiries and grow your export business.</p>
+        </div>
+      </div>
+      <div class="breweries-visual">[ Visual: brewery dashboard mockup ]</div>
+    </div>
+  </section>
+
+  <!-- For Importers Section -->
+  <section class="landing-importers">
+    <div class="landing-section">
+      <div class="importers-content">
+        <div class="importers-text">
+          <h3>Find your next sake</h3>
+          <p>Discover authentic sake breweries worldwide. Search by region, type, or brewery name. Connect directly with verified producers.</p>
+          <p>Build lasting relationships with quality sakagura. Streamline your sourcing with verified brewery information and direct contacts.</p>
+        </div>
+        <div class="importers-visual">[ Visual: importer search interface ]</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Bottom CTA Section -->
+  <section class="landing-cta">
+    <div class="landing-section">
+      <h2 class="landing-section-title">Ready to put your sakagura on the map?</h2>
+      <div class="cta-search">
+        <input type="text" id="landing-cta-search-input" autocomplete="off" placeholder="Search your brewery..." onkeydown="if(event.key==='Enter')landingStartSearch()">
+        <button class="cta-search-btn" onclick="landingStartSearch()">Search →</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="landing-footer">
+    <div class="footer-content">
+      <p class="footer-text">sake platform · Built for breweries and importers worldwide</p>
+      <div class="footer-links">
+        <a onclick="navTo('search')">Search</a>
+        <a href="#about">About</a>
+        <a href="#contact">Contact</a>
+      </div>
+    </div>
+  </footer>
+</div>
+
 <!-- PAGE: SEARCH -->
-<div class="screen active" id="page-search">
+<div class="screen" id="page-search">
   <div class="hero" id="hero">
     <div class="hero-kanji" id="hero-kanji"></div>
     <div class="hero-sub" id="hero-sub"></div>
@@ -167,12 +285,24 @@
 <script src="js/brewery.js?v=2"></script>
 <script src="js/dashboard.js?v=2"></script>
 
+<!-- Landing page search handler -->
+<script>
+function landingStartSearch(){
+  const input=document.getElementById('landing-search-input')||document.getElementById('landing-cta-search-input');
+  if(input&&input.value.trim()){
+    showPage('search');
+    document.getElementById('search-input').value=input.value;
+    startSearch();
+  }
+}
+</script>
+
 <!-- Init script -->
 <script>
 applyLang();
 renderHistory();
 if(state.user&&state.brewery)enterDashboard();
-else showPage('search');
+else showPage('landing');
 </script>
 
 </body>

@@ -27,6 +27,7 @@ function showPage(n){
   document.getElementById('page-'+n)?.classList.add('active');
   document.querySelectorAll('.topbar-nav a').forEach(a=>a.classList.remove('active'));
   document.getElementById('nav-'+n)?.classList.add('active');
+  document.getElementById('nav-landing').style.display=(state.user||state.brewery)?'inline-block':'none';
   document.getElementById('nav-register').style.display=state.brewery?'':'none';
   document.getElementById('nav-dashboard').style.display=(state.user&&state.brewery)?'':'none';
   const u=document.getElementById('topbar-user');
@@ -36,12 +37,14 @@ function showPage(n){
 
 function navTo(n){showPage(n);}
 
-function goHome(){showPage(state.user&&state.brewery?'dashboard':'search');}
+function goHome(){showPage(state.user&&state.brewery?'dashboard':'landing');}
 
 function switchLang(l){state.lang=l;localStorage.setItem('sp_lang',l);applyLang();}
 
 function applyLang(){
   document.querySelectorAll('.lang-btn').forEach(b=>b.classList.toggle('active',b.dataset.lang===state.lang));
+  const navLanding=document.getElementById('nav-landing');
+  if(navLanding)navLanding.textContent=t('nav_landing');
   document.getElementById('hero-kanji').textContent=t('hero_title');
   document.getElementById('hero-sub').textContent=t('hero_sub');
   document.getElementById('search-input').placeholder=t('search_placeholder');
