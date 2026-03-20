@@ -112,16 +112,18 @@
 .hero-visual {
   width: 100%;
   max-width: 520px;
-  min-height: 320px;
-  background: white;
-  border: 2px dashed var(--border2);
   border-radius: var(--radius-lg);
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--text3);
-  font-size: 14px;
   margin: 0 auto;
+  overflow: hidden;
+}
+.hero-visual-img {
+  width: 100%;
+  height: auto;
+  display: block;
+  border-radius: var(--radius-lg);
 }
 
 /* ===== HOW IT WORKS SECTION ===== */
@@ -188,15 +190,17 @@
 
 .step-visual {
   width: 100%;
-  min-height: 280px;
-  background: var(--surface2);
-  border: 2px dashed var(--border2);
   border-radius: var(--radius-lg);
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--text3);
-  font-size: 14px;
+  overflow: hidden;
+}
+.step-visual-img {
+  width: 100%;
+  height: auto;
+  display: block;
+  border-radius: var(--radius-lg);
 }
 
 /* ===== FOR BREWERIES SECTION ===== */
